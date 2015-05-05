@@ -1,3 +1,11 @@
+<?php
+$dir = dirname(__FILE__)."/../";
+include_once $dir."config.php";
+include_once $dir."class/System.class.php";
+include_once $dir."class/Database.class.php";
+if ( ! Sys::checkAuth())
+    die(header('Location: ../'));
+?>
 <script language="javascript">
 // возвращает cookie с именем name, если есть, если нет, то undefined
 function getCookie(name)
@@ -16,16 +24,8 @@ $(document).ready(function(){
     }
 });
 </script>
-
 <form id="threme_clear" method="post">
 <?php
-$dir = dirname(__FILE__)."/../";
-include_once $dir."config.php";
-include_once $dir."class/System.class.php";
-include_once $dir."class/Database.class.php";
-if ( ! Sys::checkAuth())
-    die(header('Location: ../'));
-
 $users = Database::getUserToWatch();
 
 if ( ! empty($users))

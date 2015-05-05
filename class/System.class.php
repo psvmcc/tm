@@ -65,7 +65,7 @@ class Sys
     //версия системы
     public static function version()
     {
-        return '1.2.3.1';
+        return '1.2.4';
     }
 
     //проверка обновлений системы
@@ -144,13 +144,11 @@ class Sys
             if ($proxy)
             {
                 curl_setopt($ch, CURLOPT_PROXY, $proxyAddress); 
-                $type = 'CURLPROXY_'.$proxyType;
-                curl_setopt($ch, CURLOPT_PROXYTYPE, $type);
+                if ($proxyType == 'SOCKS5')
+                    curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
+                elseif ($proxyType == 'HTTP')
+                    curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
             }
-
-            $curl = curl_version();
-            if (substr($curl["ssl_version"], 0, 3) == 'NSS' && strstr($param['url'], 'lostfilm.tv'))
-                curl_setopt($ch, CURLOPT_SSL_CIPHER_LIST, 'ecdhe_ecdsa_aes_128_sha');
 
             if (Database::getSetting('debug'))
                 curl_setopt($ch, CURLOPT_VERBOSE, TRUE);

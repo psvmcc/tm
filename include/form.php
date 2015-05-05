@@ -45,17 +45,17 @@ elseif ($tracker == 'anidub.com')
 <?php
 }
 
-if (isset($hd) && $tracker == 'lostfilm.tv' || isset($hd) && $tracker == 'novafilm.tv' || isset($hd) && $tracker == 'baibako.tv' || isset($hd) && $tracker == 'newstudio.tv')
+if (isset($hd) && $tracker == 'lostfilm.tv' || isset($hd) && $tracker == 'lostfilm-mirror' || isset($hd) && $tracker == 'novafilm.tv' || isset($hd) && $tracker == 'baibako.tv' || isset($hd) && $tracker == 'newstudio.tv')
 {
 ?>
     <p>
         <label class="label-name"></label>
 <?php
-if ($hd == 1 && $tracker == 'lostfilm.tv')
+if ($hd == 1 && $tracker == 'lostfilm.tv' || $hd == 1 && $tracker == 'lostfilm-mirror')
 	$input = '<input type="radio" name="hd" value="0"> SD<br /><input type="radio" name="hd" value="1" checked> Автовыбор HD 720/1080<br /><input type="radio" name="hd" value="2"> HD 720 MP4';
 elseif ($hd == 1 && $tracker == 'baibako.tv' || $hd == 1 && $tracker == 'newstudio.tv' || $hd == 1 && $tracker == 'novafilm.tv')
     $input = '<input type="radio" name="hd" value="0"> SD<br /><input type="radio" name="hd" value="1" checked> HD 720<br /><input type="radio" name="hd" value="2"> HD 1080</span>';
-elseif ($hd == 2 && $tracker == 'lostfilm.tv')
+elseif ($hd == 2 && $tracker == 'lostfilm.tv' || $hd == 2 && $tracker == 'lostfilm-mirror')
     $input = '<input type="radio" name="hd" value="0"> SD<br /><input type="radio" name="hd" value="2" checked> HD 720 MP4<br /><input type="radio" name="hd" value="2"> HD 1080</span>';
 elseif ($hd == 2 && $tracker == 'baibako.tv' || $hd == 2 && $tracker == 'newstudio.tv' || $hd == 2 && $tracker == 'novafilm.tv')
     $input = '<input type="radio" name="hd" value="0"> SD<br /><input type="radio" name="hd" value="1"> HD 720<br /><input type="radio" name="hd" value="2" checked> HD 1080</span>';
