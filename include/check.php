@@ -141,6 +141,8 @@ if (Sys::checkInternet())
 				    $page = 'http://rutracker.org/forum/index.php';
 				elseif ($tracker == 'lostfilm-mirror')
 				    $page = 'http://korphome.ru/lostfilm.tv/rss.xml';
+				elseif ($tracker == 'rutor.org')
+				    $page = 'http://zerkalo-rutor.org/';
 				else
 					$page = 'http://'.$tracker;
 				if (Sys::checkavAilability($page))

@@ -67,7 +67,7 @@ else
     		elseif ($tracker == 'rutor.org')
     		{
     		?>
-    			<a href='http://rutor.org/torrent/<?php echo $torrent_id ?>/' target='_blank'><?php echo $name ?></a>
+    			<a href='http://zerkalo-rutor.org/torrent/<?php echo $torrent_id ?>/' target='_blank'><?php echo $name ?></a>
     		<?php
     		}
     		elseif ($tracker == 'anidub.com')

@@ -39,10 +39,9 @@ if (isset($_POST['action']))
 			$tracker = preg_replace('/www\./', '', $tracker);
 			if ($tracker == 'tr.anidub.com')
 				$tracker = 'anidub.com';
-				
-            if ($tracker == 'new-rutor.org')
+            if ($tracker == 'zerkalo-rutor.org')
 				$tracker = 'rutor.org';
-			
+				
 			if ($tracker == 'anidub.com')
 			    $threme = $url['path'];
             elseif ($tracker == 'casstudio.tv')
@@ -190,7 +189,7 @@ if (isset($_POST['action']))
 			$class = str_replace('-', '', $class);
 			if (call_user_func(array($class, 'checkRule'), $_POST['name']))	
 			{
-				Database::updateSerial($_POST['id'], $_POST['name'], $_POST['path'], $_POST['script'], $_POST['hd'], Sys::strBoolToInt($_POST['reset']));
+				Database::updateSerial($_POST['id'], $_POST['name'], $_POST['path'], $_POST['hd'], Sys::strBoolToInt($_POST['reset']), $_POST['script']);
 				$return['error'] = FALSE;
                 $return['msg'] = 'Сериал обновлён.';
 			}
@@ -208,10 +207,9 @@ if (isset($_POST['action']))
     			$tracker = preg_replace('/www\./', '', $tracker);
     			if ($tracker == 'tr.anidub.com')
     				$tracker = 'anidub.com';
+                if ($tracker == 'zerkalo-rutor.org')
+				    $tracker = 'rutor.org';
     				
-                if ($tracker == 'new-rutor.org')
-    				$tracker = 'rutor.org';
-    			
     			if ($tracker == 'anidub.com')
     			    $threme = $url['path'];
                 elseif ($tracker == 'casstudio.tv')
@@ -229,7 +227,7 @@ if (isset($_POST['action']))
     				preg_match('/\d{4,8}/', $url['path'], $array);
     				$threme = $array[0];
     			}
-    
+
     			if (is_array(Database::getCredentials($tracker)))
     			{
     				$engineFile = $dir.'/trackers/'.$tracker.'.engine.php';
@@ -245,7 +243,7 @@ if (isset($_POST['action']))
     					    
                         if ($tracker == 'tv.mekc.info')
     					    $functionClass = 'mekc';
-    
+
                         if ( ! empty($threme))
                         {
         					if (call_user_func(array($functionClass, 'checkRule'), $threme))

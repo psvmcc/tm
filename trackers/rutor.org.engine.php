@@ -45,7 +45,7 @@ class rutor
             		'type'           => 'GET',
             		'header'         => 0,
             		'returntransfer' => 1,
-            		'url'            => 'http://alt.rutor.org/torrent/'.$torrent_id.'/'
+            		'url'            => 'http://zerkalo-rutor.org/torrent/'.$torrent_id.'/'
             	)
             );
 
@@ -73,13 +73,13 @@ class rutor
                                 	array(
                                 		'type'           => 'GET',
                                 		'returntransfer' => 0,
-                                		'url'            => 'http://d.rutor.org/download/'.$torrent_id.'/',
+                                		'url'            => 'http://zerkalo-rutor.org/download/'.$torrent_id.'/',
                                 	)
                                 );
 
 								if ($auto_update)
 								{
-								    $name = Sys::getHeader('http://alt.rutor.org/torrent/'.$torrent_id.'/');
+								    $name = Sys::getHeader('http://zerkalo-rutor.org/torrent/'.$torrent_id.'/');
 								    //обновляем заголовок торрента в базе
                                     Database::setNewName($id, $name);
 								}

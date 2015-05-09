@@ -65,7 +65,7 @@ class Sys
     //версия системы
     public static function version()
     {
-        return '1.2.4';
+        return '1.2.5';
     }
 
     //проверка обновлений системы
@@ -187,18 +187,7 @@ class Sys
         $Purl = parse_url($url);
         $tracker = $Purl['host'];
         $tracker = preg_replace('/www\./', '', $tracker);
-        
-        if ($tracker == 'rutor.org')
-            $url = preg_replace('/rutor.org/', 'alt.rutor.org', $url);
-
-        $forumPage = Sys::getUrlContent(
-            array(
-                'type'           => 'GET',
-                'returntransfer' => 1,
-                'url'            => $url,
-            )
-        );
-        
+     
         if ($tracker == 'rustorka.com')
         {
             $dir = str_replace('class', '', dirname(__FILE__));
@@ -244,14 +233,24 @@ class Sys
                 );
             }
         }
+        else
+        {
+            $forumPage = Sys::getUrlContent(
+                array(
+                    'type'           => 'GET',
+                    'returntransfer' => 1,
+                    'url'            => $url,
+                )
+            );            
+        }
 
-        if ($tracker != 'rutor.org' && $tracker != 'alt.rutor.org' && $tracker != 'casstudio.tv' && $tracker != 'torrents.net.ua' && $tracker != 'rustorka.com' && $tracker != 'tr.anidub.com')
+        if ($tracker != 'zerkalo-rutor.org' && $tracker != 'casstudio.tv' && $tracker != 'torrents.net.ua' && $tracker != 'rustorka.com' && $tracker != 'tr.anidub.com')
             $forumPage = iconv('windows-1251', 'utf-8//IGNORE', $forumPage);
 
         if ($tracker == 'tr.anidub.com')
             $tracker = 'anidub.com';
-            
-        preg_match('/<title>(.*)<\/title>/', $forumPage, $array);
+
+        preg_match('/<title>(.*)<\/title>?/', $forumPage, $array);
         if ( ! empty($array[1]))
         {
             if ($tracker == 'anidub.com')
@@ -264,8 +263,8 @@ class Sys
                 $name = substr($array[1], 0, -20);
             elseif ($tracker == 'rutracker.org')
                 $name = substr($array[1], 0, -34);
-            elseif ($tracker == 'rutor.org')
-                $name = substr($array[1], 13);
+            elseif ($tracker == 'zerkalo-rutor.org')
+                $name = substr($array[1], 28);
             elseif ($tracker == 'tracker.0day.kiev.ua')
                 $name = substr($array[1], 6, -67);
             elseif ($tracker == 'torrents.net.ua')
