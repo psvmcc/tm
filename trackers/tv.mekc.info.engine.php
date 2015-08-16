@@ -158,7 +158,7 @@ class mekc
 						if ( ! empty($array[1]))
 						{
 							//находим имя торрента для скачивания		
-							if (preg_match('/(http:\/\/88\.198\.108\.196\/give_it_to_meh\.php\?id=\d{3,6}&passkey=.*)\">/', $page, $links))
+							if (preg_match('/(http:\/\/tv\.mekc\.info\/download\/give_it_to_meh\.php\?id=\d{3,6}&passkey=.*)\">/', $page, $links))
 							{
 							    //ссылка
 							    $link = str_replace('give_it_to_meh', 'download', $links[1]);

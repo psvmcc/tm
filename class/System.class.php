@@ -65,7 +65,7 @@ class Sys
     //версия системы
     public static function version()
     {
-        return '1.2.5';
+        return '1.2.7';
     }
 
     //проверка обновлений системы
@@ -133,7 +133,7 @@ class Sys
                 
             if (isset($param['userpwd']))
                 curl_setopt($ch, CURLOPT_USERPWD, $param['userpwd']);
-                
+
             $settingProxy = Database::getProxy();
             if (is_array($settingProxy))
             {
@@ -244,7 +244,7 @@ class Sys
             );            
         }
 
-        if ($tracker != 'zerkalo-rutor.org' && $tracker != 'casstudio.tv' && $tracker != 'torrents.net.ua' && $tracker != 'rustorka.com' && $tracker != 'tr.anidub.com')
+        if ($tracker != 'cool-tor.org' && $tracker != 'casstudio.tv' && $tracker != 'torrents.net.ua' && $tracker != 'rustorka.com' && $tracker != 'tr.anidub.com')
             $forumPage = iconv('windows-1251', 'utf-8//IGNORE', $forumPage);
 
         if ($tracker == 'tr.anidub.com')
@@ -263,7 +263,7 @@ class Sys
                 $name = substr($array[1], 0, -20);
             elseif ($tracker == 'rutracker.org')
                 $name = substr($array[1], 0, -34);
-            elseif ($tracker == 'zerkalo-rutor.org')
+            elseif ($tracker == 'cool-tor.org')
                 $name = substr($array[1], 28);
             elseif ($tracker == 'tracker.0day.kiev.ua')
                 $name = substr($array[1], 6, -67);

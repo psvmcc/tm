@@ -39,14 +39,14 @@ if (isset($_POST['action']))
 			$tracker = preg_replace('/www\./', '', $tracker);
 			if ($tracker == 'tr.anidub.com')
 				$tracker = 'anidub.com';
-            if ($tracker == 'zerkalo-rutor.org')
+            if ($tracker == 'cool-tor.org')
 				$tracker = 'rutor.org';
 				
 			if ($tracker == 'anidub.com')
 			    $threme = $url['path'];
             elseif ($tracker == 'casstudio.tv')
 			{
-				$query = explode('=', $url['query']);
+				$query = explode('t=', $url['query']);
 				$threme = $query[1];
 			}
 			elseif ($tracker != 'rutor.org')
