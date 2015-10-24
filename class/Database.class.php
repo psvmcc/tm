@@ -358,7 +358,10 @@ class Database
                 return $resultArray;
         }
         else
-            return 'Ошибка в функции: '.__CLASS__.'::'.__FUNCTION__.': '.$stmt->errorInfo()[2];
+        {
+            $error = $stmt->errorInfo();
+            return 'Ошибка в функции: '.__CLASS__.'::'.__FUNCTION__.': '.$error[2];
+        }
         $stmt = NULL;
         $resultArray = NULL;
     }

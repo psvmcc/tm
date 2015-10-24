@@ -100,6 +100,25 @@ class Notification
             )
         );        
 	}
+	
+	public static function sendPushall($pushall, $date, $tracker, $message, $header_message)
+	{
+    	if (is_string($tracker))
+		    $msg = 'Дата: '.$date."\r\n".'Трекер: '.$tracker."\r\n".'Сообщение: '.$message."\r\n";
+        else
+            $msg = $message;
+        
+        $pieces = explode(';', $pushall);
+        $postfields = array('type' => 'self', 'id' => $pieces[0], 'key' => $pieces[1], 'title' => $header_message, 'text' => $msg);
+        $forumPage = Sys::getUrlContent(
+            array(
+                'type'           => 'POST',
+                'returntransfer' => 1,
+                'url'            => 'https://pushall.ru/api.php',
+                'postfields'     => $postfields,
+            )
+        );
+	}
 
 	public static function sendNotification($type, $date, $tracker, $message, $name=0)
 	{

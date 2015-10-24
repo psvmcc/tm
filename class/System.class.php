@@ -65,7 +65,7 @@ class Sys
     //версия системы
     public static function version()
     {
-        return '1.2.7';
+        return '1.2.8';
     }
 
     //проверка обновлений системы
@@ -88,7 +88,7 @@ class Sys
                 return FALSE;
         }
     }
-    
+
     //обёртка для CURL, для более удобного использования
     public static function getUrlContent($param = null)
     {
@@ -102,7 +102,9 @@ class Sys
                 curl_setopt($ch, CURLOPT_HTTPGET, 1);
 
             curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0');
-
+            if (isset($param['follow']))
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+            
             if (isset($param['header']))
                 curl_setopt($ch, CURLOPT_HEADER, 1);
 
@@ -155,7 +157,7 @@ class Sys
 
             $result = curl_exec($ch);
             curl_close($ch);
-
+            
             if (isset($param['convert']))
                 $result = iconv($param['convert'][0], $param['convert'][1], $result);
 
@@ -238,13 +240,15 @@ class Sys
             $forumPage = Sys::getUrlContent(
                 array(
                     'type'           => 'GET',
+                    'header'         => 0,
+                    'follow'         => 1,
                     'returntransfer' => 1,
                     'url'            => $url,
                 )
             );            
         }
 
-        if ($tracker != 'cool-tor.org' && $tracker != 'casstudio.tv' && $tracker != 'torrents.net.ua' && $tracker != 'rustorka.com' && $tracker != 'tr.anidub.com')
+        if ($tracker != 'casstudio.tv' && $tracker != 'torrents.net.ua' && $tracker != 'rustorka.com' && $tracker != 'rutor.org' && $tracker != 'tr.anidub.com')
             $forumPage = iconv('windows-1251', 'utf-8//IGNORE', $forumPage);
 
         if ($tracker == 'tr.anidub.com')
@@ -263,8 +267,6 @@ class Sys
                 $name = substr($array[1], 0, -20);
             elseif ($tracker == 'rutracker.org')
                 $name = substr($array[1], 0, -34);
-            elseif ($tracker == 'cool-tor.org')
-                $name = substr($array[1], 28);
             elseif ($tracker == 'tracker.0day.kiev.ua')
                 $name = substr($array[1], 6, -67);
             elseif ($tracker == 'torrents.net.ua')
@@ -273,11 +275,18 @@ class Sys
                 $name = substr($array[1], 0, -16);
             elseif ($tracker == 'rustorka.com')
                 $name = substr($array[1], 0, -111);
+            elseif ($tracker == 'rutor.org')
+            {
+                preg_match('/<title>.*tor.org :: (.*)<\/title>/', $forumPage, $array);
+                if ( ! empty($array[1]))
+                    $name = $array[1];
+            }
             else
                 $name = $array[1];
         }
         else
             $name = 'Неизвестный';
+        
         return $name;
     }
     
@@ -303,7 +312,6 @@ class Sys
             Database::saveToTemp($id, $path, $hash, $tracker, $message, $date_str);
             Errors::setWarnings($torrentClient, $status['msg']);
             $return['msg'] = ' Но не добавлен в torrent-клиент и сохраненён.';
-            $return['hash'] = $status['hash'];
         }
         return $return;
     }

@@ -39,8 +39,12 @@ if (isset($_POST['action']))
 			$tracker = preg_replace('/www\./', '', $tracker);
 			if ($tracker == 'tr.anidub.com')
 				$tracker = 'anidub.com';
-            if ($tracker == 'cool-tor.org')
-				$tracker = 'rutor.org';
+				
+            if (preg_match('/.*tor\.org/', $tracker))
+            {
+                $tracker = 'rutor.org';
+                $_POST['url'] = 'http://rutor.org'.$url['path'];
+			}
 				
 			if ($tracker == 'anidub.com')
 			    $threme = $url['path'];
@@ -142,25 +146,25 @@ if (isset($_POST['action']))
 				$class = explode('.', $tracker);
 				$class = $class[0];
 				$class = str_replace('-', '', $class);
-				if (call_user_func(array($class, 'checkRule'), $_POST['name']))
+				#if (call_user_func(array($class, 'checkRule'), $_POST['name']))
+				#{
+				if (Database::checkSerialExist($tracker, $_POST['name'], $_POST['hd']))	
 				{
-					if (Database::checkSerialExist($tracker, $_POST['name'], $_POST['hd']))	
-					{
-						Database::setSerial($tracker, $_POST['name'], $_POST['path'], $_POST['hd']);
-						$return['error'] = FALSE;
-                        $return['msg'] = 'Сериал добавлен для мониторинга.';
-					}
-					else
-					{
-						$return['error'] = TRUE;
-                        $return['msg'] = 'Вы уже следите за данным сериалом на этом трекере - <b>'.$tracker.'</b>.';
-					}
+					Database::setSerial($tracker, $_POST['name'], $_POST['path'], $_POST['hd']);
+					$return['error'] = FALSE;
+                    $return['msg'] = 'Сериал добавлен для мониторинга.';
 				}
 				else
 				{
 					$return['error'] = TRUE;
-                    $return['msg'] = 'Название содержит недопустимые символы.';
+                    $return['msg'] = 'Вы уже следите за данным сериалом на этом трекере - <b>'.$tracker.'</b>.';
 				}
+				#}
+				#else
+				#{
+				#	$return['error'] = TRUE;
+                #    $return['msg'] = 'Название содержит недопустимые символы.';
+				#}
 			}
 			else
 			{

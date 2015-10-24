@@ -44,8 +44,9 @@ class rutor
             	array(
             		'type'           => 'GET',
             		'header'         => 0,
+            		'follow'         => 1,
             		'returntransfer' => 1,
-            		'url'            => 'http://cool-tor.org/torrent/'.$torrent_id.'/'
+            		'url'            => 'http://rutor.org/torrent/'.$torrent_id.'/'
             	)
             );
 
@@ -72,14 +73,15 @@ class rutor
 								$torrent = Sys::getUrlContent(
                                 	array(
                                 		'type'           => 'GET',
+                                		'follow'         => 1,
                                 		'returntransfer' => 0,
-                                		'url'            => 'http://cool-tor.org/download/'.$torrent_id.'/',
+                                		'url'            => 'http://rutor.org/download/'.$torrent_id.'/',
                                 	)
                                 );
 
 								if ($auto_update)
 								{
-								    $name = Sys::getHeader('http://cool-tor.org/torrent/'.$torrent_id.'/');
+								    $name = Sys::getHeader('http://rutor.org/torrent/'.$torrent_id.'/');
 								    //обновляем заголовок торрента в базе
                                     Database::setNewName($id, $name);
 								}

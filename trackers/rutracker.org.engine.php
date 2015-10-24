@@ -19,7 +19,7 @@ class rutracker
         	)
         );
 
-		if (preg_match('/Вы зашли как: &nbsp;/', $result))
+		if (preg_match('/Вы зашли как:/', $result))
 			return TRUE;
 		else
 			return FALSE;

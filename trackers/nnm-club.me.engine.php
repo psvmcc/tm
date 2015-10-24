@@ -15,11 +15,11 @@ class nnmclub
         		'url'            => 'http://nnm-club.me/forum/index.php',
         		'cookie'         => $sess_cookie,
         		'sendHeader'     => array('Host' => 'nnm-club.me', 'Content-length' => strlen($sess_cookie)),
-        		'convert'        => array('windows-1251', 'utf-8//IGNORE'),
+        		#'convert'        => array('windows-1251', 'utf-8//IGNORE'),
         	)
         );
 
-		if (preg_match('/class=\"mainmenu\">Выход [ .* ]<\/a>/U', $result))
+		if (preg_match('/login\.php\?logout=true/U', $result))
 			return TRUE;
 		else
 			return FALSE;		  
@@ -73,7 +73,7 @@ class nnmclub
             		'convert'        => array('windows-1251', 'utf-8//IGNORE'),
             	)
             );
-			
+
 			if ( ! empty($page))
 			{
 				//проверяем подходят ли учётные данные
@@ -179,12 +179,14 @@ class nnmclub
 									$download_id = $link[1];
 									preg_match('/userid(.*);/U', nnmclub::$sess_cookie, $arr);
                                     $uid = $arr[1];
+                                    preg_match('/phpbb2mysql_4_sid=(.*)/U', nnmclub::$sess_cookie, $arr);
+                                    $sid = $arr[1];
 									
 									$torrent = Sys::getUrlContent(
 	                                	array(
 	                                		'type'           => 'GET',
 	                                		'returntransfer' => 1,
-	                                		'url'            => 'http://nnm-club.ws/download.php?csid=&uid='.$uid.'&id='.$download_id,
+	                                		'url'            => 'https://nnm-club.ws/download.php?csid='.$sid.'&uid='.$uid.'&id='.$download_id,
 	                                		'cookie'         => nnmclub::$sess_cookie,
 	                                		'sendHeader'     => array('Host' => 'nnm-club.ws', 'Content-length' => strlen(nnmclub::$sess_cookie)),
 	                                		'referer'        => 'http://nnm-club.me/forum/viewtopic.php?t='.$torrent_id,
