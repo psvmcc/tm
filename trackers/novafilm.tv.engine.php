@@ -28,14 +28,6 @@ class novafilm
 			return FALSE;		  
 	}
 
-	public static function checkRule($data)
-	{
-		if (preg_match('/^[\.\+\s\'\`\:\;\-a-zA-Z0-9]+$/', $data))
-			return TRUE;
-		else
-			return FALSE;
-	}
-
 	//функция преобразования даты из строки
 	private static function dateStringToNum($data)
 	{
@@ -312,7 +304,7 @@ class novafilm
 							$episode = (substr($episode, 0, 1) == 0) ? substr($episode, 1, 1) : $episode;
 							$season = (substr($season, 0, 1) == 0) ? substr($season, 1, 1) : $season;
 							$message = $name.' '.$amp.' обновлён до '.$episode.' серии, '.$season.' сезона.';
-							$status = Sys::saveTorrent($tracker, $file, $torrent, $id, $hash, $message, $date_str);
+							$status = Sys::saveTorrent($tracker, $file, $torrent, $id, $hash, $message, $date_str, $name);
 								
 							if ($status == 'add_fail' || $status == 'connect_fail' || $status == 'credential_wrong')
 							{

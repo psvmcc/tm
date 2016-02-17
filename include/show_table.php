@@ -67,7 +67,7 @@ else
     		elseif ($tracker == 'rutor.org')
     		{
     		?>
-    			<a href='http://cool-tor.org/torrent/<?php echo $torrent_id ?>/' target='_blank'><?php echo $name ?></a>
+    			<a href='http://rutor.info/torrent/<?php echo $torrent_id ?>/' target='_blank'><?php echo $name ?></a>
     		<?php
     		}
     		elseif ($tracker == 'anidub.com')
@@ -85,7 +85,7 @@ else
     		else
     		{
                 if ($hd == 1 && $tracker == 'lostfilm.tv' || $hd == 1 && $tracker == 'lostfilm-mirror')
-                	echo '<img src="img/720.png">&nbsp;<img src="img/1080.png">';
+                	echo '<img src="img/1080.png">';
                 elseif ($hd == 1 && $tracker == 'baibako.tv' || $hd == 1 && $tracker == 'hamsterstudio.org' || $hd == 1 && $tracker == 'newstudio.tv' || $hd == 1 && $tracker == 'novafilm.tv')
                 	echo '<img src="img/720.png">';
                 elseif ($hd == 2 && $tracker == 'lostfilm.tv' || $hd == 2 && $tracker == 'lostfilm-mirror')

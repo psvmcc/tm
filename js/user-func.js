@@ -620,7 +620,7 @@ function changeField()
     if (tracker == 'baibako.tv' || tracker == 'hamsterstudio.org' || tracker == 'newstudio.tv' || tracker == 'novafilm.tv')
         $('#changedField').empty().append('<span class="quality"><input type="radio" name="hd" value="0"> SD<br /><input type="radio" name="hd" value="1"> HD 720<br /><input type="radio" name="hd" value="2"> HD 1080</span>');
 	if (tracker == 'lostfilm.tv' || tracker == 'lostfilm-mirror')
-		$('#changedField').empty().append('<span class="quality"><input type="radio" name="hd" value="0"> SD<br /><input type="radio" name="hd" value="1"> Автовыбор HD 720/1080<br /><input type="radio" name="hd" value="2"> HD 720 MP4');
+		$('#changedField').empty().append('<span class="quality"><input type="radio" name="hd" value="0"> SD<br /><input type="radio" name="hd" value="2"> HD 720 MP4<br /><input type="radio" name="hd" value="1"> HD 1080');
 }
 
 //Форма редактирования записи

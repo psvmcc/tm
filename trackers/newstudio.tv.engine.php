@@ -327,7 +327,7 @@ class newstudio
 							$episode = (substr($episode, 0, 1) == 0) ? substr($episode, 1, 1) : $episode;
 							$season = (substr($season, 0, 1) == 0) ? substr($season, 1, 1) : $season;
 							$message = $name.' '.$amp.' обновлён до '.$episode.' серии, '.$season.' сезона.';
-                            $status = Sys::saveTorrent($tracker, $file, $torrent, $id, $hash, $message, $date_str);
+                            $status = Sys::saveTorrent($tracker, $file, $torrent, $id, $hash, $message, $date_str, $name);
 								
 							if ($status == 'add_fail' || $status == 'connect_fail' || $status == 'credential_wrong')
 							{

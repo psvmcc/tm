@@ -37,93 +37,101 @@ if (isset($_POST['action']))
 		{
 			$tracker = $url['host'];
 			$tracker = preg_replace('/www\./', '', $tracker);
-			if ($tracker == 'tr.anidub.com')
-				$tracker = 'anidub.com';
-				
-            if (preg_match('/.*tor\.org/', $tracker))
-            {
-                $tracker = 'rutor.org';
-                $_POST['url'] = 'http://rutor.org'.$url['path'];
-			}
-				
-			if ($tracker == 'anidub.com')
-			    $threme = $url['path'];
-            elseif ($tracker == 'casstudio.tv')
+			
+			if ($tracker == 'lostfilm.tv' || $tracker == 'lostfilm-mirror' || $tracker == 'novafilm.tv' || $tracker == 'baibako.tv' || $tracker == 'newstudio.tv')
 			{
-				$query = explode('t=', $url['query']);
-				$threme = $query[1];
-			}
-			elseif ($tracker != 'rutor.org')
-			{
-				$query = explode('=', $url['query']);
-				$threme = $query[1];
-			}
-			else
-			{
-				preg_match('/\d{4,8}/', $url['path'], $array);
-				$threme = $array[0];
-			}
-
-			if (is_array(Database::getCredentials($tracker)))
-			{
-				$engineFile = $dir.'/trackers/'.$tracker.'.engine.php';
-				if (file_exists($engineFile))
-				{    
-					$functionEngine = include_once $engineFile;
-					$class = explode('.', $tracker);
-					$class = $class[0];
-					$functionClass = str_replace('-', '', $class);
-					
-					if ($tracker == 'tracker.0day.kiev.ua')
-					    $functionClass = 'kiev';
-					    
-                    if ($tracker == 'tv.mekc.info')
-					    $functionClass = 'mekc';
-
-                    if ( ! empty($threme))
-                    {
-    					if (call_user_func(array($functionClass, 'checkRule'), $threme))
-    					{
-    						if (Database::checkThremExist($tracker, $threme))
-    						{
-    							if ( ! empty($_POST['name']))
-    								$name = $_POST['name'];
-    							else
-    								$name = Sys::getHeader($_POST['url']);
+                $return['error'] = TRUE;
+                $return['msg'] = 'Это не форумный трекер. Добавьте как Сериал по его названию.';
+            }
+            else
+            {			
+    			if ($tracker == 'tr.anidub.com')
+    				$tracker = 'anidub.com';
+    				
+                if (preg_match('/.*tor\.org|rutor\.info/', $tracker))
+                {
+                    $tracker = 'rutor.org';
+                    $_POST['url'] = 'http://rutor.info'.$url['path'];
+    			}
+    			if ($tracker == 'anidub.com')
+    			    $threme = $url['path'];
+                elseif ($tracker == 'casstudio.tv')
+    			{
+    				$query = explode('t=', $url['query']);
+    				$threme = $query[1];
+    			}
+    			elseif ($tracker != 'rutor.org')
+    			{
+    				$query = explode('=', $url['query']);
+    				$threme = $query[1];
+    			}
+    			else
+    			{
+    				preg_match('/\d{4,8}/', $url['path'], $array);
+    				$threme = $array[0];
+    			}
     
-    							Database::setThreme($tracker, $name, $_POST['path'], $threme, Sys::strBoolToInt($_POST['update_header']));
-    							$return['error'] = FALSE;
-                                $return['msg'] = 'Тема добавлена для мониторинга.';
-    						}
-    						else
-    						{
-        						$return['error'] = TRUE;
-                                $return['msg'] = 'Вы уже следите за данной темой на трекере <b>'.$tracker.'</b>.';
-    						}
-    					}
-    					else
+    			if (is_array(Database::getCredentials($tracker)))
+    			{
+    				$engineFile = $dir.'/trackers/'.$tracker.'.engine.php';
+    				if (file_exists($engineFile))
+    				{    
+    					$functionEngine = include_once $engineFile;
+    					$class = explode('.', $tracker);
+    					$class = $class[0];
+    					$functionClass = str_replace('-', '', $class);
+    					
+    					if ($tracker == 'tracker.0day.kiev.ua')
+    					    $functionClass = 'kiev';
+    					    
+                        if ($tracker == 'tv.mekc.info')
+    					    $functionClass = 'mekc';
+    
+                        if ( ! empty($threme))
+                        {
+        					if (call_user_func(array($functionClass, 'checkRule'), $threme))
+        					{
+        						if (Database::checkThremExist($tracker, $threme))
+        						{
+        							if ( ! empty($_POST['name']))
+        								$name = $_POST['name'];
+        							else
+        								$name = Sys::getHeader($_POST['url']);
+        
+        							Database::setThreme($tracker, $name, $_POST['path'], $threme, Sys::strBoolToInt($_POST['update_header']));
+        							$return['error'] = FALSE;
+                                    $return['msg'] = 'Тема добавлена для мониторинга.';
+        						}
+        						else
+        						{
+            						$return['error'] = TRUE;
+                                    $return['msg'] = 'Вы уже следите за данной темой на трекере <b>'.$tracker.'</b>.';
+        						}
+        					}
+        					else
+        					{
+        					    $return['error'] = TRUE;
+                                $return['msg'] = 'Не верная ссылка.';
+        					}
+        				}
+        				else
     					{
     					    $return['error'] = TRUE;
                             $return['msg'] = 'Не верная ссылка.';
     					}
     				}
     				else
-					{
-					    $return['error'] = TRUE;
-                        $return['msg'] = 'Не верная ссылка.';
-					}
-				}
-				else
-				{
-    				$return['error'] = TRUE;
-                    $return['msg'] = 'Отсутствует модуль для трекера - <b>'.$tracker.'</b>.';
-				}
-			}
-			else
-			{
-    			$return['error'] = TRUE;
-                $return['msg'] = 'Вы не можете следить за этим сериалом на трекере - <b>'.$tracker.'</b>, пока не введёте свои учётные данные!';
-			}
+    				{
+        				$return['error'] = TRUE;
+                        $return['msg'] = 'Отсутствует модуль для трекера - <b>'.$tracker.'</b>.';
+    				}
+    			}
+    			else
+    			{
+        			$return['error'] = TRUE;
+                    $return['msg'] = 'Вы не можете следить за этим сериалом на трекере - <b>'.$tracker.'</b>, пока не введёте свои учётные данные!';
+    			}
+            }
 		}
 		else
 		{
@@ -146,8 +154,6 @@ if (isset($_POST['action']))
 				$class = explode('.', $tracker);
 				$class = $class[0];
 				$class = str_replace('-', '', $class);
-				#if (call_user_func(array($class, 'checkRule'), $_POST['name']))
-				#{
 				if (Database::checkSerialExist($tracker, $_POST['name'], $_POST['hd']))	
 				{
 					Database::setSerial($tracker, $_POST['name'], $_POST['path'], $_POST['hd']);
@@ -159,12 +165,6 @@ if (isset($_POST['action']))
 					$return['error'] = TRUE;
                     $return['msg'] = 'Вы уже следите за данным сериалом на этом трекере - <b>'.$tracker.'</b>.';
 				}
-				#}
-				#else
-				#{
-				#	$return['error'] = TRUE;
-                #    $return['msg'] = 'Название содержит недопустимые символы.';
-				#}
 			}
 			else
 			{
@@ -191,17 +191,9 @@ if (isset($_POST['action']))
 			$class = explode('.', $tracker);
 			$class = $class[0];
 			$class = str_replace('-', '', $class);
-			if (call_user_func(array($class, 'checkRule'), $_POST['name']))	
-			{
-				Database::updateSerial($_POST['id'], $_POST['name'], $_POST['path'], $_POST['hd'], Sys::strBoolToInt($_POST['reset']), $_POST['script']);
-				$return['error'] = FALSE;
-                $return['msg'] = 'Сериал обновлён.';
-			}
-			else
-			{
-				$return['error'] = TRUE;
-                $return['msg'] = 'Название содержит недопустимые символы.';
-            }
+			Database::updateSerial($_POST['id'], $_POST['name'], $_POST['path'], $_POST['hd'], Sys::strBoolToInt($_POST['reset']), $_POST['script']);
+			$return['error'] = FALSE;
+            $return['msg'] = 'Сериал обновлён.';
         }        
         else
         {
@@ -352,12 +344,10 @@ if (isset($_POST['action']))
 		if ($update)
 		{
 			$return['error'] = FALSE;
+			$return['msg'] = 'Тема помечена для закачки.';
 		}
 		else
-		{		
 			$return['error'] = TRUE;
-			$return['msg'] = 'Пометить тему для закачки.';
-		}
 		echo json_encode($return);
 	}
 	

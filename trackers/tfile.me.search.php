@@ -13,7 +13,7 @@ class tfileSearch extends tfile
         		'type'           => 'GET',
         		'header'         => 0,
         		'returntransfer' => 1,
-        		'url'            => 'http://tfile.me/forum/ssearch.php?a='.$user.'&to=1&io=1',
+        		'url'            => 'http://search.tfile.me/?a='.$user.'&to=1&io=1&o=newest',
         		'convert'        => array('windows-1251', 'utf-8')
         	)
         );
@@ -38,7 +38,7 @@ class tfileSearch extends tfile
 				}
 			}
 
-			if (preg_match_all('/<a href=\"\/forum\/viewtopic\.php\?t=(\d{1,9})\">(.*)<\/a>/U', $page, $threme))
+			if (preg_match_all('/<a href=\"http:\/\/tfile\.me\/forum\/viewtopic\.php\?t=(\d{1,9})\">(.*)<\/a>/U', $page, $threme))
 	        {
 				for ($i=0; $i<count($threme[1]); $i++)
 					Database::addThremeToBuffer($user_id, $sectionArr[$i], $threme[1][$i], $threme[2][$i], $tracker);
@@ -78,7 +78,7 @@ class tfileSearch extends tfile
                     	)
                     );
 					$message = $toDownload[$i]['threme'].' добавлена для скачивания.';
-					$status = Sys::saveTorrent($toDownload[$i]['tracker'], $toDownload[$i]['threme_id'], $torrent, $toDownload[$i]['threme_id'], 0, $message, date('d M Y H:i'));
+					$status = Sys::saveTorrent($toDownload[$i]['tracker'], $toDownload[$i]['threme_id'], $torrent, $toDownload[$i]['threme_id'], 0, $message, date('d M Y H:i'), $name);
 								
 					if ($status == 'add_fail' || $status == 'connect_fail' || $status == 'credential_wrong')
 					{

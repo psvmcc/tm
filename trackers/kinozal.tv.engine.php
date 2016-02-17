@@ -233,7 +233,7 @@ class kinozal
 						}
 
     					$message = $name.' обновлён.';
-    					$status = Sys::saveTorrent($tracker, $torrent_id, $torrent, $id, $hash, $message, $date_str);
+    					$status = Sys::saveTorrent($tracker, $torrent_id, $torrent, $id, $hash, $message, $date_str, $name);
 								
     					//обновляем время регистрации торрента в базе
     					Database::setNewDate($id, $date);

@@ -4,7 +4,15 @@ class Sys
     //проверяем есть ли интернет
     public static function checkInternet()
     {
-        $page = file_get_contents('http://ya.ru');
+        $page = Sys::getUrlContent(
+            array(
+                'type'           => 'GET',
+                'header'         => 1,
+                'follow'         => 1,
+                'returntransfer' => 1,
+                'url'            => 'http://ya.ru',
+            )
+        );
         if (preg_match('/<title>Яндекс<\/title>/', $page))
             return TRUE;
         else
@@ -20,21 +28,6 @@ class Sys
             return TRUE;
         else
             return FALSE;
-    }
-
-    //проверяем правильно ли заполнен конфигурационный файл
-    public static function checkConfig()
-    {
-        $dir = dirname(__FILE__).'/../';
-        include_once $dir.'config.php';
-        
-        $confArray = Config::$confArray;
-        foreach ($confArray as $key => $val)
-        {
-            if (empty($val))
-                return FALSE;
-        }
-        return TRUE;
     }
 
     //проверяем установлено ли расширение CURL
@@ -65,20 +58,23 @@ class Sys
     //версия системы
     public static function version()
     {
-        return '1.2.8';
+        return '1.2.9.3';
     }
 
     //проверка обновлений системы
     public static function checkUpdate()
     {
-        $opts = stream_context_create(array(
-            'http' => array(
-                'timeout' => 1
-                )
-            ));
+        //получаем страницу
+        $page = Sys::getUrlContent(
+            array(
+                'type'           => 'GET',
+                'returntransfer' => 1,
+                'url'            => 'http://korphome.ru/torrent_monitor/version.xml',
+            )
+        );
 
-        $xmlstr = @file_get_contents('http://korphome.ru/torrent_monitor/version.xml', false, $opts);
-        $xml = @simplexml_load_string($xmlstr);
+        //читаем xml
+        $xml = @simplexml_load_string($page);
         
         if (false !== $xml)
         {
@@ -105,8 +101,14 @@ class Sys
             if (isset($param['follow']))
                 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
             
+            if (isset($param['encoding']))
+                curl_setopt($ch, CURLOPT_ENCODING, '');
+            
             if (isset($param['header']))
                 curl_setopt($ch, CURLOPT_HEADER, 1);
+            
+            if (isset($param['ssl_false']))
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
             curl_setopt($ch, CURLOPT_TIMEOUT, Database::getSetting('httpTimeout'));
 
@@ -157,7 +159,7 @@ class Sys
 
             $result = curl_exec($ch);
             curl_close($ch);
-            
+
             if (isset($param['convert']))
                 $result = iconv($param['convert'][0], $param['convert'][1], $result);
 
@@ -172,6 +174,7 @@ class Sys
             array(
                 'type'           => 'GET',
                 'header'         => 1,
+                'follow'         => 1,
                 'returntransfer' => 1,
                 'url'            => $tracker,
             )
@@ -189,6 +192,9 @@ class Sys
         $Purl = parse_url($url);
         $tracker = $Purl['host'];
         $tracker = preg_replace('/www\./', '', $tracker);
+        
+        if (preg_match('/.*tor\.org|rutor\.info/', $tracker))
+            $tracker = 'rutor.info';
      
         if ($tracker == 'rustorka.com')
         {
@@ -248,7 +254,7 @@ class Sys
             );            
         }
 
-        if ($tracker != 'casstudio.tv' && $tracker != 'torrents.net.ua' && $tracker != 'rustorka.com' && $tracker != 'rutor.org' && $tracker != 'tr.anidub.com')
+        if ($tracker != 'casstudio.tv' && $tracker != 'torrents.net.ua' && $tracker != 'rustorka.com' && $tracker != 'rutor.info' && $tracker != 'tr.anidub.com')
             $forumPage = iconv('windows-1251', 'utf-8//IGNORE', $forumPage);
 
         if ($tracker == 'tr.anidub.com')
@@ -266,7 +272,7 @@ class Sys
             elseif ($tracker == 'nnm-club.me')
                 $name = substr($array[1], 0, -20);
             elseif ($tracker == 'rutracker.org')
-                $name = substr($array[1], 0, -34);
+                $name = substr($array[1], 0, -17);
             elseif ($tracker == 'tracker.0day.kiev.ua')
                 $name = substr($array[1], 6, -67);
             elseif ($tracker == 'torrents.net.ua')
@@ -275,9 +281,9 @@ class Sys
                 $name = substr($array[1], 0, -16);
             elseif ($tracker == 'rustorka.com')
                 $name = substr($array[1], 0, -111);
-            elseif ($tracker == 'rutor.org')
+            elseif ($tracker == 'rutor.info')
             {
-                preg_match('/<title>.*tor.org :: (.*)<\/title>/', $forumPage, $array);
+                preg_match('/<title>.*tor.info :: (.*)<\/title>/', $forumPage, $array);
                 if ( ! empty($array[1]))
                     $name = $array[1];
             }
@@ -290,8 +296,17 @@ class Sys
         return $name;
     }
     
+    //выполняем пользовательский скрипт
+    public static function runScript($id, $tracker, $name, $hash, $message, $date_str)
+    {
+        $script = Database::getScript($id);
+        if ( ! empty($script['script']))
+            print(`{$script['script']} '{$tracker}' '{$name}' '{$hash}' '{$message}' '{$date_str}'`);
+        
+    }
+    
     //добавляем в torrent-клиент
-    public static function addToClient($id, $path, $hash, $tracker, $message, $date_str)
+    public static function addToClient($id, $name, $path, $hash, $tracker, $date_str)
     {
         $torrentClient = Database::getSetting('torrentClient');
         $dir = dirname(__FILE__).'/';
@@ -304,40 +319,59 @@ class Sys
         if ($status['status'])
         {
             Database::deleteFromTemp($id);
-            $return['msg'] = ' И добавлен в torrent-клиент.';
+            $return['status'] = TRUE;
             $return['hash'] = $status['hash'];
         }
         else
         {
-            Database::saveToTemp($id, $path, $hash, $tracker, $message, $date_str);
+            Database::saveToTemp($id, $name, $path, $hash, $tracker, $date_str);
             Errors::setWarnings($torrentClient, $status['msg']);
-            $return['msg'] = ' Но не добавлен в torrent-клиент и сохраненён.';
+            $return['status'] = FALSE;
         }
         return $return;
     }
     
     //сохраняем torrent файл
-    public static function saveTorrent($tracker, $name, $torrent, $id, $hash, $message, $date_str)
+    public static function saveTorrent($tracker, $file, $torrent, $id, $hash, $message, $date_str, $name)
     {
-        $name = str_replace("'", '', $name);
-        $file = '['.$tracker.']_'.$name.'.torrent';
+        $file = str_replace("'", '', $file);
+        $file = '['.$tracker.']_'.$file.'.torrent';
         $dir = dirname(__FILE__).'/';
         $path = str_replace('class/', '', $dir).'torrents/'.$file;
         if (file_exists($path))
             unlink($path);
         file_put_contents($path, $torrent);
-        $messageAdd = ' И сохранён.';
-        
+
         $useTorrent = Database::getSetting('useTorrent');
         if ($useTorrent)
-            $status = Sys::addToClient($id, $path, $hash, $tracker, $message, $date_str);
+            $status = Sys::addToClient($id, $name, $path, $hash, $tracker, $date_str);
+        else
+            $message = $message.' И сохранён.';
+            
+        if ($status['status'])
+            $message = $message.' И добавлен в torrent-клиент.';
+        else
+            $message = $message.' Но не добавлен в torrent-клиент и сохраненён.';
         //отправляем уведомлении о новом торренте
-        $message = $message.$status['msg'];
         Notification::sendNotification('notification', $date_str, $tracker, $message, $name);
-
-        $script = Database::getScript($id);
-        if ( ! empty($script['script']))
-            print(`{$script['script']} '{$tracker}' '{$name}' '{$status['hash']}' '{$message}' '{$date_str}'`);
+        if ($status['status'])
+            Sys::runScript($id, $tracker, $name, $hash, $message, $date_str);
+    }
+    
+    //добавляем раздачи из Temp в torrent-клиент
+    public static function AddFromTemp($list)
+    {
+        for ($i=0; $i<count($list); $i++)
+        {
+    	    $status = Sys::addToClient($list[$i]['id'], $list[$i]['name'], $list[$i]['path'], $list[$i]['hash'], $list[$i]['tracker'], $list[$i]['date_str']);        
+    	    if ($status['status'])
+    	    {
+        	    $message = 'Torrent-клиент доступен и тема '.$list[$i]['name'].' добавлена.';
+    	        Database::updateHash($list[$i]['id'], $status['hash']);
+    	        Notification::sendNotification('notification', $list[$i]['date_str'], $list[$i]['tracker'], $message, $list[$i]['name']);
+                Sys::runScript($list[$i]['id'], $list[$i]['tracker'], $list[$i]['name'], $status['hash'], $message, $list[$i]['date_str']);
+            }
+        }
     }
     
     //преобразуем месяц из числового в текстовый
@@ -407,7 +441,10 @@ class Sys
                     Notification::sendNotification('news', date('r'), 0, $page->news->text[$i], 0);
                 }
             }
+            Database::clearWarnings('TorrentMonitor');
         }
+        else
+            Errors::setWarnings('TorrentMonitor', 'update_news');
     }
     
     //ф-ция преобразования true/false в int

@@ -9,22 +9,24 @@ class Errors
     	Errors::write('curl', 'Для работы системы необходимо включить <a href=\"http://php.net/manual/en/book.curl.php\">расширение cURL</a>.');
     	Errors::write('missing_files', 'Не хватает файлов для работы системы.');
     	Errors::write('not_available', 'Не могу получить доступ к трекеру.');
-    	Errors::write('credential_miss', 'Не указаны учётные данные для данного трекера.');
+    	Errors::write('credential_miss', 'Не указаны учётные данные для трекера.');
     	Errors::write('credential_wrong', 'Неправильные учётные данные.');
     	Errors::write('rss_parse_false', 'Ошибка при чтении XML файла RSS ленты.');
     	Errors::write('max_torrent', 'Вы использовали доступное Вам количество торрент-файлов в сутки.');
     	Errors::write('update', 'Невозможно проверить обновление системы.');
+    	Errors::write('update_news', 'Невозможно проверить новости.');
     	Errors::write('add_fail', 'Не удалось добавить torrent-файл в torrent-клиент.');
     	Errors::write('torrent_file_fail', 'Не удалось получить данные torrent-файла.');
     	Errors::write('save_file_fail', 'Не удалось сохранить torrent-файл в директорию.');
     	Errors::write('duplicate_torrent', 'Не удалось добавить в torrent-клиент, такая закачка уже запущена.');
-    	Errors::write('404', 'Не удалось добавить в torrent-клиент, не верная ссылка на torrent-файл.');
+    	Errors::write('404', 'Не удалось добавить в torrent-клиент, неверная ссылка на torrent-файл.');
     	Errors::write('log_passwd', 'Не удалось подключиться к torrent-клиенту, неправильный логин или пароль.');
     	Errors::write('connect_fail', 'Не удалось подключиться к torrent-клиенту. Клиент  недоступен по указанному адресу.');
-    	Errors::write('no_response', 'Не удалось добавить torrent-файл в torrent-клиент. Клиент не может получить доступ к файлу по указанному адресу. Проверьте адрес TorrentMonitor\'а в настройках.');    	
+    	Errors::write('no_response', 'Не удалось добавить torrent-файл в torrent-клиент. Клиент не может получить доступ к файлу по указанному адресу. Проверьте адрес TorrentMonitor\'а в настройках.');
     	Errors::write('unauthorized', 'Не удалось добавить в torrent-клиент, не прошла авторизация в torrent-клиенте.');
-    	Errors::write('unknown', 'Неизвестная ошибка при добавлении torrent-файла в torrent-клиент. Требуется дополнительная диагностика.');    	
-    	Errors::write('limit', 'Превышен лимит попыток входа в профиль. Необходимо остановить ТМ на 2-3 часа.');    	
+    	Errors::write('unknown', 'Неизвестная ошибка при добавлении torrent-файла в torrent-клиент. Требуется дополнительная диагностика.');
+    	Errors::write('limit', 'Превышен лимит попыток входа в профиль. Необходимо остановить ТМ на 2-3 часа.');
+    	Errors::write('update_news', 'Не удалось получить новости с korphome.ru.');
 	}
 	
 	public static function getInstance()

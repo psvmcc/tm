@@ -17,7 +17,7 @@ class Notification
     	}
 	}
 	
-	public static function sendMail($email, $date, $tracker, $message, $header_message, $name=0)
+	public static function sendMail($email, $date, $tracker, $message, $header_message, $name)
 	{
         $headers = 'From: TorrentMonitor'."\r\n";
 		$headers .= 'MIME-Version: 1.0'."\r\n";
@@ -29,6 +29,7 @@ class Notification
 
 		if ($name != '' || $name != 0)
 		{
+    		$msg .= '<br />Ссылка на тему: ';
     		if ($tracker == 'rutracker.org' || $tracker == 'nnm-club.me' || $tracker == 'tfile.me' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
     			$msg .= "http://{$tracker}/forum/viewtopic.php?t={$name}";
     		elseif ($tracker == 'kinozal.tv'  || $tracker == 'animelayer.ru' || $tracker == 'tracker.0day.kiev.ua')
@@ -44,7 +45,7 @@ class Notification
 		mail($email, '=?UTF-8?B?'.base64_encode("TorrentMonitor: ".$header_message).'?=', $msg, $headers);
 	}
 	
-	public static function sendPushover($pushover, $date, $tracker, $message, $header_message)
+	public static function sendPushover($pushover, $date, $tracker, $message, $header_message, $name)
 	{
 	    if (is_string($tracker))
 		    $msg = 'Дата: '.$date."\r\n".'Трекер: '.$tracker."\r\n".'Сообщение: '.$message."\r\n";
@@ -63,7 +64,7 @@ class Notification
         );
 	}
 	
-	public static function sendProwl($prowl, $date, $tracker, $message, $header_message)
+	public static function sendProwl($prowl, $date, $tracker, $message, $header_message, $name)
 	{
     	if (is_string($tracker))
 		    $msg = 'Дата: '.$date."\r\n".'Трекер: '.$tracker."\r\n".'Сообщение: '.$message."\r\n";
@@ -82,7 +83,7 @@ class Notification
         );    	
 	}
 	
-	public static function sendPushbullet($pushbullet, $date, $tracker, $message, $header_message)
+	public static function sendPushbullet($pushbullet, $date, $tracker, $message, $header_message, $name)
 	{
     	if (is_string($tracker))
 		    $msg = 'Дата: '.$date."\r\n".'Трекер: '.$tracker."\r\n".'Сообщение: '.$message."\r\n";
@@ -101,7 +102,7 @@ class Notification
         );        
 	}
 	
-	public static function sendPushall($pushall, $date, $tracker, $message, $header_message)
+	public static function sendPushall($pushall, $date, $tracker, $message, $header_message, $name)
 	{
     	if (is_string($tracker))
 		    $msg = 'Дата: '.$date."\r\n".'Трекер: '.$tracker."\r\n".'Сообщение: '.$message."\r\n";
@@ -141,7 +142,7 @@ class Notification
                     if ($service['service'] == 'E-mail')
                         $service['service'] = 'Mail';
                     if ( ! empty($service['address']))
-                        call_user_func('Notification::send'.$service['service'], $service['address'], $date, $tracker, $message, $header_message);
+                        call_user_func('Notification::send'.$service['service'], $service['address'], $date, $tracker, $message, $header_message, $name);
                 }
             }
 
@@ -159,7 +160,7 @@ class Notification
                         $message = strip_tags($message);
                     }
                     if ( ! empty($service['address']))
-                        call_user_func('Notification::send'.$service['service'], $service['address'], $date, $tracker, $message, $header_message);
+                        call_user_func('Notification::send'.$service['service'], $service['address'], $date, $tracker, $message, $header_message, $name);
                 }
             }
 		}

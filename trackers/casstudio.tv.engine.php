@@ -187,7 +187,7 @@ class casstudio
 			{
 				//ищем на странице дату регистрации торрента
 				if (preg_match('/<b>Добавлен<\/b>: <span class=\"my_tt\" title=\"(.*)\">(.*)<\/span>/', $page, $array))
-				{
+				{var_dump($array);
 					//проверяем удалось ли получить дату со страницы
 					if (isset($array[2]))
 					{
@@ -224,7 +224,7 @@ class casstudio
     								}
 
     								$message = $name.' обновлён.';
-    								$status = Sys::saveTorrent($tracker, $torrent_id, $torrent, $id, $hash, $message, $date_str);
+    								$status = Sys::saveTorrent($tracker, $torrent_id, $torrent, $id, $hash, $message, $date_str, $name);
 								
     								//обновляем время регистрации торрента в базе
     								Database::setNewDate($id, $date);

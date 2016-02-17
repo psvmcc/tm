@@ -46,7 +46,7 @@ class rutor
             		'header'         => 0,
             		'follow'         => 1,
             		'returntransfer' => 1,
-            		'url'            => 'http://rutor.org/torrent/'.$torrent_id.'/'
+            		'url'            => 'http://rutor.info/torrent/'.$torrent_id.'/'
             	)
             );
 
@@ -75,19 +75,19 @@ class rutor
                                 		'type'           => 'GET',
                                 		'follow'         => 1,
                                 		'returntransfer' => 0,
-                                		'url'            => 'http://rutor.org/download/'.$torrent_id.'/',
+                                		'url'            => 'http://rutor.info/download/'.$torrent_id.'/',
                                 	)
                                 );
 
 								if ($auto_update)
 								{
-								    $name = Sys::getHeader('http://rutor.org/torrent/'.$torrent_id.'/');
+								    $name = Sys::getHeader('http://rutor.info/torrent/'.$torrent_id.'/');
 								    //обновляем заголовок торрента в базе
                                     Database::setNewName($id, $name);
 								}
 
 								$message = $name.' обновлён.';
-								$status = Sys::saveTorrent($tracker, $torrent_id, $torrent, $id, $hash, $message, $date_str);
+								$status = Sys::saveTorrent($tracker, $torrent_id, $torrent, $id, $hash, $message, $date_str, $name);
 								
 								//обновляем время регистрации торрента в базе
 								Database::setNewDate($id, $date);

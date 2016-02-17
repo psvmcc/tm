@@ -129,7 +129,7 @@ class Update {
                     echo 'Не удалось скачать master.zip<br>';
             }
         }
-        echo 'Перейти на <a href="http://'.$_SERVER["HTTP_HOST"].'">главную страницу</a>.<br>';
+        echo 'Перейти на <a href="http://'.$_SERVER['SERVER_NAME'].str_replace('update.php','', $_SERVER['REQUEST_URI']).'">главную страницу</a>.<br>';
     }
 }
 

@@ -188,7 +188,7 @@ class pornolab
                                 		'returntransfer' => 1,
                                 		'url'            => 'http://pornolab.net/forum/dl.php?t='.$torrent_id,
                                 		'cookie'         => pornolab::$sess_cookie.'; bb_dl='.$torrent_id,
-                                		'sendHeader'     => array('Host' => 'pornolab', 'Content-length' => strlen(pornolab::$sess_cookie.'; bb_dl='.$torrent_id)),
+                                		'sendHeader'     => array('Host' => 'pornolab.net', 'Content-length' => strlen(pornolab::$sess_cookie.' bb_dl='.$torrent_id)),
                                 		'referer'        => 'http://pornolab.net/forum/viewtopic.php?t='.$torrent_id,
                                 	)
                                 );
@@ -201,7 +201,7 @@ class pornolab
 								}
 
 								$message = $name.' обновлён.';
-								$status = Sys::saveTorrent($tracker, $torrent_id, $torrent, $id, $hash, $message, $date_str);
+								$status = Sys::saveTorrent($tracker, $torrent_id, $torrent, $id, $hash, $message, $date_str, $name);
 								
 								//обновляем время регистрации торрента в базе
 								Database::setNewDate($id, $date);

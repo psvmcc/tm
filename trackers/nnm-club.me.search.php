@@ -83,7 +83,7 @@ class nnmclubSearch extends nnmclub
                             	)
                             );
                             $message = $toDownload[$i]['threme'].' добавлена для скачивания.';
-                            $status = Sys::saveTorrent($toDownload[$i]['tracker'], $toDownload[$i]['threme_id'], $torrent, $toDownload[$i]['threme_id'], 0, $message, date('d M Y H:i'));
+                            $status = Sys::saveTorrent($tracker, $toDownload[$i]['threme_id'], $torrent, $toDownload[$i]['threme_id'], 0, $message, date('d M Y H:i'), $name);
 								
 							if ($status == 'add_fail' || $status == 'connect_fail' || $status == 'credential_wrong')
 							{

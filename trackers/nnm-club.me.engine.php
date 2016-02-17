@@ -12,10 +12,11 @@ class nnmclub
         	array(
         		'type'           => 'POST',
         		'returntransfer' => 1,
+        		'encoding'       => 1,
         		'url'            => 'http://nnm-club.me/forum/index.php',
         		'cookie'         => $sess_cookie,
         		'sendHeader'     => array('Host' => 'nnm-club.me', 'Content-length' => strlen($sess_cookie)),
-        		#'convert'        => array('windows-1251', 'utf-8//IGNORE'),
+        		'convert'        => array('windows-1251', 'utf-8//IGNORE'),
         	)
         );
 
@@ -68,6 +69,7 @@ class nnmclub
             		'type'           => 'POST',
             		'header'         => 1,
             		'returntransfer' => 1,
+            		'encoding'       => 1,
             		'url'            => 'http://nnm-club.me/forum/login.php',
             		'postfields'     => 'username='.$login.'&password='.$password.'&login=%C2%F5%EE%E4',
             		'convert'        => array('windows-1251', 'utf-8//IGNORE'),
@@ -146,6 +148,7 @@ class nnmclub
             		'type'           => 'POST',
             		'header'         => 0,
             		'returntransfer' => 1,
+            		'encoding'       => 1,
             		'url'            => 'http://nnm-club.me/forum/viewtopic.php?t='.$torrent_id,
             		'cookie'         => nnmclub::$sess_cookie,
             		'sendHeader'     => array('Host' => 'nnm-club.me', 'Content-length' => strlen(nnmclub::$sess_cookie)),
@@ -193,7 +196,7 @@ class nnmclub
 	                                	)
 	                                );
 									$message = $name.' обновлён.';
-									$status = Sys::saveTorrent($tracker, $torrent_id, $torrent, $id, $hash, $message, $date_str);
+									$status = Sys::saveTorrent($tracker, $torrent_id, $torrent, $id, $hash, $message, $date_str, $name);
 								
     								//обновляем время регистрации торрента в базе
 									Database::setNewDate($id, $date);

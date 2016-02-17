@@ -17,7 +17,8 @@ class Transmission
     	try
     	{
             $rpc = new TransmissionRPC('http://'.$torrentAddress.'/transmission/rpc', $torrentLogin, $torrentPassword);
-        	#$rpc->debug=true;
+            if ($debug)
+        	    $rpc->debug=true;
         	$result = $rpc->sstats();
     
         	$individualPath = Database::getTorrentDownloadPath($id);

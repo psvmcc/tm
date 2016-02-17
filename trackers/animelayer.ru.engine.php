@@ -192,7 +192,7 @@ class animelayer
                                 if (Sys::checkTorrentFile($torrent))
                                 {
                                     $message = $name.' обновлён.';
-                					$status = Sys::saveTorrent($tracker, $torrent_id, $torrent, $id, $hash, $message, $date_str);
+                					$status = Sys::saveTorrent($tracker, $torrent_id, $torrent, $id, $hash, $message, $date_str, $name);
     								
     								if ($status == 'add_fail' || $status == 'connect_fail' || $status == 'credential_wrong')
     								{

@@ -27,7 +27,7 @@ if (Sys::checkInternet())
 	{
 	?>
 		<tr>
-			<td>Конфигурационный файл существует и заполнен.</td>
+			<td>Конфигурационный файл существует.</td>
 		</tr>
 		<?php
 		if (Sys::checkCurl())
@@ -139,6 +139,8 @@ if (Sys::checkInternet())
 					$page = 'https://www.lostfilm.tv/';
 				elseif ($tracker == 'rutracker.org')
 				    $page = 'http://rutracker.org/forum/index.php';
+				elseif ($tracker == 'rutor.org')
+				    $page = 'http://rutor.info/';
 				elseif ($tracker == 'lostfilm-mirror')
 				    $page = 'http://korphome.ru/lostfilm.tv/rss.xml';
 				else

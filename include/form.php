@@ -52,13 +52,15 @@ if (isset($hd) && $tracker == 'lostfilm.tv' || isset($hd) && $tracker == 'lostfi
         <label class="label-name"></label>
 <?php
 if ($hd == 1 && $tracker == 'lostfilm.tv' || $hd == 1 && $tracker == 'lostfilm-mirror')
-	$input = '<input type="radio" name="hd" value="0"> SD<br /><input type="radio" name="hd" value="1" checked> Автовыбор HD 720/1080<br /><input type="radio" name="hd" value="2"> HD 720 MP4';
+	$input = '<input type="radio" name="hd" value="0"> SD<br /><input type="radio" name="hd" value="2"> HD 720<br /><input type="radio" name="hd" value="1" checked> HD 1080';
 elseif ($hd == 1 && $tracker == 'baibako.tv' || $hd == 1 && $tracker == 'newstudio.tv' || $hd == 1 && $tracker == 'novafilm.tv')
     $input = '<input type="radio" name="hd" value="0"> SD<br /><input type="radio" name="hd" value="1" checked> HD 720<br /><input type="radio" name="hd" value="2"> HD 1080</span>';
 elseif ($hd == 2 && $tracker == 'lostfilm.tv' || $hd == 2 && $tracker == 'lostfilm-mirror')
-    $input = '<input type="radio" name="hd" value="0"> SD<br /><input type="radio" name="hd" value="2" checked> HD 720 MP4<br /><input type="radio" name="hd" value="2"> HD 1080</span>';
+    $input = '<input type="radio" name="hd" value="0"> SD<br /><input type="radio" name="hd" value="2" checked> HD 720<br /><input type="radio" name="hd" value="1"> HD 1080</span>';
 elseif ($hd == 2 && $tracker == 'baibako.tv' || $hd == 2 && $tracker == 'newstudio.tv' || $hd == 2 && $tracker == 'novafilm.tv')
     $input = '<input type="radio" name="hd" value="0"> SD<br /><input type="radio" name="hd" value="1"> HD 720<br /><input type="radio" name="hd" value="2" checked> HD 1080</span>';
+elseif ($hd == 0 && $tracker == 'lostfilm.tv' || $hd == 0 && $tracker == 'lostfilm-mirror')
+	$input = '<input type="radio" name="hd" value="0" checked> SD<br /><input type="radio" name="hd" value="2"> HD 720<br /><input type="radio" name="hd" value="1"> HD 1080';    
 else
     $input = '<input type="radio" name="hd" value="0" checked> SD<br /><input type="radio" name="hd" value="1"> HD 720<br /><input type="radio" name="hd" value="2"> HD 1080</span>';
 ?>
