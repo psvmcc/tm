@@ -20,7 +20,7 @@ class animelayer
 			)
 		);
 
-		if (preg_match('/<a class=\"myname\" href=\"\/userdetails\.php\?id=\d*\">.*<\/a>/U', $result))
+		if (preg_match('/<span class=\"iblock vtop pd10 username\">.*<\/span>/U', $result))
 			return TRUE;
 		else
 			return FALSE;
@@ -29,25 +29,35 @@ class animelayer
 	// Функция проверки введёного URL`а
 	public static function checkRule($data)
 	{
-		if (preg_match('/\D+/', $data))
-			return FALSE;
+		if (preg_match('/\w+/', $data))
+			return TRUE;
 		else
-		    return TRUE;
+		    return FALSE;
+	}
+	
+	//функция преобразования даты из строки в формат БД
+	private static function dateStringToNum($data)
+	{
+        $pieces = explode(' ', $data);
+		if (strlen($pieces[0]) == 1)
+			$pieces[0] = '0'.$pieces[0];
+		
+		$monthes = array('/января/i', '/февраля/i', '/марта/i', '/апреля/i', '/мая/i', '/июня/i', '/июля/i', '/августа/i', '/сентября/i', '/октября/i', '/ноября/i', '/декабря/i');
+		$monthes_num = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
+		$month = preg_replace($monthes, $monthes_num, $pieces[1]);
+
+		return date('Y').'-'.$month.'-'.$pieces[0].' '.$pieces[3].':00';    	
 	}
 	
 	//функция преобразования даты в строку
 	private static function dateNumToString($data)
 	{
-		$data = substr($data, 0, -3);
-		$data = preg_split('/\s/', $data);
-		$time = $data[1];
-		$data = $data[0];
-		$data = preg_split('/\-/', $data);
+        $pieces = explode(' ', $data);
+		if (strlen($pieces[0]) == 1)
+			$pieces[0] = '0'.$pieces[0];
 
-		$month = Sys::dateNumToString($data[1]);
-		$date = $data[2].' '.$month.' '.$data[0].' '.$time;
-		return $date;
-	}	
+		return $pieces[0].' '.$pieces[1].' '.date('Y').' в '.$pieces[3];
+    }
 	
 	// Функция получения кук
 	protected static function getCookie($tracker)
@@ -66,8 +76,8 @@ class animelayer
 					'type'           => 'POST',
 					'header'         => 1,
 					'returntransfer' => 1,
-					'url'            => 'http://animelayer.ru/takelogin.php',
-					'postfields'     => 'username='.$login.'&password='.$password.'&returnto=',
+					'url'            => 'http://animelayer.ru/auth/login/',
+					'postfields'     => 'login='.$login.'&password='.$password,
 					'convert'        => array('windows-1251', 'utf-8//IGNORE'),
 				)
 			);
@@ -151,17 +161,16 @@ class animelayer
 					'type'           => 'POST',
 					'header'         => 0,
 					'returntransfer' => 1,
-					'url'            => 'http://animelayer.ru/details.php?id='.$torrent_id,
+					'url'            => 'http://animelayer.ru/torrent/'.$torrent_id.'/',
 					'cookie'         => animelayer::$sess_cookie,
 					'sendHeader'     => array('Host' => 'animelayer.ru', 'Content-length' => strlen(animelayer::$sess_cookie)),
-					'convert'        => array('windows-1251', 'utf-8//IGNORE'),
 				)
 			);
 			
 			if ( ! empty($page))
 			{
 				// Ищем на странице дату регистрации торрента
-				if (preg_match('/<td width=\"\" class=\"heading\" valign=\"top\" align=\"right\">Добавлен<\/td><td valign=\"top\" align=\"left\">(.*)<\/td>/', $page, $array))
+				if (preg_match('/<span class=\"date-updated\">(.*)<\/span>/U', $page, $array))
                 {
             		// Проверяем удалось ли получить дату со страницы
             		if (isset($array[1]))
@@ -171,9 +180,9 @@ class animelayer
             				// Сбрасываем варнинг
             				Database::clearWarnings($tracker);
             				
-            				$date = $array[1];
+            				$date = animelayer::dateStringToNum($array[1]);
             				$date_str = animelayer::dateNumToString($array[1]);
-            				
+            				echo $date .'!='. $timestamp;
             				// Если даты не совпадают, перекачиваем торрент
             				if ($date != $timestamp)
             				{
@@ -182,10 +191,10 @@ class animelayer
                                 	array(
                                 		'type'           => 'POST',
                                 		'returntransfer' => 1,
-                                		'url'            => 'http://animelayer.ru/download.php?id='.$torrent_id.'&name=[animelayer.ru]_'.$torrent_id.'.torrent',
+                                		'url'            => 'http://animelayer.ru/torrent/'.$torrent_id.'/download/',
                                 		'cookie'         => animelayer::$sess_cookie,
                                 		'sendHeader'     => array('Host' => 'animelayer.ru', 'Content-length' => strlen(animelayer::$sess_cookie)),
-                                		'referer'        => 'http://animelayer.ru/details.php?id='.$torrent_id,
+                                		'referer'        => 'http://animelayer.ru/torrent/'.$torrent_id,
                                 	)
                                 );
                                 

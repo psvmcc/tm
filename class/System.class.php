@@ -58,7 +58,7 @@ class Sys
     //версия системы
     public static function version()
     {
-        return '1.2.9.3';
+        return '1.2.9.5';
     }
 
     //проверка обновлений системы
@@ -254,7 +254,7 @@ class Sys
             );            
         }
 
-        if ($tracker != 'casstudio.tv' && $tracker != 'torrents.net.ua' && $tracker != 'rustorka.com' && $tracker != 'rutor.info' && $tracker != 'tr.anidub.com')
+        if ($tracker != 'animelayer.ru' && $tracker != 'casstudio.tv' && $tracker != 'torrents.net.ua' && $tracker != 'rustorka.com' && $tracker != 'rutor.info' && $tracker != 'tr.anidub.com')
             $forumPage = iconv('windows-1251', 'utf-8//IGNORE', $forumPage);
 
         if ($tracker == 'tr.anidub.com')
@@ -265,6 +265,8 @@ class Sys
         {
             if ($tracker == 'anidub.com')
                 $name = substr($array[1], 0, -23);
+            elseif ($tracker == 'animelayer.ru')
+                $name = substr($array[1], 14);
             elseif ($tracker == 'casstudio.tv')
                 $name = substr($array[1], 48);
             elseif ($tracker == 'kinozal.tv')
@@ -344,18 +346,19 @@ class Sys
 
         $useTorrent = Database::getSetting('useTorrent');
         if ($useTorrent)
+        {
             $status = Sys::addToClient($id, $name, $path, $hash, $tracker, $date_str);
+            if ($status['status'])
+                $message = $message.' И добавлен в torrent-клиент.';
+            else
+                $message = $message.' Но не добавлен в torrent-клиент и сохранён.';
+            //отправляем уведомлении о новом торренте
+            Notification::sendNotification('notification', $date_str, $tracker, $message, $name);
+            if ($status['status'])
+                Sys::runScript($id, $tracker, $name, $status['hash'], $message, $date_str);        
+        }
         else
             $message = $message.' И сохранён.';
-            
-        if ($status['status'])
-            $message = $message.' И добавлен в torrent-клиент.';
-        else
-            $message = $message.' Но не добавлен в torrent-клиент и сохраненён.';
-        //отправляем уведомлении о новом торренте
-        Notification::sendNotification('notification', $date_str, $tracker, $message, $name);
-        if ($status['status'])
-            Sys::runScript($id, $tracker, $name, $hash, $message, $date_str);
     }
     
     //добавляем раздачи из Temp в torrent-клиент
@@ -366,7 +369,7 @@ class Sys
     	    $status = Sys::addToClient($list[$i]['id'], $list[$i]['name'], $list[$i]['path'], $list[$i]['hash'], $list[$i]['tracker'], $list[$i]['date_str']);        
     	    if ($status['status'])
     	    {
-        	    $message = 'Torrent-клиент доступен и тема '.$list[$i]['name'].' добавлена.';
+        	    $message = 'Torrent-клиент доступен и раздача '.$list[$i]['name'].' добавлена.';
     	        Database::updateHash($list[$i]['id'], $status['hash']);
     	        Notification::sendNotification('notification', $list[$i]['date_str'], $list[$i]['tracker'], $message, $list[$i]['name']);
                 Sys::runScript($list[$i]['id'], $list[$i]['tracker'], $list[$i]['name'], $status['hash'], $message, $list[$i]['date_str']);

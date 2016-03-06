@@ -58,16 +58,16 @@ else
 				<a href='http://<?php echo $tracker ?>/forum/viewtopic.php?t=<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>
     		<?php
     		}
-    		elseif ($tracker == 'animelayer.ru' || $tracker == 'kinozal.tv'  || $tracker == 'tracker.0day.kiev.ua' || $tracker == 'tv.mekc.info')
+    		elseif ($tracker == 'kinozal.tv'  || $tracker == 'tracker.0day.kiev.ua' || $tracker == 'tv.mekc.info')
     		{
             ?>
         	    <a href='http://<?php echo $tracker ?>/details.php?id=<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>
         	<?php	
     		}
-    		elseif ($tracker == 'rutor.org')
+    		elseif ($tracker == 'animelayer.ru' || $tracker == 'rutor.org')
     		{
     		?>
-    			<a href='http://rutor.info/torrent/<?php echo $torrent_id ?>/' target='_blank'><?php echo $name ?></a>
+    			<a href='http://<?php echo $tracker ?>/torrent/<?php echo $torrent_id ?>/' target='_blank'><?php echo $name ?></a>
     		<?php
     		}
     		elseif ($tracker == 'anidub.com')
