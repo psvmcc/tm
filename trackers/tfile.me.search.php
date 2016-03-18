@@ -13,7 +13,7 @@ class tfileSearch extends tfile
         		'type'           => 'GET',
         		'header'         => 0,
         		'returntransfer' => 1,
-        		'url'            => 'http://search.tfile.me/?a='.$user.'&to=1&io=1&o=newest',
+        		'url'            => 'http://search.tfile.me/?q=&c=0&g=&act=&y=&ql=&a='.$user.'&d=&o=&size_min=0&size_max=0',
         		'convert'        => array('windows-1251', 'utf-8')
         	)
         );
@@ -61,18 +61,19 @@ class tfileSearch extends tfile
 	            );
                 
 				//находим имя торрента для скачивания		
-				if (preg_match('/download\.php\?id=(\d+)&uk=1111111111/', $page, $link))
+				if (preg_match('/download\.php\?id=(\d+)&uk=(\d+)/', $page, $link))
 				{
 					//сбрасываем варнинг
 					Database::clearWarnings($tracker);
 					//ищем на странице id торрента
 					$download_id = $link[1];
+					$ak_id = $link[2];
 					//сохраняем торрент в файл
 					$torrent = Sys::getUrlContent(
                     	array(
                     		'type'           => 'GET',
                     		'returntransfer' => 1,
-                    		'url'            => 'http://tfile.me/forum/download.php?id='.$download_id.'&uk=1111111111',
+                    		'url'            => 'http://tfile.me/forum/download.php?id='.$download_id.'&ak='.$ak_id,
                     		'sendHeader'     => array('Host' => 'tfile.me'),
                     		'referer'        => 'http://tfile.me/forum/viewtopic.php?t='.$torrent_id,
                     	)

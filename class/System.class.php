@@ -58,7 +58,7 @@ class Sys
     //версия системы
     public static function version()
     {
-        return '1.2.9.5';
+        return '1.2.9.8';
     }
 
     //проверка обновлений системы
@@ -275,6 +275,8 @@ class Sys
                 $name = substr($array[1], 0, -20);
             elseif ($tracker == 'rutracker.org')
                 $name = substr($array[1], 0, -17);
+            elseif ($tracker == 'tfile.me')
+                $name = substr($array[1], 15, -25);
             elseif ($tracker == 'tracker.0day.kiev.ua')
                 $name = substr($array[1], 6, -67);
             elseif ($tracker == 'torrents.net.ua')

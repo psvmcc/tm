@@ -46,7 +46,7 @@ class animelayer
 		$monthes_num = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
 		$month = preg_replace($monthes, $monthes_num, $pieces[1]);
 
-		return date('Y').'-'.$month.'-'.$pieces[0].' '.$pieces[3].':00';    	
+		return date('Y').'-'.$month.'-'.$pieces[0].' '.$pieces[4].':00';    	
 	}
 	
 	//функция преобразования даты в строку
@@ -166,7 +166,6 @@ class animelayer
 					'sendHeader'     => array('Host' => 'animelayer.ru', 'Content-length' => strlen(animelayer::$sess_cookie)),
 				)
 			);
-			
 			if ( ! empty($page))
 			{
 				// Ищем на странице дату регистрации торрента
@@ -182,7 +181,6 @@ class animelayer
             				
             				$date = animelayer::dateStringToNum($array[1]);
             				$date_str = animelayer::dateNumToString($array[1]);
-            				echo $date .'!='. $timestamp;
             				// Если даты не совпадают, перекачиваем торрент
             				if ($date != $timestamp)
             				{

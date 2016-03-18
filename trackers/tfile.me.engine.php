@@ -61,7 +61,7 @@ class tfile
 						if ( ! empty($array[1]))
 						{
 							//находим имя торрента для скачивания		
-							if (preg_match('/download\.php\?id=(\d+)&uk=1111111111/', $page, $link))
+							if (preg_match('/download\.php\?id=(\d+)&ak=(\d+)/', $page, $link))
 							{
 								//сбрасываем варнинг
 								Database::clearWarnings($tracker);
@@ -73,6 +73,7 @@ class tfile
 								{
 									//ищем на странице id торрента
 									$download_id = $link[1];
+									$ak_id = $link[2];
 									if (is_string($torrent_id))
 									{
 										//сохраняем торрент в файл
@@ -80,7 +81,7 @@ class tfile
 		                                	array(
 		                                		'type'           => 'GET',
 		                                		'returntransfer' => 1,
-		                                		'url'            => 'http://tfile.me/forum/download.php?id='.$download_id.'&uk=1111111111',
+		                                		'url'            => 'http://tfile.me/forum/download.php?id='.$download_id.'&ak='.$ak_id,
 		                                		'sendHeader'     => array('Host' => 'tfile.me'),
 		                                		'referer'        => 'http://tfile.me/forum/viewtopic.php?t='.$torrent_id,
 		                                	)

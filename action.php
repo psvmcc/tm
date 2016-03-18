@@ -55,6 +55,12 @@ if (isset($_POST['action']))
     			}
     			if ($tracker == 'anidub.com')
     			    $threme = $url['path'];
+                elseif ($tracker == 'animelayer.ru')
+                {
+                    $path = str_replace('/torrent', '', $url['path']);
+                    preg_match('/\/(\w*)\/?/', $path, $array);
+                    $threme = $array[1];
+                }
                 elseif ($tracker == 'casstudio.tv')
     			{
     				$query = explode('t=', $url['query']);
@@ -111,13 +117,13 @@ if (isset($_POST['action']))
         					else
         					{
         					    $return['error'] = TRUE;
-                                $return['msg'] = 'Не верная ссылка.';
+                                $return['msg'] = 'Неверная ссылка.';
         					}
         				}
         				else
     					{
     					    $return['error'] = TRUE;
-                            $return['msg'] = 'Не верная ссылка.';
+                            $return['msg'] = 'Неверная ссылка.';
     					}
     				}
     				else
@@ -208,6 +214,13 @@ if (isset($_POST['action']))
     				
     			if ($tracker == 'anidub.com')
     			    $threme = $url['path'];
+                elseif ($tracker == 'animelayer.ru')
+                {
+                    $path = str_replace('/torrent', '', $url['path']);
+                    preg_match('/\/(.*)\/?/', $path, $array);
+                    $threme = $array[1];
+                    var_dump($threme);
+                }
                 elseif ($tracker == 'casstudio.tv')
     			{
     				$query = explode('=', $url['query']);

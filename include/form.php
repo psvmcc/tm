@@ -28,12 +28,14 @@ if (isset($torrent[0]['torrent_id']) && $torrent[0]['torrent_id'] != 0)
 <?php
 if ($tracker == 'rutracker.org' || $tracker == 'nnm-club.me' || $tracker == 'tfile.me' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
     $tracker = 'http://'.$tracker.'/forum/viewtopic.php?t=';
-elseif ($tracker == 'casstudio.tv' || $tracker == 'kinozal.tv'  || $tracker == 'animelayer.ru' || $tracker == 'tracker.0day.kiev.ua' || $tracker == 'tv.mekc.info')
+elseif ($tracker == 'casstudio.tv' || $tracker == 'kinozal.tv'  || $tracker == 'tracker.0day.kiev.ua' || $tracker == 'tv.mekc.info')
     $tracker = 'http://'.$tracker.'/details.php?id=';
 elseif ($tracker == 'rutor.org')
     $tracker = 'http://rutor.org/torrent/';
 elseif ($tracker == 'anidub.com')
     $tracker = 'http://tr.anidub.com/';
+elseif ($tracker == 'animelayer.ru')
+    $tracker = 'http://animelayer.ru/torrent/';
 ?>
         <input type="text" name="url" value="<?php echo $tracker.$torrent[0]['torrent_id']?>">
         <span class="subinput-text">Пример: http://rutracker.org/forum/viewtopic.php?t=4201572</span>
