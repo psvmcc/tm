@@ -30,6 +30,9 @@ if (isset($_POST['action']))
 		echo json_encode($return);
 	}
 
+    if ( ! Sys::checkAuth())
+        break;
+
 	//Добавляем тему для мониторинга
 	if ($_POST['action'] == 'torrent_add')
 	{
@@ -219,7 +222,6 @@ if (isset($_POST['action']))
                     $path = str_replace('/torrent', '', $url['path']);
                     preg_match('/\/(.*)\/?/', $path, $array);
                     $threme = $array[1];
-                    var_dump($threme);
                 }
                 elseif ($tracker == 'casstudio.tv')
     			{

@@ -47,8 +47,14 @@ class Update {
             {
                 echo '<b>Changelog for '.$updVersion.':</b></br>';
                 echo $description.'<br>';
-                
-                $file = file_get_contents('http://korphome.ru/torrent_monitor/tm-latest.zip');
+
+                $file = Sys::getUrlContent(
+                    array(
+                        'type'           => 'GET',
+                        'returntransfer' => 1,
+                        'url'            => 'http://korphome.ru/torrent_monitor/tm-latest.zip',
+                    )
+                );
                 if ( ! empty($file))
                 {
                     if (file_put_contents($ROOTPATH.'master.zip', $file))
@@ -129,7 +135,8 @@ class Update {
                     echo 'Не удалось скачать master.zip<br>';
             }
         }
-        echo 'Перейти на <a href="http://'.$_SERVER['SERVER_NAME'].str_replace('update.php','', $_SERVER['REQUEST_URI']).'">главную страницу</a>.<br>';
+        $serverAddress = Database::getSetting('serverAddress');
+        echo 'Перейти на <a href="http://'.$serverAddress.'">главную страницу</a>.<br>';
     }
 }
 

@@ -46,7 +46,10 @@ class animelayer
 		$monthes_num = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
 		$month = preg_replace($monthes, $monthes_num, $pieces[1]);
 
-		return date('Y').'-'.$month.'-'.$pieces[0].' '.$pieces[4].':00';    	
+        if (count($pieces) == 4)
+		    return date('Y').'-'.$month.'-'.$pieces[0].' '.$pieces[3].':00'; 
+        else if (count($pieces) == 5)
+		    return $pieces[2].'-'.$month.'-'.$pieces[0].' '.$pieces[4].':00';
 	}
 	
 	//функция преобразования даты в строку
