@@ -143,6 +143,8 @@ if (Sys::checkInternet())
 				    $page = 'http://rutor.info/';
 				elseif ($tracker == 'lostfilm-mirror')
 				    $page = 'http://korphome.ru/lostfilm.tv/rss.xml';
+				elseif ($tracker == 'nnm-club.me')
+				    $page = 'http://nnmclub.to/forum/index.php';
 				else
 					$page = 'http://'.$tracker;
 				if (Sys::checkavAilability($page))

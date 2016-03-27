@@ -31,7 +31,7 @@ if (isset($_POST['action']))
 	}
 
     if ( ! Sys::checkAuth())
-        break;
+        exit();
 
 	//Добавляем тему для мониторинга
 	if ($_POST['action'] == 'torrent_add')
@@ -50,6 +50,8 @@ if (isset($_POST['action']))
             {			
     			if ($tracker == 'tr.anidub.com')
     				$tracker = 'anidub.com';
+                elseif ($tracker == 'nnm-club.me')
+    				$tracker = 'nnmclub.to';
     				
                 if (preg_match('/.*tor\.org|rutor\.info/', $tracker))
                 {

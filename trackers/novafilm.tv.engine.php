@@ -25,7 +25,7 @@ class novafilm
 		if (preg_match('/<p>Здравствуйте, <a href=\"\/user\/.*">.*<\/a>/U', $result))
 			return TRUE;
 		else
-			return FALSE;		  
+			return FALSE;
 	}
 
 	//функция преобразования даты из строки
@@ -122,13 +122,14 @@ class novafilm
             		'postfields'     => 'returnto=/&username='.$login.'&password='.$password.'&login=Хочу войти!',
             	)
             );
-            
+
 			if ( ! empty($page))
 			{
 				//проверяем подходят ли учётные данные
 				if (preg_match_all('/Set-Cookie: (\w*)=(\S*)/', $page, $array))
 				{
-					novafilm::$sess_cookie = $array[1][2].'='.$array[2][2];
+                    novafilm::$sess_cookie = $array[1][3].'='.$array[2][3];
+					//var_dump(novafilm::$sess_cookie);
 					Database::setCookie($tracker, novafilm::$sess_cookie);
 					//запускам процесс выполнения, т.к. не может работать без кук
 					novafilm::$exucution = TRUE;
@@ -216,7 +217,7 @@ class novafilm
 			        		'url'            => 'http://novafilm.tv/rss/rssd.xml',
 			        	)
 			        );
-			        
+
 					if ( ! empty(novafilm::$page))
 					{
 						//читаем xml
@@ -299,7 +300,7 @@ class novafilm
 									'cookie'         => novafilm::$sess_cookie,
 									'sendHeader'     => array('Host' => 'novafilm.tv', 'Content-length' => strlen(novafilm::$sess_cookie)),
 								)
-							);							
+							);			
 							$file = str_replace(' ', '.', $name).'.S'.$season.'E'.$episode.'.'.$amp;
 							$episode = (substr($episode, 0, 1) == 0) ? substr($episode, 1, 1) : $episode;
 							$season = (substr($season, 0, 1) == 0) ? substr($season, 1, 1) : $season;

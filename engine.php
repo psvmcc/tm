@@ -50,7 +50,7 @@ if (Sys::checkCurl())
 				    if ($debug)
 				        echo 'Время выполнения: '.$time."\r\n".'<br />';
 				}
-				if ($tracker == 'anidub.com' || $tracker == 'animelayer.ru' || $tracker == 'casstudio.tv' || $tracker == 'kinozal.tv' || $tracker == 'nnm-club.me' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com' || $tracker == 'rutor.org' ||    $tracker == 'rutracker.org' || $tracker == 'tfile.me' || $tracker == 'tracker.0day.kiev.ua' || $tracker == 'tv.mekc.info')
+				if ($tracker == 'anidub.com' || $tracker == 'animelayer.ru' || $tracker == 'casstudio.tv' || $tracker == 'kinozal.tv' || $tracker == 'nnmclub.to' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com' || $tracker == 'rutor.org' ||    $tracker == 'rutracker.org' || $tracker == 'tfile.me' || $tracker == 'tracker.0day.kiev.ua' || $tracker == 'tv.mekc.info')
 				{
 				    $time_start = microtime(true);
 					call_user_func($functionClass.'::main', $torrentsList[$i]['id'], $tracker, $torrentsList[$i]['name'], $torrentsList[$i]['torrent_id'], $torrentsList[$i]['timestamp'], $torrentsList[$i]['hash'], $torrentsList[$i]['auto_update']);

@@ -136,7 +136,7 @@ class Update {
             }
         }
         $serverAddress = Database::getSetting('serverAddress');
-        echo 'Перейти на <a href="http://'.$serverAddress.'">главную страницу</a>.<br>';
+        echo 'Перейти на <a href="'.$serverAddress.'">главную страницу</a>.<br>';
     }
 }
 

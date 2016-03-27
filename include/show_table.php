@@ -22,10 +22,9 @@ $i=0;
 
 if (empty($torrents_list)) 
     echo 'Нет тем для мониторинга';
-/*
+
 if ( ! is_array($torrents_list))
     echo '<div class="dberror">'.$torrents_list.'</div>';
-*/
 else
 {
 ?>
@@ -52,7 +51,7 @@ else
             <td class='text-align-left' nowrap><span class='icon-torrent' style='background-image: url(img/<?php echo $tracker ?>.ico);'></span><?php echo $tracker ?></td>
             <td class='text-align-left'>
     	  	<?php 
-    		if ($tracker == 'rutracker.org' || $tracker == 'nnm-club.me' || $tracker == 'tfile.me' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
+    		if ($tracker == 'rutracker.org' || $tracker == 'nnmclub.to' || $tracker == 'tfile.me' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
     		{
     		?>
 				<a href='http://<?php echo $tracker ?>/forum/viewtopic.php?t=<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>
@@ -67,7 +66,7 @@ else
     		elseif ($tracker == 'animelayer.ru' || $tracker == 'rutor.org')
     		{
     		?>
-    			<a href='http://<?php echo $tracker ?>/torrent/<?php echo $torrent_id ?>/' target='_blank'><?php echo $name ?></a>
+    			<a href='http://<?php echo $tracker ?>/torrent/<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>
     		<?php
     		}
     		elseif ($tracker == 'anidub.com')

@@ -58,7 +58,7 @@ class Sys
     //версия системы
     public static function version()
     {
-        return '1.2.9.9';
+        return '1.3';
     }
 
     //проверка обновлений системы
@@ -271,7 +271,7 @@ class Sys
                 $name = substr($array[1], 48);
             elseif ($tracker == 'kinozal.tv')
                 $name = substr($array[1], 0, -22);
-            elseif ($tracker == 'nnm-club.me')
+            elseif ($tracker == 'nnmclub.to')
                 $name = substr($array[1], 0, -20);
             elseif ($tracker == 'rutracker.org')
                 $name = substr($array[1], 0, -17);
