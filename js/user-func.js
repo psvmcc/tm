@@ -600,7 +600,7 @@ function changeDiv(type)
     if (type == 'notification' || type == 'warning')
         var a = ['E-mail', 'Prowl', 'Pushbullet', 'Pushover', 'Pushall'];
     if (type == 'trackers')
-        var a = ['anidub.com', 'animelayer.ru', 'baibako.tv', 'casstudio.tv', 'hamsterstudio.org', 'kinozal.tv', 'lostfilm.tv', 'newstudio.tv', 'nnm-club.me', 'novafilm.tv', 'pornolab.net', 'rustorka.com', 'rutracker.org', 'tracker.0day.kiev.ua', 'tv.mekc.info'];
+        var a = ['anidub.com', 'animelayer.ru', 'baibako.tv', 'casstudio.tv', 'hamsterstudio.org', 'kinozal.tv', 'lostfilm.tv', 'newstudio.tv', 'nnmclub.to', 'novafilm.tv', 'pornolab.net', 'rustorka.com', 'rutracker.org', 'tracker.0day.kiev.ua', 'tv.mekc.info'];
     for (var i = 0; i < a.length; i++)
     {
         var e = a[i];
