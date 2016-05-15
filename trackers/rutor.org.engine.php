@@ -33,8 +33,9 @@ class rutor
 	}
 
 	//основная функция
-	public static function main($id, $tracker, $name, $torrent_id, $timestamp, $hash, $auto_update)
+	public static function main($params)
 	{
+    	extract($params);
 		rutor::$exucution = TRUE;
 
 		if (rutor::$exucution)
@@ -79,18 +80,23 @@ class rutor
                                 	)
                                 );
 
-								if ($auto_update)
-								{
-								    $name = Sys::getHeader('http://rutor.info/torrent/'.$torrent_id.'/');
-								    //обновляем заголовок торрента в базе
-                                    Database::setNewName($id, $name);
-								}
-
-								$message = $name.' обновлён.';
-								$status = Sys::saveTorrent($tracker, $torrent_id, $torrent, $id, $hash, $message, $date_str, $name);
-								
-								//обновляем время регистрации торрента в базе
-								Database::setNewDate($id, $date);
+                                if (Sys::checkTorrentFile($torrent))
+                                {
+    								if ($auto_update)
+    								{
+    								    $name = Sys::getHeader('http://rutor.info/torrent/'.$torrent_id.'/');
+    								    //обновляем заголовок торрента в базе
+                                        Database::setNewName($id, $name);
+    								}
+    
+    								$message = $name.' обновлён.';
+    								$status = Sys::saveTorrent($tracker, $torrent_id, $torrent, $id, $hash, $message, $date_str, $name);
+    								
+    								//обновляем время регистрации торрента в базе
+    								Database::setNewDate($id, $date);
+                                }
+                                else
+                                    Errors::setWarnings($tracker, 'torrent_file_fail');
 							}
 						}
 						else
@@ -99,7 +105,7 @@ class rutor
 							if (rutor::$warning == NULL)
 							{
 								rutor::$warning = TRUE;
-								Errors::setWarnings($tracker, 'not_available');
+								Errors::setWarnings($tracker, 'cant_find_date');
 							}
 							//останавливаем процесс выполнения, т.к. не может работать без кук
 							rutor::$exucution = FALSE;
@@ -111,7 +117,7 @@ class rutor
 						if (rutor::$warning == NULL)
 						{
 							rutor::$warning = TRUE;
-							Errors::setWarnings($tracker, 'not_available');
+							Errors::setWarnings($tracker, 'cant_find_date');
 						}
 						//останавливаем процесс выполнения, т.к. не может работать без кук
 						rutor::$exucution = FALSE;
@@ -123,7 +129,7 @@ class rutor
 					if (rutor::$warning == NULL)
 					{
 						rutor::$warning = TRUE;
-						Errors::setWarnings($tracker, 'not_available');
+						Errors::setWarnings($tracker, 'cant_find_date');
 					}
 					//останавливаем процесс выполнения, т.к. не может работать без кук
 					rutor::$exucution = FALSE;
@@ -135,7 +141,7 @@ class rutor
 				if (rutor::$warning == NULL)
 				{
 					rutor::$warning = TRUE;
-					Errors::setWarnings($tracker, 'not_available');
+					Errors::setWarnings($tracker, 'cant_get_forum_page');
 				}
 				//останавливаем процесс выполнения, т.к. не может работать без кук
 				rutor::$exucution = FALSE;

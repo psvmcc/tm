@@ -143,7 +143,7 @@ class hamsterstudio
 					if (hamsterstudio::$warning == NULL)
         			{
         				hamsterstudio::$warning = TRUE;
-        				Errors::setWarnings($tracker, 'not_available');
+        				Errors::setWarnings($tracker, 'cant_find_cookie');
         			}
 					//останавливаем выполнение цепочки
 					hamsterstudio::$exucution = FALSE;
@@ -155,7 +155,7 @@ class hamsterstudio
 				if (hamsterstudio::$warning == NULL)
     			{
     				hamsterstudio::$warning = TRUE;
-    				Errors::setWarnings($tracker, 'not_available');
+    				Errors::setWarnings($tracker, 'cant_get_auth_page');
     			}
 				//останавливаем выполнение цепочки
 				hamsterstudio::$exucution = FALSE;
@@ -176,8 +176,9 @@ class hamsterstudio
 	}
 
 	//основная функция
-	public static function main($id, $tracker, $name, $hd, $ep, $timestamp, $hash)
+	public static function main($params)
 	{
+    	extract($params);
 		//проверяем небыло ли до этого уже ошибок
 		if (empty(hamsterstudio::$exucution) || (hamsterstudio::$exucution))
 		{
@@ -239,7 +240,7 @@ class hamsterstudio
     					if (hamsterstudio::$warning == NULL)
             			{
             				hamsterstudio::$warning = TRUE;
-            				Errors::setWarnings($tracker, 'not_available');
+            				Errors::setWarnings($tracker, 'cant_find_rss');
             			}
 						//останавливаем выполнение цепочки
 						hamsterstudio::$exucution = FALSE;
@@ -304,7 +305,7 @@ class hamsterstudio
 								$episode = (substr($episode, 0, 1) == 0) ? substr($episode, 1, 1) : $episode;
 								$season = (substr($season, 0, 1) == 0) ? substr($season, 1, 1) : $season;
 								$message = $name.' '.$amp.' обновлён до '.$episode.' серии, '.$season.' сезона.';
-								$status = Sys::saveTorrent($tracker, $file, $torrent, $id, $hash, $message, $date_str);
+								$status = Sys::saveTorrent($tracker, $file, $torrent, $id, $hash, $message, $date_str, $name);
 
 								//обновляем время регистрации торрента в базе
 								Database::setNewDate($id, $serial['date']);
@@ -312,7 +313,7 @@ class hamsterstudio
 								Database::setNewEpisode($id, $serial['episode']);
                             }
                             else
-                                Errors::setWarnings($tracker, 'save_file_fail');													
+                                Errors::setWarnings($tracker, 'torrent_file_fail');													
 						}
 					}
 				}

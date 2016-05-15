@@ -120,7 +120,7 @@ class anidub
 					if (anidub::$warning == NULL)
 					{
 						anidub::$warning = TRUE;
-						Errors::setWarnings($tracker, 'not_available');
+						Errors::setWarnings($tracker, 'cant_find_cookie');
 					}
 					//останавливаем процесс выполнения, т.к. не может работать без кук
 					anidub::$exucution = FALSE;
@@ -133,7 +133,7 @@ class anidub
 				if (anidub::$warning == NULL)
 				{
 					anidub::$warning = TRUE;
-					Errors::setWarnings($tracker, 'not_available');
+					Errors::setWarnings($tracker, 'cant_get_auth_page');
 				}
 				//останавливаем процесс выполнения, т.к. не может работать без кук
 				anidub::$exucution = FALSE;
@@ -153,8 +153,9 @@ class anidub
 	}
 	
 	//основная функция
-	public static function main($id, $tracker, $name, $torrent_id, $timestamp, $hash, $auto_update)
+	public static function main($params)
 	{
+    	extract($params);
 		$cookie = Database::getCookie($tracker);
 		if (anidub::checkCookie($cookie))
 		{
@@ -228,6 +229,8 @@ class anidub
         								//обновляем время регистрации торрента в базе
         								Database::setNewDate($id, $date);
                                     }
+                                    else
+                                        Errors::setWarnings($tracker, 'torrent_file_fail');
                                 }
 							}
 						}
@@ -237,7 +240,7 @@ class anidub
 							if (anidub::$warning == NULL)
 							{
 								anidub::$warning = TRUE;
-								Errors::setWarnings($tracker, 'not_available');
+								Errors::setWarnings($tracker, 'cant_find_date');
 							}
 							//останавливаем процесс выполнения, т.к. не может работать без кук
 							anidub::$exucution = FALSE;
@@ -249,7 +252,7 @@ class anidub
 						if (anidub::$warning == NULL)
 						{
 							anidub::$warning = TRUE;
-							Errors::setWarnings($tracker, 'not_available');
+							Errors::setWarnings($tracker, 'cant_find_date');
 						}
 						//останавливаем процесс выполнения, т.к. не может работать без кук
 						anidub::$exucution = FALSE;
@@ -261,7 +264,7 @@ class anidub
 					if (anidub::$warning == NULL)
 					{
 						anidub::$warning = TRUE;
-						Errors::setWarnings($tracker, 'not_available');
+						Errors::setWarnings($tracker, 'cant_find_date');
 					}
 					//останавливаем процесс выполнения, т.к. не может работать без кук
 					anidub::$exucution = FALSE;
@@ -273,7 +276,7 @@ class anidub
 				if (anidub::$warning == NULL)
 				{
 					anidub::$warning = TRUE;
-					Errors::setWarnings($tracker, 'not_available');
+					Errors::setWarnings($tracker, 'cant_get_forum_page');
 				}
 				//останавливаем процесс выполнения, т.к. не может работать без кук
 				anidub::$exucution = FALSE;

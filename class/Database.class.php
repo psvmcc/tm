@@ -293,43 +293,46 @@ class Database
     public static function getTorrentsList($order)
     {
     	if ($order == 'date')
-    		$order = 'timestamp';
+    		$order = 't.timestamp';
     	elseif ($order == 'dateDesc')
-    		$order = 'timestamp DESC';
+    		$order = 't.timestamp DESC';
     	else
-    		$order = 'tracker, name, hd';
+    		$order = 't.tracker, t.name, t.hd';
     		
         if (Database::getDbType() == 'pgsql')
         {
-            $stmt = Database::getInstance()->dbh->prepare("SELECT id, tracker, name, hd, path, torrent_id, ep, timestamp, auto_update, script,
-                            to_char(timestamp, 'dd') AS day,
-                            to_char(timestamp, 'mm') AS month,
-                            to_char(timestamp, 'YYYY') AS year,
-                            to_char(timestamp, 'HH24:MI:SS') AS time,
-                            hash
-                            FROM torrent 
+            $stmt = Database::getInstance()->dbh->prepare("SELECT t.id, t.tracker, t.name, t.hd, t.path, t.torrent_id, t.ep, t.timestamp, t.auto_update, t.script, t.pause,
+                            to_char(t.timestamp, 'dd') AS day,
+                            to_char(t.timestamp, 'mm') AS month,
+                            to_char(t.timestamp, 'YYYY') AS year,
+                            to_char(t.timestamp, 'HH24:MI:SS') AS time,
+                            t.hash, t.error, c.type
+                            FROM torrent t
+                            INNER JOIN credentials c ON c.tracker = t.tracker
                             ORDER BY {$order}");
         }
         elseif (Database::getDbType() == 'mysql')
         {
-            $stmt = Database::getInstance()->dbh->prepare("SELECT `id`, `tracker`, `name`, `hd`, `path`, `torrent_id`, `ep`, `timestamp`, `auto_update`, `script`,
-                            DATE_FORMAT(`timestamp`, '%d') AS `day`, 
-                            DATE_FORMAT(`timestamp`, '%m') AS `month`, 
-                            DATE_FORMAT(`timestamp`, '%Y') AS `year`, 
-                            DATE_FORMAT(`timestamp`, '%T') AS `time`,
-                            `hash`
-                            FROM `torrent` 
+            $stmt = Database::getInstance()->dbh->prepare("SELECT `t`.`id`, `t`.`tracker`, `t`.`name`, `t`.`hd`, `t`.`path`, `t`.`torrent_id`, `t`.`ep`, `t`.`timestamp`, `t`.`auto_update`, `t`.`script`, `t`.`pause`,
+                            DATE_FORMAT(`t`.`timestamp`, '%d') AS `day`, 
+                            DATE_FORMAT(`t`.`timestamp`, '%m') AS `month`, 
+                            DATE_FORMAT(`t`.`timestamp`, '%Y') AS `year`, 
+                            DATE_FORMAT(`t`.`timestamp`, '%T') AS `time`,
+                            `t`.`hash`, `t`.`error`, `c`.`type`
+                            FROM `torrent` t
+                            INNER JOIN `credentials` c ON `c`.`tracker` = `t`.`tracker`
                             ORDER BY {$order}");
         }
         elseif (Database::getDbType() == 'sqlite')
         {
-            $stmt = Database::getInstance()->dbh->prepare("SELECT `id`, `tracker`, `name`, `hd`, `path`, `torrent_id`, `ep`, `timestamp`, `auto_update`, `script`,
-                            strftime('%d', `timestamp`) AS `day`, 
-                            strftime('%m', `timestamp`) AS `month`, 
-                            strftime('%Y', `timestamp`) AS `year`, 
-                            strftime('%H:%M', `timestamp`) AS `time`,
-                            `hash`
-                            FROM `torrent` 
+            $stmt = Database::getInstance()->dbh->prepare("SELECT `t`.`id`, `t`.`tracker`, `t`.`name`, `t`.`hd`, `t`.`path`, `t`.`torrent_id`, `t`.`ep`, `t`.`timestamp`, `t`.`auto_update`, `t`.`script`, `t`.`pause`,
+                            strftime('%d', `t`.`timestamp`) AS `day`, 
+                            strftime('%m', `t`.`timestamp`) AS `month`, 
+                            strftime('%Y', `t`.`timestamp`) AS `year`, 
+                            strftime('%H:%M', `t`.`timestamp`) AS `time`,
+                            `t`.`hash`, `t`.`error`, `c`.`type`
+                            FROM `torrent` t
+                            INNER JOIN `credentials` c ON `c`.`tracker` = `t`.`tracker`
                             ORDER BY {$order}");    		
         }
         if ($stmt->execute())
@@ -345,13 +348,16 @@ class Database
                 $resultArray[$i]['torrent_id'] = $row['torrent_id'];
                 $resultArray[$i]['ep'] = $row['ep'];
                 $resultArray[$i]['timestamp'] = $row['timestamp'];
+                $resultArray[$i]['auto_update'] = $row['auto_update'];
+                $resultArray[$i]['script'] = $row['script'];
+                $resultArray[$i]['pause'] = $row['pause'];
                 $resultArray[$i]['day'] = $row['day'];
                 $resultArray[$i]['month'] = $row['month'];
                 $resultArray[$i]['year'] = $row['year'];
                 $resultArray[$i]['time'] = $row['time'];
                 $resultArray[$i]['hash'] = $row['hash'];
-                $resultArray[$i]['auto_update'] = $row['auto_update'];
-                $resultArray[$i]['script'] = $row['script'];
+                $resultArray[$i]['error'] = $row['error'];
+                $resultArray[$i]['type'] = $row['type'];
                 $i++;
             }
             if ( ! empty($resultArray))
@@ -368,7 +374,7 @@ class Database
     
     public static function getTorrent($id)
     {
-        $stmt = self::newStatement("SELECT `id`, `tracker`, `name`, `hd`, `path`, `torrent_id`, `auto_update`, `script` FROM `torrent` WHERE `id` = :id");
+        $stmt = self::newStatement("SELECT `id`, `tracker`, `name`, `hd`, `path`, `torrent_id`, `auto_update`, `script`, `pause` FROM `torrent` WHERE `id` = :id");
         $stmt->bindParam(':id', $id);
         if ($stmt->execute())
         {
@@ -383,6 +389,7 @@ class Database
                 $resultArray[$i]['torrent_id'] = $row['torrent_id'];
                 $resultArray[$i]['auto_update'] = $row['auto_update'];
                 $resultArray[$i]['script'] = $row['script'];
+                $resultArray[$i]['pause'] = $row['pause'];
             }
             if ( ! empty($resultArray))
                 return $resultArray;
@@ -737,17 +744,18 @@ class Database
         $stmt = NULL;
     }
     
-    public static function updateSerial($id, $name, $path, $hd, $reset, $script)
+    public static function updateSerial($id, $name, $path, $hd, $reset, $script, $pause)
     {
         if ($reset)
-            $stmt = self::newStatement("UPDATE `torrent` SET `name` = :name, `path` = :path, `hd` = :hd, `ep` = '', `timestamp` = '0000-00-00 00:00:00', `script` = :script WHERE `id` = :id");
+            $stmt = self::newStatement("UPDATE `torrent` SET `name` = :name, `path` = :path, `hd` = :hd, `ep` = '', `timestamp` = '0000-00-00 00:00:00', `script` = :script, `pause` = :pause WHERE `id` = :id");
         else
-            $stmt = self::newStatement("UPDATE `torrent` SET `name` = :name, `path` = :path, `hd` = :hd, `script` = :script WHERE `id` = :id");
+            $stmt = self::newStatement("UPDATE `torrent` SET `name` = :name, `path` = :path, `hd` = :hd, `script` = :script, `pause` = :pause WHERE `id` = :id");
         $stmt->bindParam(':name', $name);
         $stmt->bindParam(':path', $path);
         $stmt->bindParam(':script', $script);
         $stmt->bindParam(':hd', $hd);
         $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':pause', $pause);
         if ($stmt->execute())
             return TRUE;
         else
@@ -755,15 +763,16 @@ class Database
         $stmt = NULL;
     }
     
-    public static function updateThreme($id, $name, $path, $threme, $update, $reset, $script)
+    public static function updateThreme($id, $name, $path, $threme, $update, $reset, $script, $pause)
     {
-        $stmt = self::newStatement("UPDATE `torrent` SET `name` = :name, `path` = :path, `torrent_id` = :torrent_id, `auto_update`= :auto_update, `script` = :script WHERE `id` = :id");
+        $stmt = self::newStatement("UPDATE `torrent` SET `name` = :name, `path` = :path, `torrent_id` = :torrent_id, `auto_update`= :auto_update, `script` = :script, `pause` = :pause WHERE `id` = :id");
         $stmt->bindParam(':name', $name);
         $stmt->bindParam(':path', $path);
         $stmt->bindParam(':script', $script);
         $stmt->bindParam(':torrent_id', $threme);
 	    $stmt->bindParam(':auto_update', $update);
         $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':pause', $pause);
         $stmt->execute();
 
         if ($reset)
@@ -823,13 +832,12 @@ class Database
     
     public static function getWarningsCountSimple()
     {
-        $stmt = self::newStatement("SELECT COUNT(*) AS `count` FROM `warning` GROUP BY `where`");        
+        $stmt = self::newStatement("SELECT COUNT(*) AS `count` FROM `warning`");
         if ($stmt->execute())
         {
             foreach ($stmt as $row)
             {
-                $resultArray[$i]['count'] = $row['count'];
-                $i++;
+                $resultArray['count'] = $row['count'];
             }
             if ( ! empty($resultArray))
                 return $resultArray;
@@ -858,7 +866,7 @@ class Database
     {
         if (Database::getDbType() == 'pgsql')
         {
-            $stmt = Database::getInstance()->dbh->prepare("SELECT time, reason, \"where\",
+            $stmt = Database::getInstance()->dbh->prepare("SELECT time, reason, where, t_id,
                             to_char(time, 'dd') AS day,
                             to_char(time, 'mm') AS month,
                             to_char(time, 'YYYY') AS year,
@@ -869,7 +877,7 @@ class Database
         }
         elseif (Database::getDbType() == 'mysql')
         {
-            $stmt = Database::getInstance()->dbh->prepare("SELECT `time`, `reason`, `where`,
+            $stmt = Database::getInstance()->dbh->prepare("SELECT `time`, `reason`, `where`, `t_id`,
                             DATE_FORMAT(`time`, '%d') as 'day',
                             DATE_FORMAT(`time`, '%m') as 'month', 
                             DATE_FORMAT(`time`, '%Y') as 'year', 
@@ -880,7 +888,7 @@ class Database
         }
         elseif (Database::getDbType() == 'sqlite')
         {
-            $stmt = Database::getInstance()->dbh->prepare("SELECT `time`, `reason`, `where`,
+            $stmt = Database::getInstance()->dbh->prepare("SELECT `time`, `reason`, `where`, `t_id`,
                             strftime('%d', `time`) as 'day',
                             strftime('%m', `time`) as 'month', 
                             strftime('%Y', `time`) as 'year', 
@@ -898,6 +906,7 @@ class Database
                 $resultArray[$i]['time'] = $row['time'];
                 $resultArray[$i]['reason'] = $row['reason'];
                 $resultArray[$i]['where'] = $row['where'];
+                $resultArray[$i]['id'] = $row['t_id'];
                 $resultArray[$i]['day'] = $row['day'];
                 $resultArray[$i]['month'] = $row['month'];
                 $resultArray[$i]['year'] = $row['year'];
@@ -911,18 +920,31 @@ class Database
         $resultArray = NULL;
     }        
     
-    public static function setWarnings($date, $tracker, $message)
+    public static function setWarnings($date, $tracker, $message, $id)
     {
-        $stmt = self::newStatement("INSERT INTO `warning` (`time`, `where`, `reason`) VALUES (:date, :tracker, :message)");        
+        $stmt = self::newStatement("INSERT INTO `warning` (`time`, `where`, `reason`, `t_id`) VALUES (:date, :tracker, :message, :id)");        
         $stmt->bindParam(':date', $date);
         $stmt->bindParam(':tracker', $tracker);
         $stmt->bindParam(':message', $message);
+        $stmt->bindParam(':id', $id);
         if ($stmt->execute())
             return TRUE;
         else
             return FALSE;
         $stmt = NULL;
     }
+    
+    public static function setErrorToThreme($id, $value)
+    {
+        $stmt = self::newStatement("UPDATE `torrent` SET `error` = :error WHERE `id` = :id");        
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':error', $value);
+        if ($stmt->execute())
+            return TRUE;
+        else
+            return FALSE;
+        $stmt = NULL;
+    }    
     
     public static function clearWarnings($tracker)
     {
@@ -961,15 +983,15 @@ class Database
             return FALSE;
         $stmt = NULL;
     }
-    
-    public static function saveToTemp($id, $path, $hash, $tracker, $message, $date)
+
+    public static function saveToTemp($id, $name, $path, $hash, $tracker, $date)
     {
-        $stmt = self::newStatement("INSERT INTO `temp` (`id`, `path`, `hash`, `tracker`, `message`, `date`) VALUES (:id, :path, :hash, :tracker, :message, :date)");        
+        $stmt = self::newStatement("INSERT INTO `temp` (`id`, `name`, `path`, `hash`, `tracker`, `date`) VALUES (:id, :name, :path, :hash, :tracker, :date)");        
         $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':name', $name);
         $stmt->bindParam(':path', $path);
         $stmt->bindParam(':hash', $hash);
         $stmt->bindParam(':tracker', $tracker);
-        $stmt->bindParam(':message', $message);
         $stmt->bindParam(':date', $date);
         if ($stmt->execute())
             return TRUE;
@@ -980,17 +1002,17 @@ class Database
     
     public static function getAllFromTemp()
     {
-        $stmt = self::newStatement("SELECT `id`, `path`, `hash`, `tracker`, `message`, `date` FROM `temp`");
+        $stmt = self::newStatement("SELECT `id`, `name`, `path`, `hash`, `tracker`, `date` FROM `temp`");
         if ($stmt->execute())
         {
             $i=0;
             foreach ($stmt as $row)
             {
                 $resultArray[$i]['id'] = $row['id'];
+                $resultArray[$i]['name'] = $row['name'];
                 $resultArray[$i]['path'] = $row['path'];
                 $resultArray[$i]['hash'] = $row['hash'];
                 $resultArray[$i]['tracker'] = $row['tracker'];
-                $resultArray[$i]['message'] = $row['message'];
                 $resultArray[$i]['date_str'] = $row['date'];
                 $i++;
             }

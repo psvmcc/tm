@@ -41,19 +41,24 @@ if (Sys::checkCurl())
 				    $functionClass = 'mekc';
 
 				echo $torrentsList[$i]['name'].' на трекере '.$tracker."\r\n".'<br />';
-				if ($tracker == 'baibako.tv' || $tracker == 'hamsterstudio.org' || $tracker == 'lostfilm.tv' || $tracker == 'lostfilm-mirror' || $tracker == 'newstudio.tv' || $tracker == 'novafilm.tv')
+				if ($torrentsList[$i]['pause'])
+				{
+    				echo 'Наблюдение за данной темой приостановлено.'."\r\n".'<br />';
+    				continue;
+				}
+				if ($torrentsList[$i]['type'] == 'RSS')
 				{
 				    $time_start = microtime(true);
-				    call_user_func($functionClass.'::main', $torrentsList[$i]['id'], $tracker, $torrentsList[$i]['name'], $torrentsList[$i]['hd'], $torrentsList[$i]['ep'], $torrentsList[$i]['timestamp'], $torrentsList[$i]['hash']);
+				    call_user_func($functionClass.'::main', $torrentsList[$i]);
 				    $time_end = microtime(true);
 				    $time = $time_end - $time_start;
 				    if ($debug)
 				        echo 'Время выполнения: '.$time."\r\n".'<br />';
 				}
-				if ($tracker == 'anidub.com' || $tracker == 'animelayer.ru' || $tracker == 'casstudio.tv' || $tracker == 'kinozal.tv' || $tracker == 'nnmclub.to' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com' || $tracker == 'rutor.org' ||    $tracker == 'rutracker.org' || $tracker == 'tfile.me' || $tracker == 'tracker.0day.kiev.ua' || $tracker == 'tv.mekc.info')
+				if ($torrentsList[$i]['type'] == 'forum')
 				{
 				    $time_start = microtime(true);
-					call_user_func($functionClass.'::main', $torrentsList[$i]['id'], $tracker, $torrentsList[$i]['name'], $torrentsList[$i]['torrent_id'], $torrentsList[$i]['timestamp'], $torrentsList[$i]['hash'], $torrentsList[$i]['auto_update']);
+					call_user_func($functionClass.'::main', $torrentsList[$i]);
 					$time_end = microtime(true);
 					$time = $time_end - $time_start;
 					if ($debug)
@@ -94,7 +99,7 @@ if (Sys::checkCurl())
 				$functionClass = $class.'Search';
                 echo 'Пользователь '.$usersList[$i]['name'].' на трекере '.$tracker."\r\n".'<br />';
                 $time_start = microtime(true);
-				call_user_func($functionClass .'::mainSearch', $usersList[$i]['id'], $tracker, $usersList[$i]['name']);
+				call_user_func($functionClass .'::mainSearch', $usersList[$i]);
 				$time_end = microtime(true);
 				$time = $time_end - $time_start;
 				if ($debug)
@@ -131,6 +136,8 @@ if (Sys::checkCurl())
 	$time = $time_end - $time_start;
 	if ($debug)
         echo 'Время выполнения: '.$time."\r\n".'<br />';
+	echo 'Удаление старых torrent-файлов.'."\r\n".'<br />';
+	Sys::deleteOldTorrents();
 	echo 'Запись времени последнего запуска ТМ.'."\r\n".'<br />';
 	Sys::lastStart();
 }	

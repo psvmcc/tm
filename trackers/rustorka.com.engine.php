@@ -97,7 +97,7 @@ class rustorka
 					if (rustorka::$warning == NULL)
 					{
 						rustorka::$warning = TRUE;
-						Errors::setWarnings($tracker, 'not_available');
+						Errors::setWarnings($tracker, 'cant_find_cookie');
 					}
 					//останавливаем процесс выполнения, т.к. не может работать без кук
 					rustorka::$exucution = FALSE;
@@ -110,7 +110,7 @@ class rustorka
 				if (rustorka::$warning == NULL)
 				{
 					rustorka::$warning = TRUE;
-					Errors::setWarnings($tracker, 'not_available');
+					Errors::setWarnings($tracker, 'cant_get_auth_page');
 				}
 				//останавливаем процесс выполнения, т.к. не может работать без кук
 				rustorka::$exucution = FALSE;
@@ -132,8 +132,9 @@ class rustorka
 	}
 
 	//основная функция
-	public static function main($id, $tracker, $name, $torrent_id, $timestamp, $hash, $auto_update)
+	public static function main($params)
 	{
+    	extract($params);
 		$cookie = Database::getCookie($tracker);
 		if (rustorka::checkCookie($cookie))
 		{
@@ -193,19 +194,24 @@ class rustorka
                                     		'referer'        => 'http://rustorka.com/forum/viewtopic.php?t='.$torrent_id,
                                     	)
                                     );
-
-    								if ($auto_update)
-    								{
-    								    $name = Sys::getHeader('http://rustorka.com/forum/viewtopic.php?t='.$torrent_id);
-    								    //обновляем заголовок торрента в базе
-                                        Database::setNewName($id, $name);
-    								}
-
-    								$message = $name.' обновлён.';
-    								$status = Sys::saveTorrent($tracker, $torrent_id, $torrent, $id, $hash, $message, $date_str, $name);
-								
-    								//обновляем время регистрации торрента в базе
-    								Database::setNewDate($id, $date);
+                                    
+                                    if (Sys::checkTorrentFile($torrent))
+                                    {
+        								if ($auto_update)
+        								{
+        								    $name = Sys::getHeader('http://rustorka.com/forum/viewtopic.php?t='.$torrent_id);
+        								    //обновляем заголовок торрента в базе
+                                            Database::setNewName($id, $name);
+        								}
+    
+        								$message = $name.' обновлён.';
+        								$status = Sys::saveTorrent($tracker, $torrent_id, $torrent, $id, $hash, $message, $date_str, $name);
+    								
+        								//обновляем время регистрации торрента в базе
+        								Database::setNewDate($id, $date);
+                                    }
+                                    else
+                                        Errors::setWarnings($tracker, 'torrent_file_fail');
                                 }
 							}
 						}
@@ -215,7 +221,7 @@ class rustorka
 							if (rustorka::$warning == NULL)
 							{
 								rustorka::$warning = TRUE;
-								Errors::setWarnings($tracker, 'not_available');
+								Errors::setWarnings($tracker, 'cant_find_date');
 							}
 							//останавливаем процесс выполнения, т.к. не может работать без кук
 							rustorka::$exucution = FALSE;
@@ -227,7 +233,7 @@ class rustorka
 						if (rustorka::$warning == NULL)
 						{
 							rustorka::$warning = TRUE;
-							Errors::setWarnings($tracker, 'not_available');
+							Errors::setWarnings($tracker, 'cant_find_date');
 						}
 						//останавливаем процесс выполнения, т.к. не может работать без кук
 						rustorka::$exucution = FALSE;
@@ -239,7 +245,7 @@ class rustorka
 					if (rustorka::$warning == NULL)
 					{
 						rustorka::$warning = TRUE;
-						Errors::setWarnings($tracker, 'not_available');
+						Errors::setWarnings($tracker, 'cant_find_date');
 					}
 					//останавливаем процесс выполнения, т.к. не может работать без кук
 					rustorka::$exucution = FALSE;
@@ -251,7 +257,7 @@ class rustorka
 				if (rustorka::$warning == NULL)
 				{
 					rustorka::$warning = TRUE;
-					Errors::setWarnings($tracker, 'not_available');
+					Errors::setWarnings($tracker, 'cant_get_forum_page');
 				}
 				//останавливаем процесс выполнения, т.к. не может работать без кук
 				rustorka::$exucution = FALSE;

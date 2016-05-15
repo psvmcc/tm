@@ -4,7 +4,7 @@ class nnmclub
 	protected static $sess_cookie;
 	protected static $exucution;
 	protected static $warning;
-	
+
 	//проверяем cookie
 	public static function checkCookie($sess_cookie)
 	{
@@ -23,10 +23,10 @@ class nnmclub
 		if (preg_match('/login\.php\?logout=true/U', $result))
 			return TRUE;
 		else
-			return FALSE;		  
+			return FALSE;
 	}
-	
-	
+
+
 	public static function checkRule($data)
 	{
 		if (preg_match('/\D+/', $data))
@@ -34,24 +34,24 @@ class nnmclub
 		else
 			return TRUE;
 	}
-	
+
 	private static function dateStringToNum($data)
 	{
 		$monthes = array('Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек');
 		$month = substr($data, 3, 6);
 		$date = preg_replace('/(\d\d)\s(\d\d)\s(\d\d\d\d)/', '$3-$2-$1',str_replace($month, str_pad(array_search($month, $monthes)+1, 2, 0, STR_PAD_LEFT), $data));
 		$date = date('Y-m-d H:i:s', strtotime($date));
-	
+
 		return $date;
 	}
-	
+
 	//функция преобразования даты
 	private static function dateNumToString($data)
 	{
 		$date = substr($data, 0, -3);
-		return $date;		
+		return $date;
 	}
-	
+
 	//функция получения кук
 	protected static function getCookie($tracker)
 	{
@@ -62,7 +62,7 @@ class nnmclub
 			$credentials = Database::getCredentials($tracker);
 			$login = iconv('utf-8', 'windows-1251', $credentials['login']);
 			$password = $credentials['password'];
-			
+
 			//авторизовываемся на трекере
 			$page = Sys::getUrlContent(
             	array(
@@ -109,7 +109,7 @@ class nnmclub
 				if (nnmclub::$warning == NULL)
 				{
 					nnmclub::$warning = TRUE;
-					Errors::setWarnings($tracker, 'not_available');
+					Errors::setWarnings($tracker, 'cant_get_auth_page');
 				}
 				//останавливаем процесс выполнения, т.к. не может работать без кук
 				nnmclub::$exucution = FALSE;
@@ -127,19 +127,20 @@ class nnmclub
 			nnmclub::$exucution = FALSE;
 		}
 	}
-	
-	public static function main($id, $tracker, $name, $torrent_id, $timestamp, $hash, $auto_update)
+
+	public static function main($params)
 	{
+    	extract($params);
 		$cookie = Database::getCookie($tracker);
 		if (nnmclub::checkCookie($cookie))
 		{
 			nnmclub::$sess_cookie = $cookie;
 			//запускам процесс выполнения
 			nnmclub::$exucution = TRUE;
-		}			
+		}
 		else
     		nnmclub::getCookie($tracker);
-		
+
 		if (nnmclub::$exucution)
 		{
 			//получаем страницу для парсинга
@@ -167,11 +168,9 @@ class nnmclub
 						//если дата не равна ничему
 						if ( ! empty($array[1]))
 						{
-							//находим имя торрента для скачивания		
+							//находим имя торрента для скачивания
 							if (preg_match('/download\.php\?id=(\d{6,8})/', $page, $link))
 							{
-								//сбрасываем варнинг
-								Database::clearWarnings($tracker);
 								//приводим дату к общему виду
 								$date = nnmclub::dateStringToNum($array[1]);
 								$date_str = $array[1];
@@ -184,7 +183,7 @@ class nnmclub
                                     $uid = $arr[1];
                                     preg_match('/phpbb2mysql_4_sid=(.*)/U', nnmclub::$sess_cookie, $arr);
                                     $sid = $arr[1];
-									
+
 									$torrent = Sys::getUrlContent(
 	                                	array(
 	                                		'type'           => 'GET',
@@ -195,19 +194,29 @@ class nnmclub
 	                                		'referer'        => 'http://nnmclub.to/forum/viewtopic.php?t='.$torrent_id,
 	                                	)
 	                                );
-									$message = $name.' обновлён.';
-									$status = Sys::saveTorrent($tracker, $torrent_id, $torrent, $id, $hash, $message, $date_str, $name);
-								
-    								//обновляем время регистрации торрента в базе
-									Database::setNewDate($id, $date);
-									
-									if ($auto_update)
-    								{
-    								    $name = Sys::getHeader('http://nnmclub.to/forum/viewtopic.php?t='.$torrent_id);
-    								    //обновляем заголовок торрента в базе
-                                        Database::setNewName($id, $name);
-    								}
+
+	                                if (Sys::checkTorrentFile($torrent))
+                                    {
+    									if ($auto_update)
+        								{
+        								    $name = Sys::getHeader('http://nnmclub.to/forum/viewtopic.php?t='.$torrent_id);
+        								    //обновляем заголовок торрента в базе
+                                            Database::setNewName($id, $name);
+        								}
+
+    									$message = $name.' обновлён.';
+    									$status = Sys::saveTorrent($tracker, $torrent_id, $torrent, $id, $hash, $message, $date_str, $name);
+
+        								//обновляем время регистрации торрента в базе
+    									Database::setNewDate($id, $date);
+        								//сбрасываем варнинг
+        								Database::clearWarnings($tracker);
+        								Database::setErrorToThreme($id, 0);
+                                    }
+                                    else
+                                        Errors::setWarnings($tracker, 'torrent_file_fail', $id);
 								}
+								Database::setErrorToThreme($id, 0);
 							}
 							else
 							{
@@ -215,7 +224,7 @@ class nnmclub
 								if (nnmclub::$warning == NULL)
                     			{
                     				nnmclub::$warning = TRUE;
-                    				Errors::setWarnings($tracker, 'not_available');
+                    				Errors::setWarnings($tracker, 'cant_find_dowload_link', $id);
                     			}
                     			//останавливаем процесс выполнения, т.к. не может работать без кук
 								nnmclub::$exucution = FALSE;
@@ -227,7 +236,7 @@ class nnmclub
 							if (nnmclub::$warning == NULL)
                 			{
                 				nnmclub::$warning = TRUE;
-                				Errors::setWarnings($tracker, 'not_available');
+                				Errors::setWarnings($tracker, 'cant_find_date', $id);
                 			}
                 			//останавливаем процесс выполнения, т.к. не может работать без кук
 							nnmclub::$exucution = FALSE;
@@ -239,7 +248,7 @@ class nnmclub
 						if (nnmclub::$warning == NULL)
             			{
             				nnmclub::$warning = TRUE;
-            				Errors::setWarnings($tracker, 'not_available');
+            				Errors::setWarnings($tracker, 'cant_find_date', $id);
             			}
             			//останавливаем процесс выполнения, т.к. не может работать без кук
 						nnmclub::$exucution = FALSE;
@@ -251,7 +260,7 @@ class nnmclub
 					if (nnmclub::$warning == NULL)
         			{
         				nnmclub::$warning = TRUE;
-        				Errors::setWarnings($tracker, 'not_available');
+        				Errors::setWarnings($tracker, 'cant_find_date', $id);
         			}
         			//останавливаем процесс выполнения, т.к. не может работать без кук
 					nnmclub::$exucution = FALSE;
@@ -263,7 +272,7 @@ class nnmclub
 				if (nnmclub::$warning == NULL)
     			{
     				nnmclub::$warning = TRUE;
-    				Errors::setWarnings($tracker, 'not_available');
+    				Errors::setWarnings($tracker, 'cant_get_forum_page', $id);
     			}
     			//останавливаем процесс выполнения, т.к. не может работать без кук
 				nnmclub::$exucution = FALSE;

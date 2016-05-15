@@ -202,7 +202,7 @@ if (isset($_POST['action']))
 			$class = explode('.', $tracker);
 			$class = $class[0];
 			$class = str_replace('-', '', $class);
-			Database::updateSerial($_POST['id'], $_POST['name'], $_POST['path'], $_POST['hd'], Sys::strBoolToInt($_POST['reset']), $_POST['script']);
+			Database::updateSerial($_POST['id'], $_POST['name'], $_POST['path'], $_POST['hd'], Sys::strBoolToInt($_POST['reset']), $_POST['script'], Sys::strBoolToInt($_POST['pause']));
 			$return['error'] = FALSE;
             $return['msg'] = 'Сериал обновлён.';
         }        
@@ -261,7 +261,7 @@ if (isset($_POST['action']))
                         {
         					if (call_user_func(array($functionClass, 'checkRule'), $threme))
                 			{
-                				Database::updateThreme($_POST['id'], $_POST['name'], $_POST['path'], $threme, Sys::strBoolToInt($_POST['update']), Sys::strBoolToInt($_POST['reset']), $_POST['script']);
+                				Database::updateThreme($_POST['id'], $_POST['name'], $_POST['path'], $threme, Sys::strBoolToInt($_POST['update']), Sys::strBoolToInt($_POST['reset']), $_POST['script'], Sys::strBoolToInt($_POST['pause']));
                 				$return['error'] = FALSE;
                                 $return['msg'] = 'Тема обновлена.';
                             }

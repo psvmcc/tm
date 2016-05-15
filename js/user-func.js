@@ -162,6 +162,7 @@ $( document ).ready(function()
             s_f = $form.find('input[name="script"]'),
             s = $(s_f).val();
             h_f = $form.find('input[name="hd"]'),
+            pause_f = $form.find('input[name="pause"]').prop('checked'),
             r_f = $form.find('input[name="reset"]').prop('checked');
             
         h = $(h_f).val();
@@ -186,7 +187,7 @@ $( document ).ready(function()
         }
 
         ohSnap('Обрабатывается запрос...', 'yellow');
-        $.post("action.php",{action: 'update', id: id, tracker: t, name: n, url: u, update: update, path: p, script: s, hd: h, reset: r_f},
+        $.post("action.php",{action: 'update', id: id, tracker: t, name: n, url: u, update: update, path: p, script: s, hd: h, pause: pause_f, reset: r_f},
             function(data) {
                 if (data.error)
                 {

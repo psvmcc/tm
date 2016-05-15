@@ -100,7 +100,7 @@ class mekc
 				if (mekc::$warning == NULL)
 				{
 					mekc::$warning = TRUE;
-					Errors::setWarnings($tracker, 'not_available');
+					Errors::setWarnings($tracker, 'cant_get_auth_page');
 				}
 				//останавливаем процесс выполнения, т.к. не может работать без кук
 				mekc::$exucution = FALSE;
@@ -119,8 +119,9 @@ class mekc
 		}
 	}
 	
-	public static function main($id, $tracker, $name, $torrent_id, $timestamp, $hash, $auto_update)
+	public static function main($params)
 	{
+    	extract($params);
 		$cookie = Database::getCookie($tracker);
 		if (mekc::checkCookie($cookie))
 		{
@@ -178,19 +179,24 @@ class mekc
 	                                		'url'            => $link,
 	                                	)
 	                                );
-									
-									if ($auto_update)
-    								{
-    								    $name = Sys::getHeader('http://tv.mekc.info/details.php?id='.$torrent_id);
-    								    //обновляем заголовок торрента в базе
-                                        Database::setNewName($id, $name);
-    								}
-    
-    								$message = $name.' обновлён.';
-    								$status = Sys::saveTorrent($tracker, $torrent_id, $torrent, $id, $hash, $message, $date_str);
-    								
-    								//обновляем время регистрации торрента в базе
-    								Database::setNewDate($id, $date);
+	                                
+	                                if (Sys::checkTorrentFile($torrent))
+                                    {
+    									if ($auto_update)
+        								{
+        								    $name = Sys::getHeader('http://tv.mekc.info/details.php?id='.$torrent_id);
+        								    //обновляем заголовок торрента в базе
+                                            Database::setNewName($id, $name);
+        								}
+        
+        								$message = $name.' обновлён.';
+        								$status = Sys::saveTorrent($tracker, $torrent_id, $torrent, $id, $hash, $message, $date_str, $name);
+        								
+        								//обновляем время регистрации торрента в базе
+        								Database::setNewDate($id, $date);
+                                    }
+                                    else
+                                        Errors::setWarnings($tracker, 'torrent_file_fail');
 								}
 							}
 							else
@@ -199,7 +205,7 @@ class mekc
 								if (mekc::$warning == NULL)
                     			{
                     				mekc::$warning = TRUE;
-                    				Errors::setWarnings($tracker, 'not_available');
+                    				Errors::setWarnings($tracker, 'cant_find_dowload_link');
                     			}
                     			//останавливаем процесс выполнения, т.к. не может работать без кук
 								mekc::$exucution = FALSE;
@@ -211,7 +217,7 @@ class mekc
 							if (mekc::$warning == NULL)
                 			{
                 				mekc::$warning = TRUE;
-                				Errors::setWarnings($tracker, 'not_available');
+                				Errors::setWarnings($tracker, 'cant_find_date');
                 			}
                 			//останавливаем процесс выполнения, т.к. не может работать без кук
 							mekc::$exucution = FALSE;
@@ -223,7 +229,7 @@ class mekc
 						if (mekc::$warning == NULL)
             			{
             				mekc::$warning = TRUE;
-            				Errors::setWarnings($tracker, 'not_available');
+            				Errors::setWarnings($tracker, 'cant_find_date');
             			}
             			//останавливаем процесс выполнения, т.к. не может работать без кук
 						mekc::$exucution = FALSE;
@@ -235,7 +241,7 @@ class mekc
 					if (mekc::$warning == NULL)
         			{
         				mekc::$warning = TRUE;
-        				Errors::setWarnings($tracker, 'not_available');
+        				Errors::setWarnings($tracker, 'cant_find_date');
         			}
         			//останавливаем процесс выполнения, т.к. не может работать без кук
 					mekc::$exucution = FALSE;
@@ -247,7 +253,7 @@ class mekc
 				if (mekc::$warning == NULL)
     			{
     				mekc::$warning = TRUE;
-    				Errors::setWarnings($tracker, 'not_available');
+    				Errors::setWarnings($tracker, 'cant_get_forum_page');
     			}
     			//останавливаем процесс выполнения, т.к. не может работать без кук
 				mekc::$exucution = FALSE;

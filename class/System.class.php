@@ -58,7 +58,7 @@ class Sys
     //версия системы
     public static function version()
     {
-        return '1.3.1';
+        return '1.4.1';
     }
 
     //проверка обновлений системы
@@ -254,6 +254,7 @@ class Sys
             );            
         }
 
+
         if ($tracker != 'animelayer.ru' && $tracker != 'casstudio.tv' && $tracker != 'torrents.net.ua' && $tracker != 'rustorka.com' && $tracker != 'rutor.info' && $tracker != 'tr.anidub.com')
             $forumPage = iconv('windows-1251', 'utf-8//IGNORE', $forumPage);
 
@@ -275,7 +276,7 @@ class Sys
                 $name = substr($array[1], 0, -20);
             elseif ($tracker == 'rutracker.org')
                 $name = substr($array[1], 0, -17);
-            elseif ($tracker == 'tfile.me')
+            elseif ($tracker == 'tfile.co')
                 $name = substr($array[1], 15, -25);
             elseif ($tracker == 'tracker.0day.kiev.ua')
                 $name = substr($array[1], 6, -67);
@@ -355,7 +356,7 @@ class Sys
             else
                 $message = $message.' Но не добавлен в torrent-клиент и сохранён.';
             //отправляем уведомлении о новом торренте
-            Notification::sendNotification('notification', $date_str, $tracker, $message, $name);
+            Notification::sendNotification('notification', $date_str, $tracker, $message, $name, $id);
             if ($status['status'])
                 Sys::runScript($id, $tracker, $name, $status['hash'], $message, $date_str);        
         }
@@ -422,6 +423,33 @@ class Sys
             return FALSE;
     }
     
+    //удаляем старые torrent-файлы
+    public static function deleteOldTorrents()
+    {
+        $dir = dirname(__FILE__).'/../torrents/';
+        $files = array();
+
+        if ($handle = opendir($dir))
+        {
+            while (false !== ($file = readdir($handle)))
+        	{
+                if ($file != '.' && $file != '..' && $file != '.htaccess')
+                   $files[filemtime($dir.$file)] = $file;
+            }
+            closedir($handle);
+            ksort($files);
+
+            $end = count($files) - 20;
+        	$i = 0;
+            foreach($files as $file)
+        	{
+        		if ($i < $end)
+        			unlink($dir.$file);
+        		$i++;
+            }
+        }
+    }
+
     //получаем важные новости и кладём в БД
     public static function getNews()
     {

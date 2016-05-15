@@ -77,10 +77,10 @@ if ( ! Sys::checkAuth())
         <label class="label-name">Трекер</label>
         <select name="tracker">
             <option></option>
-            <option>nnm-club.me</option>
+            <option>nnmclub.to</option>
             <option>pornolab.net</option>
             <option>rutracker.org</option>
-            <option>tfile.me</option>
+            <option>tfile.co</option>
         </select>
     </p>
     <p>

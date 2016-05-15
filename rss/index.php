@@ -4,14 +4,15 @@ include_once $dir.'class/Database.class.php';
 
 $rss = Database::getSetting('rss');
 
-if ($rss) {
-    
+if ($rss)
+{
     header('Content-type: text/xml');
     
     //количество записей в ленте. При необходимости, можно вынести в параметры
     $maxCount = 20;
     
-    $url = 'http://'.$_SERVER["HTTP_HOST"].str_replace('/rss/index.php', '', $_SERVER["SCRIPT_NAME"]);
+    #$url = 'http://'.$_SERVER["HTTP_HOST"].str_replace('/rss/index.php', '', $_SERVER["SCRIPT_NAME"]);
+    $url = Database::getSetting('serverAddress');
     
     $xml=new DomDocument('1.0','utf-8'); // создаем XML документ
     $xml->formatOutput = true;           // включаем форматирование документа
@@ -32,7 +33,7 @@ if ($rss) {
     
     // формируем элемент 'link'
     $link = $channel->appendChild($xml->createElement('link'));
-    $link->appendChild($xml->createTextNode($url.'/rss/'));
+    $link->appendChild($xml->createTextNode($url.'rss/'));
 
     // формируем элемент 'language'
     $language = $channel->appendChild($xml->createElement('language'));
@@ -43,7 +44,8 @@ if ($rss) {
     
     // формируем ассоциативный массив, где ключем выступает имя файла, а значением время изменения
     $torrentsList = array();
-    foreach (glob($dir.'torrents/*.torrent') as $torrentFile) {
+    foreach (glob($dir.'torrents/*.torrent') as $torrentFile)
+    {
         $fileName = basename($torrentFile);
         $timestam = filemtime($torrentFile);
         
@@ -68,8 +70,8 @@ if ($rss) {
     $count = 1;
     
     // делаем обход по элементам массива
-    foreach ($torrentsList as $fileName => $fileDate) {
-        
+    foreach ($torrentsList as $fileName => $fileDate)
+    {    
         // формируем элемент 'item'
         $item = $channel->appendChild($xml->createElement('item'));
         
@@ -83,7 +85,7 @@ if ($rss) {
         
         // формируем элемент 'link'
         $link = $item->appendChild($xml->createElement('link'));
-        $link->appendChild($xml->createTextNode($url.'/torrents/'.$fileName));
+        $link->appendChild($xml->createTextNode($url.'torrents/'.$fileName));
         
         if ($count > $maxCount)
             break;

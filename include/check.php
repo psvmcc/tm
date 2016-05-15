@@ -91,7 +91,7 @@ if (Sys::checkInternet())
 		</tr>
 				<?php	
 				}
-				if ($tracker == 'nnm-club.me' || $tracker == 'pornolab.net' || $tracker == 'rutracker.org' || $tracker == 'tapochek.net' || $tracker == 'tfile.me')
+				if ($tracker == 'nnm-club.me' || $tracker == 'pornolab.net' || $tracker == 'rutracker.org' || $tracker == 'tapochek.net' || $tracker == 'tfile.co')
 				{
 					if (file_exists($dir.'trackers/'.$tracker.'.search.php'))
 					{
@@ -111,7 +111,7 @@ if (Sys::checkInternet())
 					}
 				}
 				
-				if ($tracker == 'lostfilm-mirror' || $tracker == 'rutor.org' || $tracker == 'tfile.me')
+				if ($tracker == 'lostfilm-mirror' || $tracker == 'rutor.org' || $tracker == 'tfile.co')
 				{
 				?>
 		<tr>

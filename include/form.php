@@ -26,7 +26,7 @@ if (isset($torrent[0]['torrent_id']) && $torrent[0]['torrent_id'] != 0)
     <p>
         <label class="label-name">Ссылка на тему</label>
 <?php
-if ($tracker == 'rutracker.org' || $tracker == 'nnm-club.me' || $tracker == 'tfile.me' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
+if ($tracker == 'rutracker.org' || $tracker == 'nnmclub.to' || $tracker == 'tfile.co' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
     $tracker = 'http://'.$tracker.'/forum/viewtopic.php?t=';
 elseif ($tracker == 'casstudio.tv' || $tracker == 'kinozal.tv'  || $tracker == 'tracker.0day.kiev.ua' || $tracker == 'tv.mekc.info')
     $tracker = 'http://'.$tracker.'/details.php?id=';
@@ -80,6 +80,10 @@ else
         <label class="label-name">Выполнить скрипт</label>
         <input type="text" name="script" id="script" value="<?php echo $torrent[0]['script']?>"><br>
         <span class="subinput-text">Например: /home/user/check.sh</span>
+    </p>
+    <p>
+        <label class="label-name">Поставить раздачу на паузу</label>
+        <input type="checkbox" name="pause" id="pause" <?php if($torrent[0]['pause']) echo 'checked';?> ><br>
     </p>
     <p>
         <label class="label-name">Сбросить время последнего обновления</label>

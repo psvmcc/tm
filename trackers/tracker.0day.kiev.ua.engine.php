@@ -94,7 +94,7 @@ class kiev
 					if (kiev::$warning == NULL)
 					{
 						kiev::$warning = TRUE;
-						Errors::setWarnings($tracker, 'not_available');
+						Errors::setWarnings($tracker, 'cant_find_cookie');
 					}
 					//останавливаем процесс выполнения, т.к. не может работать без кук
 					kiev::$exucution = FALSE;
@@ -107,7 +107,7 @@ class kiev
 				if (kiev::$warning == NULL)
 				{
 					kiev::$warning = TRUE;
-					Errors::setWarnings($tracker, 'not_available');
+					Errors::setWarnings($tracker, 'cant_get_auth_page');
 				}
 				//останавливаем процесс выполнения, т.к. не может работать без кук
 				kiev::$exucution = FALSE;
@@ -127,8 +127,9 @@ class kiev
 	}
 
 	//основная функция
-	public static function main($id, $tracker, $name, $torrent_id, $timestamp, $hash, $auto_update)
+	public static function main($params)
 	{
+    	extract($params);
 		$cookie = Database::getCookie($tracker);
 		if (kiev::checkCookie($cookie))
 		{
@@ -187,19 +188,35 @@ class kiev
                                     		'sendHeader'     => array('Host' => 'tracker.0day.kiev.ua', 'Content-length' => strlen(kiev::$sess_cookie)),
                                     	)
                                     );
-
-    								if ($auto_update)
+                                    
+                                    if (Sys::checkTorrentFile($torrent))
+                                    {
+        								if ($auto_update)
+        								{
+        								    $name = Sys::getHeader('http://tracker.0day.kiev.ua/details.php?id='.$torrent_id);
+        								    //обновляем заголовок торрента в базе
+                                            Database::setNewName($id, $name);
+        								}
+    
+        								$message = $name.' обновлён.';
+        								$status = Sys::saveTorrent($tracker, $torrent_id, $torrent, $id, $hash, $message, $date_str, $name);
+    								
+        								//обновляем время регистрации торрента в базе
+        								Database::setNewDate($id, $date);
+                                    }
+                                    else
+                                        Errors::setWarnings($tracker, 'torrent_file_fail');
+                                }
+                                else
+                                {
+    								//устанавливаем варнинг
+    								if (kiev::$warning == NULL)
     								{
-    								    $name = Sys::getHeader('http://tracker.0day.kiev.ua/details.php?id='.$torrent_id);
-    								    //обновляем заголовок торрента в базе
-                                        Database::setNewName($id, $name);
+    									kiev::$warning = TRUE;
+    									Errors::setWarnings($tracker, 'cant_find_dowload_link');
     								}
-
-    								$message = $name.' обновлён.';
-    								$status = Sys::saveTorrent($tracker, $torrent_id, $torrent, $id, $hash, $message, $date_str, $name);
-								
-    								//обновляем время регистрации торрента в базе
-    								Database::setNewDate($id, $date);
+    								//останавливаем процесс выполнения, т.к. не может работать без кук
+    								kiev::$exucution = FALSE;                                    
                                 }
 							}
 						}
@@ -209,7 +226,7 @@ class kiev
 							if (kiev::$warning == NULL)
 							{
 								kiev::$warning = TRUE;
-								Errors::setWarnings($tracker, 'not_available');
+								Errors::setWarnings($tracker, 'cant_find_date');
 							}
 							//останавливаем процесс выполнения, т.к. не может работать без кук
 							kiev::$exucution = FALSE;
@@ -221,7 +238,7 @@ class kiev
 						if (kiev::$warning == NULL)
 						{
 							kiev::$warning = TRUE;
-							Errors::setWarnings($tracker, 'not_available');
+							Errors::setWarnings($tracker, 'cant_find_date');
 						}
 						//останавливаем процесс выполнения, т.к. не может работать без кук
 						kiev::$exucution = FALSE;
@@ -233,7 +250,7 @@ class kiev
 					if (kiev::$warning == NULL)
 					{
 						kiev::$warning = TRUE;
-						Errors::setWarnings($tracker, 'not_available');
+						Errors::setWarnings($tracker, 'cant_find_date');
 					}
 					//останавливаем процесс выполнения, т.к. не может работать без кук
 					kiev::$exucution = FALSE;
@@ -245,7 +262,7 @@ class kiev
 				if (kiev::$warning == NULL)
 				{
 					kiev::$warning = TRUE;
-					Errors::setWarnings($tracker, 'not_available');
+					Errors::setWarnings($tracker, 'cant_get_forum_page');
 				}
 				//останавливаем процесс выполнения, т.к. не может работать без кук
 				kiev::$exucution = FALSE;

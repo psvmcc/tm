@@ -111,7 +111,7 @@ class animelayer
 					if (animelayer::$warning == NULL)
 					{
 						animelayer::$warning = TRUE;
-						Errors::setWarnings($tracker, 'not_available');
+						Errors::setWarnings($tracker, 'cant_find_cookie');
 					}
 					// Останавливаем процесс выполнения, т.к. не может работать без кук
 					animelayer::$exucution = FALSE;
@@ -123,7 +123,7 @@ class animelayer
 				if (animelayer::$warning == NULL)
 				{
 					animelayer::$warning = TRUE;
-					Errors::setWarnings($tracker, 'not_available');
+					Errors::setWarnings($tracker, 'cant_get_auth_page');
 				}
 				// Останавливаем процесс выполнения, т.к. не может работать без кук
 				animelayer::$exucution = FALSE;
@@ -144,8 +144,9 @@ class animelayer
 	}
 
 	// Основная функция
-	public static function main($id, $tracker, $name, $torrent_id, $timestamp, $hash, $auto_update)
+	public static function main($params)
 	{
+    	extract($params);
 		$cookie = Database::getCookie($tracker);
 		if (animelayer::checkCookie($cookie))
 		{
@@ -203,16 +204,12 @@ class animelayer
                                 {
                                     $message = $name.' обновлён.';
                 					$status = Sys::saveTorrent($tracker, $torrent_id, $torrent, $id, $hash, $message, $date_str, $name);
-    								
-    								if ($status == 'add_fail' || $status == 'connect_fail' || $status == 'credential_wrong')
-    								{
-    								    $torrentClient = Database::getSetting('torrentClient');
-    								    Errors::setWarnings($torrentClient, $status);
-    								}
-    								
+ 								
                 					// Обновляем время регистрации торрента в базе
                 					Database::setNewDate($id, $date);
                 				}
+                				else
+                                    Errors::setWarnings($tracker, 'torrent_file_fail');
             				}
             			}
             			else
@@ -221,7 +218,7 @@ class animelayer
             				if (animelayer::$warning == NULL)
             				{
             					animelayer::$warning = TRUE;
-            					Errors::setWarnings($tracker, 'not_available');
+            					Errors::setWarnings($tracker, 'cant_find_date');
             				}
             				// Останавливаем процесс выполнения, т.к. не может работать без даты
             				animelayer::$exucution = FALSE;
@@ -233,7 +230,7 @@ class animelayer
             			if (animelayer::$warning == NULL)
             			{
             				animelayer::$warning = TRUE;
-            				Errors::setWarnings($tracker, 'not_available');
+            				Errors::setWarnings($tracker, 'cant_find_date');
             			}
             			// Останавливаем процесс выполнения, т.к. не может работать без даты
             			animelayer::$exucution = FALSE;
@@ -245,7 +242,7 @@ class animelayer
 					if (animelayer::$warning == NULL)
 					{
 						animelayer::$warning = TRUE;
-						Errors::setWarnings($tracker, 'not_available');
+						Errors::setWarnings($tracker, 'cant_find_date');
 					}
 					// Останавливаем процесс выполнения, т.к. не может работать без даты
 					animelayer::$exucution = FALSE;
@@ -257,7 +254,7 @@ class animelayer
 				if (animelayer::$warning == NULL)
 				{
 					animelayer::$warning = TRUE;
-					Errors::setWarnings($tracker, 'not_available');
+					Errors::setWarnings($tracker, 'cant_get_forum_page');
 				}
 				// Останавливаем процесс выполнения, т.к. не может работать без данных
 				animelayer::$exucution = FALSE;

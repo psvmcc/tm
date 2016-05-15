@@ -4,8 +4,9 @@ include_once('pornolab.net.engine.php');
 class pornolabSearch extends pornolab
 {
 	//ищем темы пользователя
-	public static function mainSearch($user_id, $tracker, $user)
+	public static function mainSearch($params)
 	{
+    	extract($params);
 		$cookie = Database::getCookie($tracker);
 		if (pornolab::checkCookie($cookie))
 		{
@@ -18,7 +19,7 @@ class pornolabSearch extends pornolab
 
 		if (pornolab::$exucution)
 		{
-    		$user = iconv('utf-8', 'windows-1251', $user);
+    		$user = iconv('utf-8', 'windows-1251', $name);
     		$page = Sys::getUrlContent(
             	array(
             		'type'           => 'POST',
@@ -40,7 +41,7 @@ class pornolabSearch extends pornolab
 	    		preg_match_all('/<a class=\"med tLink bold\" href=\"\.\/viewtopic.php\?t=(\d{3,9})\">(.*)<\/a>/', $page, $threme);
 	
 	    		for ($i=0; $i<count($threme[1]); $i++)
-	    			Database::addThremeToBuffer($user_id, $section[1][$i], $threme[1][$i], $threme[2][$i], $tracker);
+	    			Database::addThremeToBuffer($id, $section[1][$i], $threme[1][$i], $threme[2][$i], $tracker);
 	    	}
 
     		$toDownload = Database::takeToDownload($tracker);
@@ -64,17 +65,17 @@ class pornolabSearch extends pornolab
                     		'referer'        => 'http://pornolab.net/forum/viewtopic.php?t='.$torrent_id,
                     	)
                     );
-    				$message = $toDownload[$i]['threme'].' добавлена для скачивания.';
-    				$status = Sys::saveTorrent($tracker, $toDownload[$i]['threme_id'], $torrent, $toDownload[$i]['threme_id'], 0, $message, date('d M Y H:i'), $name);
-								
-					if ($status == 'add_fail' || $status == 'connect_fail' || $status == 'credential_wrong')
-					{
-					    $torrentClient = Database::getSetting('torrentClient');
-					    Errors::setWarnings($torrentClient, $status);
-					}	                            
                     
-    				//обновляем время регистрации торрента в базе
-    				Database::setDownloaded($toDownload[$i]['id']);
+                    if (Sys::checkTorrentFile($torrent))
+                    {
+        				$message = $toDownload[$i]['threme'].' добавлена для скачивания.';
+        				$status = Sys::saveTorrent($tracker, $toDownload[$i]['threme_id'], $torrent, $toDownload[$i]['threme_id'], 0, $message, date('d M Y H:i'), $name);
+    								
+        				//обновляем время регистрации торрента в базе
+        				Database::setDownloaded($toDownload[$i]['id']);
+                    }
+                    else
+                        Errors::setWarnings($tracker, 'torrent_file_fail');
                 }
             }
         }

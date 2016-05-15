@@ -8,15 +8,6 @@ class lostfilmmirror
 	protected static $log_page;
 	protected static $xml_page;
 	
-	//функция проверки введёного названия
-	public static function checkRule($data)
-	{
-		if (preg_match('/^[\.\+\s\'\`\:\;\-a-zA-Z0-9]+$/', $data))
-			return TRUE;
-		else
-			return FALSE;
-	}
-
 	//функция преобразования даты из строки
 	private static function dateStringToNum($data)
 	{
@@ -84,8 +75,9 @@ class lostfilmmirror
 	}
 	
 	//основная функция
-	public static function main($id, $tracker, $name, $hd, $ep, $timestamp, $hash)
+	public static function main($params)
 	{
+    	extract($params);
 		//проверяем получена ли уже RSS лента
 		if ( ! lostfilmmirror::$log_page)
 		{
@@ -127,7 +119,7 @@ class lostfilmmirror
 				if (lostfilmmirror::$warning == NULL)
     			{
     				lostfilmmirror::$warning = TRUE;
-    				Errors::setWarnings($tracker, 'not_available');
+    				Errors::setWarnings($tracker, 'cant_find_rss');
     			}
 				//останавливаем выполнение цепочки
 				lostfilmmirror::$exucution = FALSE;							
@@ -193,7 +185,7 @@ class lostfilmmirror
 								$episode = (substr($episode, 0, 1) == 0) ? substr($episode, 1, 1) : $episode;
 								$season = (substr($season, 0, 1) == 0) ? substr($season, 1, 1) : $season;
 								$message = $name.' '.$amp.' обновлён до '.$episode.' серии, '.$season.' сезона.';
-								$status = Sys::saveTorrent($tracker, $file, $torrent, $id, $hash, $message, $date_str);
+								$status = Sys::saveTorrent($tracker, $file, $torrent, $id, $hash, $message, $date_str, $name);
 
 								//обновляем время регистрации торрента в базе
 								Database::setNewDate($id, $serial['date']);
@@ -201,7 +193,7 @@ class lostfilmmirror
 								Database::setNewEpisode($id, $serial['episode']);
                             }
                             else
-                                Errors::setWarnings($tracker, 'save_file_fail');
+                                Errors::setWarnings($tracker, 'torrent_file_fail');
 						}
 					}
 				}

@@ -30,7 +30,7 @@ class Notification
 		if ($name != '' || $name != 0)
 		{
     		$msg .= '<br />Ссылка на тему: ';
-    		if ($tracker == 'rutracker.org' || $tracker == 'nnm-club.me' || $tracker == 'tfile.me' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
+    		if ($tracker == 'rutracker.org' || $tracker == 'nnmclub.to' || $tracker == 'tfile.co' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
     			$msg .= "http://{$tracker}/forum/viewtopic.php?t={$name}";
     		elseif ($tracker == 'kinozal.tv'  || $tracker == 'animelayer.ru' || $tracker == 'tracker.0day.kiev.ua')
         	    $msg .= "http://{$tracker}/details.php?id={$name}";
@@ -59,6 +59,7 @@ class Notification
         		'header'         => 1,
         		'returntransfer' => 1,
         		'url'            => 'https://api.pushover.net/1/messages.json',
+        		'ssl_false'      => 1,
                 'postfields'     => $postfields,
         	)
         );
@@ -78,6 +79,7 @@ class Notification
                 'header'         => 1,
                 'returntransfer' => 1,
                 'url'            => 'https://api.prowlapp.com/publicapi/add',
+                'ssl_false'      => 1,
                 'postfields'     => $postfields,
             )
         );    	
@@ -96,6 +98,7 @@ class Notification
                 'type'           => 'POST',
                 'returntransfer' => 1,
                 'url'            => 'https://api.pushbullet.com/v2/pushes',
+                'ssl_false'      => 1,
                 'userpwd'        => $pushbullet,
                 'postfields'     => $postfields,
             )
@@ -116,12 +119,13 @@ class Notification
                 'type'           => 'POST',
                 'returntransfer' => 1,
                 'url'            => 'https://pushall.ru/api.php',
+                'ssl_false'      => 1,
                 'postfields'     => $postfields,
             )
         );
 	}
 
-	public static function sendNotification($type, $date, $tracker, $message, $name=0)
+	public static function sendNotification($type, $date, $tracker, $message, $name=0, $id=0)
 	{
 		if ($type == 'warning')
 			$header_message = 'Предупреждение.';
@@ -140,7 +144,10 @@ class Notification
                 {
                     $service = Database::getService('sendWarningService');
                     if ($service['service'] == 'E-mail')
+                    {
                         $service['service'] = 'Mail';
+                        $name = $id;
+                    }
                     if ( ! empty($service['address']))
                         call_user_func('Notification::send'.$service['service'], $service['address'], $date, $tracker, $message, $header_message, $name);
                 }
@@ -153,7 +160,10 @@ class Notification
                 {
                     $service = Database::getService('sendUpdateService');
                     if ($service['service'] == 'E-mail')
+                    {
                         $service['service'] = 'Mail';
+                        $name = $id;
+                    }
                     if ($type == 'news')
                     {
                         $message = str_replace('<br>', "\r\n", $message);

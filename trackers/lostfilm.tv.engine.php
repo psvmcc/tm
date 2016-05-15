@@ -35,7 +35,7 @@ class lostfilm
 	        		'type'           => 'GET',
 	        		'header'         => 0,
 	        		'returntransfer' => 1,
-	        		'url'            => 'https://www.lostfilm.tv/my.php',
+	        		'url'            => 'http://www.lostfilm.tv/my.php',
 	        		'cookie'         => lostfilm::$sess_cookie,
 	        		'sendHeader'     => array('Host' => 'www.lostfilm.tv'),
 	        		'convert'        => array('windows-1251', 'utf-8//IGNORE'),
@@ -54,7 +54,7 @@ class lostfilm
 				if (lostfilm::$warning == NULL)
     			{
     				lostfilm::$warning = TRUE;
-    				Errors::setWarnings($tracker, 'not_available');
+    				Errors::setWarnings($tracker, 'cant_find_cookie');
     			}
 				//останавливаем выполнение цепочки
 				lostfilm::$exucution = FALSE;	                
@@ -81,7 +81,7 @@ class lostfilm
         		'type'           => 'POST',
         		'header'         => 0,
         		'returntransfer' => 1,
-        		'url'            => 'https://www.lostfilm.tv/',
+        		'url'            => 'http://www.lostfilm.tv/',
         		'cookie'         => $sess_cookie,
         		'sendHeader'     => array('Host' => 'www.lostfilm.tv'),
         		'convert'        => array('windows-1251', 'utf-8//IGNORE'),
@@ -248,8 +248,9 @@ class lostfilm
 	}
 	
 	//основная функция
-	public static function main($id, $tracker, $name, $hd, $ep, $timestamp, $hash)
+	public static function main($params)
 	{
+    	extract($params);
 		//проверяем небыло ли до этого уже ошибок
 		if (empty(lostfilm::$exucution) || (lostfilm::$exucution))
 		{
@@ -280,7 +281,7 @@ class lostfilm
 			        	array(
 			        		'type'           => 'GET',
 			        		'returntransfer' => 1,
-			        		'url'            => 'https://www.lostfilm.tv/rssdd.xml',
+			        		'url'            => 'http://www.lostfilm.tv/rssdd.xml',
 			        		'convert'        => array('windows-1251', 'utf-8//IGNORE'),
 			        	)
 			        );
@@ -311,7 +312,7 @@ class lostfilm
 						if (lostfilm::$warning == NULL)
             			{
             				lostfilm::$warning = TRUE;
-            				Errors::setWarnings($tracker, 'not_available');
+            				Errors::setWarnings($tracker, 'cant_find_rss');
             			}
 						//останавливаем выполнение цепочки
 						lostfilm::$exucution = FALSE;							
@@ -368,19 +369,19 @@ class lostfilm
 						        	array(
 						        		'type'           => 'POST',
 						        		'returntransfer' => 1,
-						        		'url'            => $serial['link'],
+						        		'url'            => str_replace('https', 'http', $serial['link']),
 						        		'cookie'         => lostfilm::$sess_cookie,
 						        		'sendHeader'     => array('Host' => 'www.lostfilm.tv', 'Content-length' => strlen(lostfilm::$sess_cookie)),
 						        	)
                                 );
-                                
+
                                 if (Sys::checkTorrentFile($torrent))
                                 {							
     								$file = str_replace(' ', '.', $name).'.S'.$season.'E'.$episode.'.'.$amp;
     								$episode = (substr($episode, 0, 1) == 0) ? substr($episode, 1, 1) : $episode;
     								$season = (substr($season, 0, 1) == 0) ? substr($season, 1, 1) : $season;
     								$message = $name.' '.$amp.' обновлён до '.$episode.' серии, '.$season.' сезона.';
-    								$status = Sys::saveTorrent($tracker, $file, $torrent, $id, $hash, $message, $date_str);
+    								$status = Sys::saveTorrent($tracker, $file, $torrent, $id, $hash, $message, $date_str, $name);
 
     								//обновляем время регистрации торрента в базе
     								Database::setNewDate($id, $serial['date']);
@@ -388,7 +389,7 @@ class lostfilm
     								Database::setNewEpisode($id, $serial['episode']);
                                 }
                                 else
-                                    Errors::setWarnings($tracker, 'save_file_fail');
+                                    Errors::setWarnings($tracker, 'torrent_file_fail');
 							}
 						}
 					}

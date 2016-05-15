@@ -50,8 +50,12 @@ else
         <tr>
             <td class='text-align-left' nowrap><span class='icon-torrent' style='background-image: url(img/<?php echo $tracker ?>.ico);'></span><?php echo $tracker ?></td>
             <td class='text-align-left'>
-    	  	<?php 
-    		if ($tracker == 'rutracker.org' || $tracker == 'nnmclub.to' || $tracker == 'tfile.me' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
+    	  	<?php
+            if ($pause)
+                echo '<img src="img/pause.png" alt="Раздача на паузе">&nbsp;';
+            if ($error)
+                echo '<img src="img/error.png" alt="Есть ошибки">&nbsp;';
+    		if ($tracker == 'rutracker.org' || $tracker == 'nnmclub.to' || $tracker == 'tfile.co' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
     		{
     		?>
 				<a href='http://<?php echo $tracker ?>/forum/viewtopic.php?t=<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>
@@ -102,10 +106,10 @@ else
     		</td>
             <td nowrap>
             <?php
-            if ($timestamp == '0000-00-00 00:00:00' || $timestamp == NULL) {}
+            if ($timestamp == '0000-00-00 00:00:00' || $timestamp == NULL || $timestamp == '2000-01-01 00:00:00') {}
             else
             {
-            	if ($tracker != 'rutracker.org' && $tracker != 'nnm-club.me' && $tracker != 'rutor.org' && $tracker != 'kinozal.tv')
+            	if ($type == 'RSS')
             	{
             	?>
             	<div onclick='expand("div<?php echo $id ?>")' class='cut' style='cursor: pointer;'>
@@ -126,12 +130,12 @@ else
                 	?>			
             		</div>
             	<?php
-            	if ($timestamp != '0000-00-00 00:00:00')
+            	if ($timestamp != '0000-00-00 00:00:00' || $timestamp == NULL || $timestamp == '2000-01-01 00:00:00')
             	{
             		$season = substr($ep, 1, 2);
             		$episode = substr($ep, -2);
 
-                	if ($tracker != 'rutracker.org' && $tracker != 'nnm-club.me' && $tracker != 'rutor.org' && $tracker != 'kinozal.tv')
+                	if ($type == 'RSS')
                 	{
                 	?>
             		<div id='div<?php echo $id ?>' class='result'>
