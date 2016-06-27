@@ -55,6 +55,8 @@ else
                 echo '<img src="img/pause.png" alt="Раздача на паузе">&nbsp;';
             if ($error)
                 echo '<img src="img/error.png" alt="Есть ошибки">&nbsp;';
+            if ($closed)
+                echo '[Тема закрыта]&nbsp;';
     		if ($tracker == 'rutracker.org' || $tracker == 'nnmclub.to' || $tracker == 'tfile.co' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
     		{
     		?>

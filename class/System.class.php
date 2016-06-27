@@ -38,6 +38,17 @@ class Sys
         else
             return FALSE;
     }
+    
+    //проверяем версию cURL
+    public static function checkCurlVersion()
+    {
+        $version = '7.30';
+        $curl = curl_version();
+        if ($curl['version'] <= $version)
+            return 'old';
+        else
+            return 'new';
+    }    
 
     //проверяем есть ли на конце пути /
     public static function checkPath($path)
@@ -58,7 +69,7 @@ class Sys
     //версия системы
     public static function version()
     {
-        return '1.4.1';
+        return '1.4.2';
     }
 
     //проверка обновлений системы
@@ -123,14 +134,17 @@ class Sys
             if (isset($param['cookie']))
                 curl_setopt($ch, CURLOPT_COOKIE, $param['cookie']);
 
-            if (isset($param['sendHeader']))
+            if (Sys::checkCurlVersion() == 'old')
             {
-                foreach ($param['sendHeader'] as $k => $v)
+                if (isset($param['sendHeader']))
                 {
-                    $header[] = $k.': '.$v."\r\n";
+                    foreach ($param['sendHeader'] as $k => $v)
+                    {
+                        $header[] = $k.': '.$v."\r\n";
+                    }
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
                 }
-                curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-            }        
+            }
 
             if (isset($param['referer']))
                 curl_setopt($ch, CURLOPT_REFERER, $param['referer']);

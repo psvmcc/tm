@@ -167,8 +167,8 @@ class rutracker
     			//проверяем не закрыта ли тема
     			if (preg_match('/alt=\"Тема закрыта\"/', $page, $array))
     			{
-        			//обновляем заголовок торрента в базе
-                    Database::setNewName($id, '[CLOSED] '.$name);
+        			//ставим галочку что тема закрыта
+                    Database::setClosedThreme($id);
     			}
     			else
     			{

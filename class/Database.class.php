@@ -306,7 +306,7 @@ class Database
                             to_char(t.timestamp, 'mm') AS month,
                             to_char(t.timestamp, 'YYYY') AS year,
                             to_char(t.timestamp, 'HH24:MI:SS') AS time,
-                            t.hash, t.error, c.type
+                            t.hash, t.error, t.closed, c.type
                             FROM torrent t
                             INNER JOIN credentials c ON c.tracker = t.tracker
                             ORDER BY {$order}");
@@ -318,7 +318,7 @@ class Database
                             DATE_FORMAT(`t`.`timestamp`, '%m') AS `month`, 
                             DATE_FORMAT(`t`.`timestamp`, '%Y') AS `year`, 
                             DATE_FORMAT(`t`.`timestamp`, '%T') AS `time`,
-                            `t`.`hash`, `t`.`error`, `c`.`type`
+                            `t`.`hash`, `t`.`error`, `t`.`closed`, `c`.`type`
                             FROM `torrent` t
                             INNER JOIN `credentials` c ON `c`.`tracker` = `t`.`tracker`
                             ORDER BY {$order}");
@@ -330,7 +330,7 @@ class Database
                             strftime('%m', `t`.`timestamp`) AS `month`, 
                             strftime('%Y', `t`.`timestamp`) AS `year`, 
                             strftime('%H:%M', `t`.`timestamp`) AS `time`,
-                            `t`.`hash`, `t`.`error`, `c`.`type`
+                            `t`.`hash`, `t`.`error`, `t`.`closed`, `c`.`type`
                             FROM `torrent` t
                             INNER JOIN `credentials` c ON `c`.`tracker` = `t`.`tracker`
                             ORDER BY {$order}");    		
@@ -357,6 +357,7 @@ class Database
                 $resultArray[$i]['time'] = $row['time'];
                 $resultArray[$i]['hash'] = $row['hash'];
                 $resultArray[$i]['error'] = $row['error'];
+                $resultArray[$i]['closed'] = $row['closed'];
                 $resultArray[$i]['type'] = $row['type'];
                 $i++;
             }
@@ -374,7 +375,7 @@ class Database
     
     public static function getTorrent($id)
     {
-        $stmt = self::newStatement("SELECT `id`, `tracker`, `name`, `hd`, `path`, `torrent_id`, `auto_update`, `script`, `pause` FROM `torrent` WHERE `id` = :id");
+        $stmt = self::newStatement("SELECT `id`, `tracker`, `name`, `hd`, `path`, `torrent_id`, `auto_update`, `script`, `pause`, `closed` FROM `torrent` WHERE `id` = :id");
         $stmt->bindParam(':id', $id);
         if ($stmt->execute())
         {
@@ -390,6 +391,7 @@ class Database
                 $resultArray[$i]['auto_update'] = $row['auto_update'];
                 $resultArray[$i]['script'] = $row['script'];
                 $resultArray[$i]['pause'] = $row['pause'];
+                $resultArray[$i]['closed'] = $row['closed'];
             }
             if ( ! empty($resultArray))
                 return $resultArray;
@@ -945,6 +947,18 @@ class Database
             return FALSE;
         $stmt = NULL;
     }    
+
+    public static function setClosedThreme($id)
+    {
+        $stmt = self::newStatement("UPDATE `torrent` SET `closed` = 1 WHERE `id` = :id");        
+        $stmt->bindParam(':id', $id);
+        if ($stmt->execute())
+            return TRUE;
+        else
+            return FALSE;
+        $stmt = NULL;
+    }    
+
     
     public static function clearWarnings($tracker)
     {
