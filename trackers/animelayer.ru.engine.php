@@ -38,6 +38,7 @@ class animelayer
 	//функция преобразования даты из строки в формат БД
 	private static function dateStringToNum($data)
 	{
+    	$data = str_replace('&nbsp;', ' ', $data);
         $pieces = explode(' ', $data);
 		if (strlen($pieces[0]) == 1)
 			$pieces[0] = '0'.$pieces[0];
@@ -55,11 +56,16 @@ class animelayer
 	//функция преобразования даты в строку
 	private static function dateNumToString($data)
 	{
-        $pieces = explode(' ', $data);
-		if (strlen($pieces[0]) == 1)
-			$pieces[0] = '0'.$pieces[0];
+		$data = substr($data, 0, -3);
+		$data = preg_split('/\s/', $data);
+		$time = $data[1];
+		$data = $data[0];
+		$data = preg_split('/\-/', $data);
 
-		return $pieces[0].' '.$pieces[1].' '.date('Y').' в '.$pieces[3];
+		$month = Sys::dateNumToString($data[1]);
+		$date = $data[2].' '.$month.' '.$data[0].' в '.$time;
+		
+		return $date;
     }
 	
 	// Функция получения кук
@@ -182,9 +188,8 @@ class animelayer
             			{
             				// Сбрасываем варнинг
             				Database::clearWarnings($tracker);
-            				
             				$date = animelayer::dateStringToNum($array[1]);
-            				$date_str = animelayer::dateNumToString($array[1]);
+            				$date_str = animelayer::dateNumToString($date);
             				// Если даты не совпадают, перекачиваем торрент
             				if ($date != $timestamp)
             				{

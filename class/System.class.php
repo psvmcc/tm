@@ -69,7 +69,7 @@ class Sys
     //версия системы
     public static function version()
     {
-        return '1.4.2';
+        return '1.4.3';
     }
 
     //проверка обновлений системы
@@ -281,7 +281,7 @@ class Sys
             if ($tracker == 'anidub.com')
                 $name = substr($array[1], 0, -23);
             elseif ($tracker == 'animelayer.ru')
-                $name = substr($array[1], 14);
+                $name = substr($array[1], 0, -15);
             elseif ($tracker == 'casstudio.tv')
                 $name = substr($array[1], 48);
             elseif ($tracker == 'kinozal.tv')
