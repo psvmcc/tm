@@ -599,7 +599,7 @@ function changeDiv(type)
     var select = document.getElementById(type);
     var selectedText = select.options[select.selectedIndex].text;
     if (type == 'notification' || type == 'warning')
-        var a = ['E-mail', 'Prowl', 'Pushbullet', 'Pushover', 'Pushall'];
+        var a = ['E-mail', 'Prowl', 'Pushbullet', 'Pushover', 'Pushall', 'Telegram'];
     if (type == 'trackers')
         var a = ['anidub.com', 'animelayer.ru', 'baibako.tv', 'casstudio.tv', 'hamsterstudio.org', 'kinozal.tv', 'lostfilm.tv', 'newstudio.tv', 'nnmclub.to', 'novafilm.tv', 'pornolab.net', 'rustorka.com', 'rutracker.org', 'tracker.0day.kiev.ua', 'tv.mekc.info'];
     for (var i = 0; i < a.length; i++)

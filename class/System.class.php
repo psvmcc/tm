@@ -69,7 +69,7 @@ class Sys
     //версия системы
     public static function version()
     {
-        return '1.4.3';
+        return '1.4.4';
     }
 
     //проверка обновлений системы
@@ -369,13 +369,15 @@ class Sys
                 $message = $message.' И добавлен в torrent-клиент.';
             else
                 $message = $message.' Но не добавлен в torrent-клиент и сохранён.';
-            //отправляем уведомлении о новом торренте
-            Notification::sendNotification('notification', $date_str, $tracker, $message, $name, $id);
+            //выполняем кастомный скрипт
             if ($status['status'])
                 Sys::runScript($id, $tracker, $name, $status['hash'], $message, $date_str);        
         }
         else
             $message = $message.' И сохранён.';
+
+        //отправляем уведомлении об обновлении
+        Notification::sendNotification('notification', $date_str, $tracker, $message, $name, $id);
     }
     
     //добавляем раздачи из Temp в torrent-клиент

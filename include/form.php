@@ -21,7 +21,7 @@ $hd = $torrent[0]['hd'];
         <span class="subinput-text">Необязательно</span>
     </p>
 <?php
-if (isset($torrent[0]['torrent_id']) && $torrent[0]['torrent_id'] != 0)
+if (isset($torrent[0]['torrent_id']) && $torrent[0]['torrent_id'] != NULL)
 {
 ?>
     <p>
@@ -34,7 +34,7 @@ elseif ($tracker == 'casstudio.tv' || $tracker == 'kinozal.tv'  || $tracker == '
 elseif ($tracker == 'rutor.org')
     $tracker = 'http://rutor.org/torrent/';
 elseif ($tracker == 'anidub.com')
-    $tracker = 'http://tr.anidub.com/';
+    $tracker = 'http://tr.anidub.com';
 elseif ($tracker == 'animelayer.ru')
     $tracker = 'http://animelayer.ru/torrent/';
 ?>
