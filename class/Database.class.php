@@ -749,7 +749,7 @@ class Database
     public static function updateSerial($id, $name, $path, $hd, $reset, $script, $pause)
     {
         if ($reset)
-            $stmt = self::newStatement("UPDATE `torrent` SET `name` = :name, `path` = :path, `hd` = :hd, `ep` = '', `timestamp` = '0000-00-00 00:00:00', `script` = :script, `pause` = :pause WHERE `id` = :id");
+            $stmt = self::newStatement("UPDATE `torrent` SET `name` = :name, `path` = :path, `hd` = :hd, `ep` = '', `timestamp` = '1970-01-01 00:00:00', `hash` = '', `script` = :script, `pause` = :pause WHERE `id` = :id");
         else
             $stmt = self::newStatement("UPDATE `torrent` SET `name` = :name, `path` = :path, `hd` = :hd, `script` = :script, `pause` = :pause WHERE `id` = :id");
         $stmt->bindParam(':name', $name);
@@ -779,7 +779,7 @@ class Database
 
         if ($reset)
         {
-            $stmt = self::newStatement("UPDATE `torrent` SET `timestamp` = '0000-00-00 00:00:00' WHERE `id` = :id");
+            $stmt = self::newStatement("UPDATE `torrent` SET `timestamp` = '1970-01-01 00:00:00', `hash` = '' WHERE `id` = :id");
             $stmt->bindParam(':id', $id);
         }
         if ($stmt->execute())
@@ -1000,11 +1000,10 @@ class Database
 
     public static function saveToTemp($id, $name, $path, $hash, $tracker, $date)
     {
-        $stmt = self::newStatement("INSERT INTO `temp` (`id`, `name`, `path`, `hash`, `tracker`, `date`) VALUES (:id, :name, :path, :hash, :tracker, :date)");        
+        $stmt = self::newStatement("INSERT INTO `temp` (`id`, `name`, `path`, `tracker`, `date`) VALUES (:id, :name, :path, :tracker, :date)");
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':name', $name);
         $stmt->bindParam(':path', $path);
-        $stmt->bindParam(':hash', $hash);
         $stmt->bindParam(':tracker', $tracker);
         $stmt->bindParam(':date', $date);
         if ($stmt->execute())
@@ -1016,7 +1015,7 @@ class Database
     
     public static function getAllFromTemp()
     {
-        $stmt = self::newStatement("SELECT `id`, `name`, `path`, `hash`, `tracker`, `date` FROM `temp`");
+        $stmt = self::newStatement("SELECT `id`, `name`, `path`, `tracker`, `date` FROM `temp`");
         if ($stmt->execute())
         {
             $i=0;
@@ -1025,7 +1024,6 @@ class Database
                 $resultArray[$i]['id'] = $row['id'];
                 $resultArray[$i]['name'] = $row['name'];
                 $resultArray[$i]['path'] = $row['path'];
-                $resultArray[$i]['hash'] = $row['hash'];
                 $resultArray[$i]['tracker'] = $row['tracker'];
                 $resultArray[$i]['date_str'] = $row['date'];
                 $i++;
@@ -1151,7 +1149,8 @@ class Database
     
     public static function getService($type)
     {
-        $stmt = self::newStatement("SELECT `service`, `address` FROM `settings` LEFT JOIN `notifications` ON `settings`.`val` = `notifications`.`id` WHERE `settings`.`key` = :type");
+        #$stmt = self::newStatement("SELECT `service`, `address` FROM `settings` LEFT JOIN `notifications` ON `settings`.`val` = `notifications`.`id` WHERE `settings`.`key` = :type");
+        $stmt = self::newStatement("SELECT `service`, `address` FROM `settings` LEFT JOIN `notifications` ON `settings`.`val` = ".(Database::getDbType() == "pgsql" ? "cast(`notifications`.`id` as text)" : "`notifications`.`id`")." WHERE `settings`.`key` = :type");
         $stmt->bindParam(':type', $type);
         if ($stmt->execute())
         {

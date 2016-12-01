@@ -69,7 +69,7 @@ class Sys
     //версия системы
     public static function version()
     {
-        return '1.4.4';
+        return '1.4.6';
     }
 
     //проверка обновлений системы
@@ -353,6 +353,7 @@ class Sys
     //сохраняем torrent файл
     public static function saveTorrent($tracker, $file, $torrent, $id, $hash, $message, $date_str, $name)
     {
+        $t_id = $file;
         $file = str_replace("'", '', $file);
         $file = '['.$tracker.']_'.$file.'.torrent';
         $dir = dirname(__FILE__).'/';
@@ -377,7 +378,7 @@ class Sys
             $message = $message.' И сохранён.';
 
         //отправляем уведомлении об обновлении
-        Notification::sendNotification('notification', $date_str, $tracker, $message, $name, $id);
+        Notification::sendNotification('notification', $date_str, $tracker, $message, $name, $t_id);
     }
     
     //добавляем раздачи из Temp в torrent-клиент
@@ -385,7 +386,7 @@ class Sys
     {
         for ($i=0; $i<count($list); $i++)
         {
-    	    $status = Sys::addToClient($list[$i]['id'], $list[$i]['name'], $list[$i]['path'], $list[$i]['hash'], $list[$i]['tracker'], $list[$i]['date_str']);        
+    	    $status = Sys::addToClient($list[$i]['id'], $list[$i]['name'], $list[$i]['path'], '', $list[$i]['tracker'], $list[$i]['date_str']);        
     	    if ($status['status'])
     	    {
         	    $message = 'Torrent-клиент доступен и раздача '.$list[$i]['name'].' добавлена.';

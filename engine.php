@@ -123,6 +123,7 @@ if (Sys::checkCurl())
 	echo 'Добавляем темы из Temp.'."\r\n".'<br />';
 	$time_start = microtime(true);
 	$tempList = Database::getAllFromTemp();
+	var_dump($tempList);
 	if (count($tempList) > 0)
 	    Sys::AddFromTemp($tempList);
 	$time_end = microtime(true);

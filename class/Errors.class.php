@@ -65,9 +65,12 @@ class Errors
     }
     
 	public static function setWarnings($tracker, $warning, $id = NULL)
-    {var_dump($id);
+    {
         $date = date('Y-m-d H:i:s');
+        $debug = Database::getSetting('debug');
     	Database::setWarnings($date, $tracker, $warning, $id);
+    	if ($debug)
+    	    echo '<br>'."\r\n".$warning.'<br>'."\r\n";
 		if ($id != NULL)
 			Database::setErrorToThreme($id, 1);
     	$countErrors = Database::getWarningsCount($tracker);

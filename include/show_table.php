@@ -71,6 +71,8 @@ else
     		}
     		elseif ($tracker == 'animelayer.ru' || $tracker == 'rutor.org')
     		{
+        		if ($tracker == 'rutor.org')
+        		    $tracker = 'rutor.info';
     		?>
     			<a href='http://<?php echo $tracker ?>/torrent/<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>
     		<?php
@@ -108,7 +110,7 @@ else
     		</td>
             <td nowrap>
             <?php
-            if ($timestamp == '0000-00-00 00:00:00' || $timestamp == NULL || $timestamp == '2000-01-01 00:00:00') {}
+            if ($timestamp == '0000-00-00 00:00:00' || $timestamp == NULL || $timestamp == '2000-01-01 00:00:00'  || $timestamp == '1970-01-01 00:00:00') {}
             else
             {
             	if ($type == 'RSS')
@@ -155,7 +157,7 @@ else
             </td>
             <td>
                <a href='#' class='edit' onclick='showForm(<?php echo $id?>)'></a>
-               <a href='#' class='delete' onclick='del(<?php echo $id.',"'.$name.'"'?>)'></a>
+               <a href='#' class='delete' onclick='del(<?php echo $id.',"'.htmlspecialchars($name, ENT_QUOTES).'"'?>)'></a>
             </td>
         </tr>
 <?php 

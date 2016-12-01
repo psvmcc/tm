@@ -34,19 +34,6 @@ class kiev
 			return TRUE;
 	}
 
-	//функция преобразования даты
-	private static function dateNumToString($data)
-	{
-		$pieces = explode(' ', $data);
-        $dates = explode('-', $pieces[0]);
-        $m = Sys::dateNumToString($dates[1]);
-        $date = $dates[2].' '.$m.' '.$dates[0];
-        $time = substr($pieces[1], 0, -3);
-        $dateTime = $date.' '.$time;
-        
-        return $dateTime;
-	}
-
 	//функция получения кук
 	protected static function getCookie($tracker)
 	{
@@ -158,7 +145,7 @@ class kiev
 			if ( ! empty($page))
 			{
 				//ищем на странице дату регистрации торрента
-				if (preg_match('/Добавлен<\/td><td class=\'row2\' valign=\"top\" align=\"left\">(.*)<\/td>/', $page, $array))
+				if (preg_match('/Хэш релиза<\/td><td class=\'row2\' valign=\"top\" align=\"left\">(.*)<\/td><\/tr>/', $page, $array))
 				{
 					//проверяем удалось ли получить дату со страницы
 					if (isset($array[1]))
@@ -168,11 +155,11 @@ class kiev
 						{
 							//сбрасываем варнинг
 							Database::clearWarnings($tracker);
+							$newHash = $array[1];
 							//приводим дату к общему виду
-							$date = $array[1];
-							$date_str = kiev::dateNumToString($array[1]);
-							//если даты не совпадают, перекачиваем торрент
-							if ($date != $timestamp)
+							$date = date('Y-m-d H:i:s');
+							//если хэши не совпадают, перекачиваем торрент
+							if ($newHash != $hash)
 							{
 							    //ищем ссылку на скачивание torrent-файла
                                 if (preg_match('/download\.php\?id='.$torrent_id.'\&amp\;name=.*\.torrent/', $page, $array))
@@ -193,7 +180,8 @@ class kiev
                                     {
         								if ($auto_update)
         								{
-        								    $name = Sys::getHeader('http://tracker.0day.kiev.ua/details.php?id='.$torrent_id);
+        								    preg_match('/<title>(.*)<\/title>?/', $page, $mod_d_array);
+                                            $name = substr($mod_d_array[1], 6, -67);
         								    //обновляем заголовок торрента в базе
                                             Database::setNewName($id, $name);
         								}

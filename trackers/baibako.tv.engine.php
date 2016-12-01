@@ -103,9 +103,13 @@ class baibako
 				//проверяем подходят ли учётные данные
 				if (preg_match_all('/Set-Cookie: (\w*)=(\S*)/', $page, $array))
 				{
-				    if (count($array[0]) == 3)
+				    if (count($array[0]) > 0)
 				    {
-    					baibako::$sess_cookie = $array[1][0].'='.$array[2][0].' '.$array[1][1].'='.$array[2][1].' '.$array[1][2].'='.$array[2][2];
+    				    baibako::$sess_cookie = '';
+    				    for ($i=0; $i<count($array[0]); $i++)
+                        {
+                            baibako::$sess_cookie .= $array[1][$i].'='.$array[2][$i];
+			            }
     					Database::setCookie($tracker, baibako::$sess_cookie);
     					//запускам процесс выполнения, т.к. не может работать без кук
     					baibako::$exucution = TRUE;
@@ -147,7 +151,6 @@ class baibako
 				//останавливаем выполнение цепочки
 				baibako::$exucution = FALSE;
 			}
-
 		}
 		else
 		{
