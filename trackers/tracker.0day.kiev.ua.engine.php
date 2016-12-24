@@ -180,8 +180,7 @@ class kiev
                                     {
         								if ($auto_update)
         								{
-        								    preg_match('/<title>(.*)<\/title>?/', $page, $mod_d_array);
-                                            $name = substr($mod_d_array[1], 6, -67);
+        								    $name = Sys::parseHeader($tracker, $page);
         								    //обновляем заголовок торрента в базе
                                             Database::setNewName($id, $name);
         								}

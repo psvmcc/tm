@@ -29,7 +29,9 @@ if (isset($torrent[0]['torrent_id']) && $torrent[0]['torrent_id'] != NULL)
 <?php
 if ($tracker == 'rutracker.org' || $tracker == 'nnmclub.to' || $tracker == 'tfile.co' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
     $tracker = 'http://'.$tracker.'/forum/viewtopic.php?t=';
-elseif ($tracker == 'casstudio.tv' || $tracker == 'kinozal.tv'  || $tracker == 'tracker.0day.kiev.ua' || $tracker == 'tv.mekc.info')
+elseif ($tracker == 'booktracker.org')
+    $tracker = 'http://'.$tracker.'/viewtopic.php?t=';    
+elseif ($tracker == 'casstudio.tv' || $tracker == 'kinozal.me' || $tracker == 'tracker.0day.kiev.ua' || $tracker == 'tv.mekc.info')
     $tracker = 'http://'.$tracker.'/details.php?id=';
 elseif ($tracker == 'rutor.org')
     $tracker = 'http://rutor.org/torrent/';
@@ -96,7 +98,7 @@ else
 <div class="clear-both"></div>
 <script src="js/user-func.js"></script>
 <script>
-$(function() {
+//$(function() {
     var availableTags = [
     <?php
     $paths = Database::getPaths();
@@ -107,8 +109,9 @@ $(function() {
     }
     ?>
     ];
+    console.log('work')
     $( "#path" ).autocomplete({
       source: availableTags
     });
-});
+//});
 </script>

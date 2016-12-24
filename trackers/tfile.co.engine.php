@@ -90,7 +90,7 @@ class tfile
                                     {
 										if ($auto_update)
         								{
-        								    $name = Sys::getHeader('http://tfile.co/forum/viewtopic.php?t='.$torrent_id);
+        								    $name = Sys::parseHeader($tracker, $page);
         								    //обновляем заголовок торрента в базе
                                             Database::setNewName($id, $name);
         								}

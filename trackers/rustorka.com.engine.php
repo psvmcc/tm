@@ -199,7 +199,7 @@ class rustorka
                                     {
         								if ($auto_update)
         								{
-        								    $name = Sys::getHeader('http://rustorka.com/forum/viewtopic.php?t='.$torrent_id);
+        								    $name = Sys::parseHeader($tracker, $page);
         								    //обновляем заголовок торрента в базе
                                             Database::setNewName($id, $name);
         								}

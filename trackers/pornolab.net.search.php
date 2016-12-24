@@ -39,9 +39,21 @@ class pornolabSearch extends pornolab
 
 	    		preg_match_all('/<a class=\"gen f\" href=\"tracker\.php\?f=\d{1,9}\">(.*)<\/a>/', $page, $section);
 	    		preg_match_all('/<a class=\"med tLink bold\" href=\"\.\/viewtopic.php\?t=(\d{3,9})\">(.*)<\/a>/', $page, $threme);
+	    		preg_match_all('/<td class=\".*\" style=\".*\" title=\"Добавлен\">\n\t\t<u>.*<\/u>\n\t\t<p>.*<\/p>\n\t\t<p>(.*)<\/p>\n\t<\/td>/', $page, $dates);
 	
-	    		for ($i=0; $i<count($threme[1]); $i++)
-	    			Database::addThremeToBuffer($id, $section[1][$i], $threme[1][$i], $threme[2][$i], $tracker);
+	    		if (count($section[1]) == count($threme[1]) && count($threme[1]) == count($dates[1]))
+                {
+	    		    for ($i=0; $i<count($threme[1]); $i++)
+	    		    {
+                        $arr = preg_split('/-/', $dates[1][$i]);
+    	    		    if (strlen($arr[0]) == 1)
+    	    		        $day = '0'.$arr[0];
+                        else
+                            $day = $arr[0];
+    	    		    $date = '20'.$arr[2].'-'.Sys::dateStringToNum($arr[1]).'-'.$day;
+	    			    Database::addThremeToBuffer($id, $section[1][$i], $threme[1][$i], $threme[2][$i], $date, $tracker);
+	    			}
+                }
 	    	}
 
     		$toDownload = Database::takeToDownload($tracker);

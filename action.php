@@ -86,7 +86,7 @@ if (isset($_POST['action']))
     			{
     				$engineFile = $dir.'/trackers/'.$tracker.'.engine.php';
     				if (file_exists($engineFile))
-    				{    
+    				{   
     					$functionEngine = include_once $engineFile;
     					$class = explode('.', $tracker);
     					$class = $class[0];
@@ -97,7 +97,7 @@ if (isset($_POST['action']))
     					    
                         if ($tracker == 'tv.mekc.info')
     					    $functionClass = 'mekc';
-    
+
                         if ( ! empty($threme))
                         {
         					if (call_user_func(array($functionClass, 'checkRule'), $threme))
@@ -332,14 +332,9 @@ if (isset($_POST['action']))
 	}
 	
 	//Очищаем весь список тем
-	if ($_POST['action'] == 'threme_clear')
+	if ($_POST['action'] == 'thremes_clear')
 	{
-    	$array = Database::selectAllFromBuffer();
-    	for($i=0; $i<count($array); $i++)
-    	{
-        	Database::deleteFromBuffer($array[$i]['id']);
-    	}
-    	Database::deleteFromBuffer($_POST['id']);
+    	Database::thremesClear($_POST['user_id']);
     	$return['error'] = FALSE;
         $return['msg'] = 'Буфер очищен.';
         echo json_encode($return);

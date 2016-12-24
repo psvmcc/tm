@@ -207,6 +207,16 @@ class animelayer
                                 
                                 if (Sys::checkTorrentFile($torrent))
                                 {
+                                    if ($auto_update)
+    								{
+        								$name = Sys::parseHeader($tracker, $page);
+    								    //обновляем заголовок торрента в базе
+                                        Database::setNewName($id, $name);
+                                        //сбрасываем варнинг
+        								Database::clearWarnings($tracker);
+        								Database::setErrorToThreme($id, 0);
+    								}
+        								
                                     $message = $name.' обновлён.';
                 					$status = Sys::saveTorrent($tracker, $torrent_id, $torrent, $id, $hash, $message, $date_str, $name);
  								

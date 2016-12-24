@@ -12,7 +12,7 @@ $trackers = Database::getTrackersList();
 <h2 class="account-title">Редактировать учетные данные</h2>
 <p>
 	<label class="label-name">Трекер</label>
-	<select onchange="changeDiv('trackers');" id="trackers">
+	<select onchange="changeDiv();" id="trackers">
 	    <option></option>
         <?php
 		for ($i=0; $i<count($trackers); $i++)
@@ -28,7 +28,11 @@ $trackers = Database::getTrackersList();
     	for ($i=0; $i<count($credential); $i++)
     	{
     	?>
-<div id="<?php echo $credential[$i]['tracker'] ?>_trackers_label" class="result">
+<div id="<?php echo $credential[$i]['tracker'] ?>_credential_hidden" class="result">
+            <?php
+           	if ($credential[$i]['necessarily'])
+        	{
+            ?>
 <form id="credential">
     <input type="hidden" name="id" value="<?php echo $credential[$i]['id'] ?>">
 	<p>
@@ -39,21 +43,56 @@ $trackers = Database::getTrackersList();
 	   <label class="label-name">Пароль</label>
 	   <input type="password" name="pass" value="<?php echo $credential[$i]['password'] ?>">
     </p>
-    <?php if ($credential[$i]['tracker'] == 'baibako.tv')
-    {
-    ?>
-    <p>
-	   <label class="label-name">Passkey</label>
-	   <input type="text" name="passkey" value="<?php echo $credential[$i]['passkey'] ?>">
-    </p>    
-    <?php
-    }
-    ?>
+                <?php if ($credential[$i]['tracker'] == 'baibako.tv')
+                {
+                ?>
+                <p>
+            	   <label class="label-name">Passkey</label>
+            	   <input type="text" name="passkey" value="<?php echo $credential[$i]['passkey'] ?>">
+                </p>    
+                <?php
+                }
+                ?>
 	<button class="form-button">Сохранить</button>
 </form>
+            <?php
+            }
+            else
+            {
+            ?>
+            Учётные данные не требуются.
+            <?php
+            }
+            ?>
 </div>
     	<?php
     	}
     	?>
 <div class="clear-both"></div>
 <script src="js/user-func.js"></script>
+<?php
+$str = '';
+for ($i=0; $i<count($trackers); $i++)
+{
+    $str .= "'".$trackers[$i]."', ";
+}
+$str = substr($str, 0, -2);
+?>
+<script language="javascript">
+function changeDiv()
+{
+    var select = document.getElementById('trackers');
+    var selectedText = select.options[select.selectedIndex].text;
+    var a = [<?php echo $str?>];
+    for (var i=0; i < a.length; i++)
+    {
+        var e = a[i];
+        var d;
+        if (selectedText == e)
+            d = "block";
+        else
+            d = "none";
+        document.getElementById(e + '_credential_hidden').style.display = d;
+    }
+}
+</script>

@@ -35,11 +35,11 @@ class Notification
     		elseif ($tracker == 'kinozal.tv'  || $tracker == 'animelayer.ru' || $tracker == 'tracker.0day.kiev.ua')
         	    $msg .= "http://{$tracker}/details.php?id={$name}";
     		elseif ($tracker == 'rutor.org')
-    			$msg .= "http://alt.rutor.org/torrent/{$name}/";
+    			$msg .= "http://rutor.info/torrent/{$name}/";
     		elseif ($tracker == 'anidub.com')
-                $msg .= "http://tr.anidub.com/{$name}";
-            elseif ($tracker == 'casstudio.tv')
-    		    $msg .= "http://casstudio.tv/viewtopic.php?t={$name}";
+                $msg .= "http://tr.anidub.com{$name}";
+            elseif ($tracker == 'casstudio.tv' || $tracker == 'booktracker.org')
+    		    $msg .= "http://{$tracker}/viewtopic.php?t={$name}";
         }
 
 		mail($email, '=?UTF-8?B?'.base64_encode("TorrentMonitor: ".$header_message).'?=', $msg, $headers);
@@ -148,7 +148,7 @@ class Notification
     }
 
 	public static function sendNotification($type, $date, $tracker, $message, $name=0, $id=0)
-	{
+	{    	
 		if ($type == 'warning')
 			$header_message = 'Предупреждение.';
 		if ($type == 'notification')

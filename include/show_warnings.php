@@ -24,10 +24,6 @@ if ( ! empty($count))
 	for ($i=0; $i<count($count); $i++)
 	{
 		$errors = Database::getWarningsList($count[$i]['where']);
-		$countErrorsByTracker = count($errors);
-		if ($errors[0]['id'] != NULL)
-            $torrent = Database::getTorrent($errors[0]['id']);
-
 		if ($countErrorsByTracker > 5)
 		{
 			for ($x=0; $x<2; $x++)
@@ -68,6 +64,7 @@ if ( ! empty($count))
 				<?php
 				if ($errors[0]['id'] != NULL)
 				{
+    				$torrent = Database::getTorrent($errors[$x]['id']);
     				$tracker = $torrent[0]['tracker'];
     				$name = $torrent[0]['name'];
     				$torrent_id = $torrent[0]['torrent_id'];
@@ -77,8 +74,14 @@ if ( ! empty($count))
             		?>
         				<a href='http://<?php echo $tracker ?>/forum/viewtopic.php?t=<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>
             		<?php
+                    }
+                    elseif ($tracker == 'booktracker.org')
+                    {
+                    ?>
+                        <a href='http://<?php echo $tracker ?>/viewtopic.php?t=<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>
+                    <?php
             		}
-            		elseif ($tracker == 'kinozal.tv'  || $tracker == 'tracker.0day.kiev.ua' || $tracker == 'tv.mekc.info')
+            		elseif ($tracker == 'kinozal.me'  || $tracker == 'tracker.0day.kiev.ua' || $tracker == 'tv.mekc.info')
             		{
                     ?>
                 	    <a href='http://<?php echo $tracker ?>/details.php?id=<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>
@@ -126,11 +129,12 @@ if ( ! empty($count))
 				<td><?php echo $errors[$x]['where'] ?></td>
 				<td><?php echo Errors::getWarning($errors[$x]['reason'])?>
 				<?php
-				if ($errors[0]['id'] != NULL)
+				if ($errors[$x]['id'] != NULL)
 				{
+    				$torrent = Database::getTorrent($errors[$x]['id']);
     				$tracker = $torrent[0]['tracker'];
     				$name = $torrent[0]['name'];
-    				$torrent_id = $torrent[0]['torrent_id'];
+                    $torrent_id = $torrent[0]['torrent_id'];
     				echo '<br />Раздача: ';
             		if ($tracker == 'rutracker.org' || $tracker == 'nnmclub.to' || $tracker == 'tfile.co' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
             		{

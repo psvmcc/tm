@@ -221,7 +221,7 @@ class casstudio
                                     {
         								if ($auto_update)
         								{
-        								    $name = Sys::getHeader('http://casstudio.tv/viewtopic.php?t='.$torrent_id);
+        								    $name = Sys::parseHeader($tracker, $page);
         								    //обновляем заголовок торрента в базе
                                             Database::setNewName($id, $name);
         								}

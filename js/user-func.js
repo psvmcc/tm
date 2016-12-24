@@ -1,5 +1,5 @@
 $( document ).ready(function() 
-{    // Скользящее меню
+{   // Скользящее меню
     $(".h-menu li").hover(
         function() {
             $(this).stop().animate({width: "235px"}, 500);
@@ -10,15 +10,6 @@ $( document ).ready(function()
             }
         }
     );
-    
-    // Раскрывающийся список торрентов пользователя за которым ведётся мониторинг
-    $(".user-torrent").click(function() {
-        $(this).toggleClass("active");
-        $(this).next().toggle();
-        var id = $(this).attr('id');
-        var date = new Date(new Date().getTime() + 60*1000);
-        document.cookie="id="+id+"; path=/; expires="+date.toUTCString();
-    });
 
     // Меню
     $(".h-menu li").click(function() {
@@ -342,9 +333,6 @@ $( document ).ready(function()
             rss = $form.find('input[name="rss"]').prop('checked');
             debug = $form.find('input[name="debug"]').prop('checked');
             
-            console.log(sendUpdateAddress);
-            console.log(sendWarningAddress);
-        
         if (serverAddress == '')
             formError += "Вы не указали адрес сервера TM.\n";
         
@@ -432,7 +420,10 @@ function show(name)
         function(data) {
             $('#content').empty().append(data);
     });
-
+    
+    if (name != 'show_watching')
+        document.cookie = 'userID=undefined;';
+    
 	if (name == 'show_table')
 	{
 		window.clearTimeout(this.timeoutID);
@@ -470,6 +461,33 @@ function delete_user(id)
     {
     	ohSnap('Обрабатывается запрос...', 'yellow');
     	$.post("action.php",{action: 'delete_user', user_id: id},
+    		function(data) {
+                if (data.error)
+                {
+                    ohSnap(data.msg, 'red');
+                }
+                else
+                {
+                    $.get("include/show_watching.php",
+            		    function(data) {
+            			    $('#content').delay(3000).empty().append(data);
+            		    }
+                    );
+                    ohSnap(data.msg, 'green');
+                }
+            }, "json"
+    	);
+    	return false;
+    }
+}
+
+//Помечаем темы пользователя как просмотренные
+function thremes_clear(id)
+{
+    if (confirm("Пометить как просмотренные?"))
+    {
+    	ohSnap('Обрабатывается запрос...', 'yellow');
+    	$.post("action.php",{action: 'thremes_clear', user_id: id},
     		function(data) {
                 if (data.error)
                 {
@@ -590,27 +608,6 @@ function del(id, name)
     		}, "json"
     	);
     	return false;
-    }
-}
-
-//Выводим нужный div в зависимости от выбранного в списке
-function changeDiv(type)
-{
-    var select = document.getElementById(type);
-    var selectedText = select.options[select.selectedIndex].text;
-    if (type == 'notification' || type == 'warning')
-        var a = ['E-mail', 'Prowl', 'Pushbullet', 'Pushover', 'Pushall', 'Telegram'];
-    if (type == 'trackers')
-        var a = ['anidub.com', 'animelayer.ru', 'baibako.tv', 'casstudio.tv', 'hamsterstudio.org', 'kinozal.tv', 'lostfilm.tv', 'newstudio.tv', 'nnmclub.to', 'novafilm.tv', 'pornolab.net', 'rustorka.com', 'rutracker.org', 'tracker.0day.kiev.ua', 'tv.mekc.info'];
-    for (var i = 0; i < a.length; i++)
-    {
-        var e = a[i];
-        var d;
-        if (selectedText == e)
-            d = "block";
-        else
-            d = "none";
-        document.getElementById(e + '_' + type + '_label').style.display = d;
     }
 }
 

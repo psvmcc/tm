@@ -218,7 +218,7 @@ class anidub
                                     {
    										if ($auto_update)
                                         {
-                                            $name = Sys::getHeader('http://tr.anidub.com'.$torrent_id);
+                                            $name = Sys::parseHeader($tracker, $page);
                                             //обновляем заголовок торрента в базе
                                             Database::setNewName($id, $name);
                                         }

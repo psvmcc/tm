@@ -77,6 +77,7 @@ if ( ! Sys::checkAuth())
         <label class="label-name">Трекер</label>
         <select name="tracker">
             <option></option>
+            <option>booktracker.org</option>
             <option>nnmclub.to</option>
             <option>pornolab.net</option>
             <option>rutracker.org</option>
@@ -107,6 +108,7 @@ $(function() {
     $( "#path" ).autocomplete({
       source: availableTags
     });
+    console.log('work')
     $( "#path2" ).autocomplete({
       source: availableTags
     });

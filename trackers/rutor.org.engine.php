@@ -84,7 +84,7 @@ class rutor
                                 {
     								if ($auto_update)
     								{
-    								    $name = Sys::getHeader('http://rutor.info/torrent/'.$torrent_id.'/');
+    								    $name = Sys::parseHeader($tracker, $page);
     								    //обновляем заголовок торрента в базе
                                         Database::setNewName($id, $name);
     								}

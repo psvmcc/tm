@@ -23,26 +23,27 @@ class tfileSearch extends tfile
 		{
 			//сбрасываем варнинг
 			Database::clearWarnings($tracker);
-			if (preg_match_all('/<td class=\"f\">\n\t\t\t\t\n\t\t\t\t\t(.*)\n\t\t\t\t<\/td>/', $page, $section))
+			preg_match_all('/<td class=\"f\">\n\t\t\t\t\n\t\t\t\t\t(.*)\n\t\t\t\t<\/td>/', $page, $section);
+			for ($i=0; $i<count($section[1]); $i++)
 			{
-				for ($i=0; $i<count($section[1]); $i++)
+				if (preg_match_all('/<a href=\"\/forum\/viewforum\.php\?f=\d{1,9}\">(.*)<\/a>/U', $section[1][$i], $sections))
 				{
-					if (preg_match_all('/<a href=\"\/forum\/viewforum\.php\?f=\d{1,9}\">(.*)<\/a>/U', $section[1][$i], $sections))
-					{
-	    				$sectionStr = '';
-	    				for ($x=0; $x<count($sections[1]); $x++)
-	    					$sectionStr .= $sections[1][$x].', ';
-	
-	    				$sectionStr = substr($sectionStr, 0, -2);
-	    				$sectionArr[] = $sectionStr;
-	                }
-				}
+    				$sectionStr = '';
+    				for ($x=0; $x<count($sections[1]); $x++)
+    					$sectionStr .= $sections[1][$x].', ';
+
+    				$sectionStr = substr($sectionStr, 0, -2);
+    				$sectionArr[] = $sectionStr;
+                }
 			}
 
-			if (preg_match_all('/<a href=\"http:\/\/tfile\.co\/forum\/viewtopic\.php\?t=(\d{1,9})\">(.*)<\/a>/U', $page, $threme))
-	        {
-				for ($i=0; $i<count($threme[1]); $i++)
-					Database::addThremeToBuffer($id, $sectionArr[$i], $threme[1][$i], $threme[2][$i], $tracker);
+			preg_match_all('/<a href=\"http:\/\/tfile\.co\/forum\/viewtopic\.php\?t=(\d{1,9})\">(.*)<\/a>/U', $page, $threme);
+			preg_match_all('/<td class=\"ms\">\n\t\t\t\t(.*)\s.*<br\/>\n\t\t\t<\/td>/', $page, $dates);
+
+            if (count($sectionArr) == count($threme[1]) && count($threme[1]) == count($dates[1]))
+            {
+				for ($i=0; $i<count($threme[1]); $i++)    				
+					Database::addThremeToBuffer($id, $sectionArr[$i], $threme[1][$i], $threme[2][$i], $dates[1][$i], $tracker);
 			}
 		}
 

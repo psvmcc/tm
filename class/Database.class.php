@@ -193,7 +193,7 @@ class Database
     
     public static function getAllCredentials()
     {
-        $stmt = self::newStatement("SELECT `id`, `tracker`, `log`, `pass`, `passkey` FROM `credentials`");        
+        $stmt = self::newStatement("SELECT `id`, `tracker`, `log`, `pass`, `passkey`, `necessarily` FROM `credentials` ORDER BY `tracker`");        
         if ($stmt->execute())
         {
             $i = 0;
@@ -204,6 +204,7 @@ class Database
                 $resultArray[$i]['login'] = $row['log'];
                 $resultArray[$i]['password'] = $row['pass'];
                 $resultArray[$i]['passkey'] = $row['passkey'];
+                $resultArray[$i]['necessarily'] = $row['necessarily'];
                 $i++;
             }
             if ( ! empty($resultArray))
@@ -404,7 +405,7 @@ class Database
     {
         if ($tracker == 'lostfilm.tv' || $tracker == 'novafilm.tv')
             $fields = 'hd, ep';
-        if ($tracker == 'rutracker.org' || $tracker == 'nnm-club.ru' || $tracker == 'rutor.org')
+        if ($tracker == 'rutracker.org' || $tracker == 'nnm-club.ru' || $tracker == 'rutor.org' || $tracker == 'booktracker.org')
             $fields = 'torrent_id';
             
         $stmt = self::newStatement("SELECT name, timestamp, ".$fields." FROM torrent WHERE tracker = :tracker ORDER BY id");
@@ -421,7 +422,7 @@ class Database
                     $resultArray[$i]['hd'] = $row['hd'];
                     $resultArray[$i]['ep'] = $row['ep'];
                 }
-                if ($tracker == 'rutracker.org' || $tracker == 'nnm-club.ru' || $tracker == 'rutor.org')
+                if ($tracker == 'rutracker.org' || $tracker == 'nnm-club.ru' || $tracker == 'rutor.org' || $tracker == 'booktracker.org')
                     $resultArray[$i]['torrent_id'] = $row['torrent_id'];
                 $i++;
             }
@@ -502,7 +503,7 @@ class Database
     }   
     
      
-    public static function addThremeToBuffer($user_id, $section, $threme_id, $threme, $tracker)
+    public static function addThremeToBuffer($user_id, $section, $threme_id, $threme, $timestamp, $tracker)
     {
         $stmt = self::newStatement("SELECT COUNT(*) AS count FROM `buffer` WHERE `user_id` = :user_id AND `threme_id` = :threme_id");        
         $stmt->bindParam(':user_id', $user_id);
@@ -513,12 +514,13 @@ class Database
             {
                 if ($row['count'] == 0)
                 {
-                    $stmt = self::newStatement("INSERT INTO buffer (user_id, section, threme_id, threme, tracker) VALUES (:user_id, :section, :threme_id, :threme, :tracker)");
+                    $stmt = self::newStatement("INSERT INTO buffer (user_id, section, threme_id, threme, timestamp, tracker) VALUES (:user_id, :section, :threme_id, :threme, :timestamp, :tracker)");
                     $stmt->bindParam(':user_id', $user_id);
                     $stmt->bindParam(':section', $section);
                     $stmt->bindParam(':threme_id', $threme_id);
                     $threme = preg_replace('/<wbr>/', '', $threme);
                     $stmt->bindParam(':threme', $threme);
+                    $stmt->bindParam(':timestamp', $timestamp);
                     $stmt->bindParam(':tracker', $tracker);
                     if ($stmt->execute())
                         return TRUE;
@@ -535,7 +537,7 @@ class Database
     
     public static function getThremesFromBuffer($user_id)
     {
-        $stmt = self::newStatement("SELECT `id`, `section`, `threme_id`, `threme` FROM `buffer` WHERE `user_id` = :user_id AND `new` = '1' ORDER BY `threme_id` DESC");        
+        $stmt = self::newStatement("SELECT `id`, `section`, `threme_id`, `threme`, `timestamp` FROM `buffer` WHERE `user_id` = :user_id AND `new` = '1' ORDER BY `threme_id` DESC");        
         $stmt->bindParam(':user_id', $user_id);
         if ($stmt->execute())
         {
@@ -546,6 +548,7 @@ class Database
                 $resultArray[$i]['section'] = $row['section'];
                 $resultArray[$i]['threme_id'] = $row['threme_id'];
                 $resultArray[$i]['threme'] = $row['threme'];
+                $resultArray[$i]['timestamp'] = $row['timestamp'];
                 $i++;
             }
             if ( ! empty($resultArray))
@@ -576,6 +579,17 @@ class Database
     {
         $stmt = self::newStatement("UPDATE `buffer` SET `new` = '0' WHERE `id` = :id");        
         $stmt->bindParam(':id', $id);
+        if ($stmt->execute())
+            return TRUE;
+        else
+            return FALSE;
+        $stmt = NULL;
+    }
+    
+    public static function thremesClear($user_id)
+    {
+        $stmt = self::newStatement("UPDATE `buffer` SET `new` = '0' WHERE `user_id` = :user_id");        
+        $stmt->bindParam(':user_id', $user_id);
         if ($stmt->execute())
             return TRUE;
         else
@@ -1124,10 +1138,9 @@ class Database
         $resultArray = NULL;
     }
     
-    public static function getServiceList($type)
+    public static function getServiceList()
     {
-        $stmt = self::newStatement("SELECT `id`, `service`, `address` FROM `notifications` WHERE `type` = :type");
-        $stmt->bindParam(':type', $type);
+        $stmt = self::newStatement("SELECT `id`, `service`, `address` FROM `notifications` GROUP BY `service`");
         if ($stmt->execute())
         {
             $i = 0;
@@ -1149,7 +1162,6 @@ class Database
     
     public static function getService($type)
     {
-        #$stmt = self::newStatement("SELECT `service`, `address` FROM `settings` LEFT JOIN `notifications` ON `settings`.`val` = `notifications`.`id` WHERE `settings`.`key` = :type");
         $stmt = self::newStatement("SELECT `service`, `address` FROM `settings` LEFT JOIN `notifications` ON `settings`.`val` = ".(Database::getDbType() == "pgsql" ? "cast(`notifications`.`id` as text)" : "`notifications`.`id`")." WHERE `settings`.`key` = :type");
         $stmt->bindParam(':type', $type);
         if ($stmt->execute())

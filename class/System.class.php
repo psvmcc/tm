@@ -69,7 +69,7 @@ class Sys
     //версия системы
     public static function version()
     {
-        return '1.4.6';
+        return '1.5';
     }
 
     //проверка обновлений системы
@@ -174,7 +174,7 @@ class Sys
             $result = curl_exec($ch);
             curl_close($ch);
 
-            if (isset($param['convert']))
+            if (isset($param['convert']) && $param['convert'] != NULL)
                 $result = iconv($param['convert'][0], $param['convert'][1], $result);
 
             return $result;
@@ -200,6 +200,47 @@ class Sys
             return false;
     }
     
+    public static function parseHeader($tracker, $page)
+    {
+        preg_match('/<title>(.*)<\/title>?/', $page, $array);
+        if ( ! empty($array[1]))
+        {
+            if ($tracker == 'anidub.com')
+                $name = substr($array[1], 0, -23);
+            elseif ($tracker == 'animelayer.ru')
+                $name = substr($array[1], 0, -15);
+            elseif ($tracker == 'booktracker.org')
+                $name = substr($array[1], 0, -31);
+            elseif ($tracker == 'casstudio.tv')
+                $name = substr($array[1], 48);
+            elseif ($tracker == 'kinozal.me')
+                $name = substr($array[1], 0, -22);
+            elseif ($tracker == 'nnmclub.to')
+                $name = substr($array[1], 0, -20);
+            elseif ($tracker == 'rutracker.org')
+                $name = substr($array[1], 0, -17);
+            elseif ($tracker == 'tfile.co')
+                $name = substr($array[1], 15, -25);
+            elseif ($tracker == 'tracker.0day.kiev.ua')
+                $name = substr($array[1], 6, -67);
+            elseif ($tracker == 'torrents.net.ua')
+                $name = substr($array[1], 0, -96);
+            elseif ($tracker == 'pornolab.net')
+                $name = substr($array[1], 0, -16);
+            elseif ($tracker == 'rustorka.com')
+                $name = substr($array[1], 0, -111);
+            elseif ($tracker == 'rutor.info')
+            {
+                preg_match('/<title>.*tor.info :: (.*)<\/title>/', $forumPage, $array);
+                if ( ! empty($array[1]))
+                    $name = $array[1];
+            }
+            else
+                $name = $array[1];
+        }
+        return $name;        
+    }
+    
     //Получаем заголовок страницы
     public static function getHeader($url)
     {
@@ -210,7 +251,7 @@ class Sys
         if (preg_match('/.*tor\.org|rutor\.info/', $tracker))
             $tracker = 'rutor.info';
      
-        if ($tracker == 'rustorka.com')
+        if ($tracker == 'rustorka.com'  || $tracker == 'booktracker.org')
         {
             $dir = str_replace('class', '', dirname(__FILE__));
             $engineFile = $dir.'trackers/'.$tracker.'.engine.php';
@@ -242,6 +283,11 @@ class Sys
             if ($exucution)
             {
                 //получаем страницу для парсинга
+                if ($tracker == 'rustorka.com')
+                    $convert = array('windows-1251', 'utf-8//IGNORE');
+                else
+                    $convert = NULL;
+                
                 $forumPage = Sys::getUrlContent(
                     array(
                         'type'           => 'POST',
@@ -250,7 +296,7 @@ class Sys
                         'url'            => $url,
                         'cookie'         => $sess_cookie,
                         'sendHeader'     => array('Host' => $tracker, 'Content-length' => strlen($sess_cookie)),
-                        'convert'        => array('windows-1251', 'utf-8//IGNORE'),
+                        'convert'        => $convert,
                     )
                 );
             }
@@ -268,48 +314,14 @@ class Sys
             );            
         }
 
-
-        if ($tracker != 'animelayer.ru' && $tracker != 'casstudio.tv' && $tracker != 'torrents.net.ua' && $tracker != 'rustorka.com' && $tracker != 'rutor.info' && $tracker != 'tr.anidub.com')
+        if ($tracker != 'animelayer.ru' && $tracker != 'booktracker.org' && $tracker != 'casstudio.tv' && $tracker != 'torrents.net.ua' && $tracker != 'rustorka.com' && $tracker != 'rutor.info' && $tracker != 'tr.anidub.com')
             $forumPage = iconv('windows-1251', 'utf-8//IGNORE', $forumPage);
 
         if ($tracker == 'tr.anidub.com')
             $tracker = 'anidub.com';
 
-        preg_match('/<title>(.*)<\/title>?/', $forumPage, $array);
-        if ( ! empty($array[1]))
-        {
-            if ($tracker == 'anidub.com')
-                $name = substr($array[1], 0, -23);
-            elseif ($tracker == 'animelayer.ru')
-                $name = substr($array[1], 0, -15);
-            elseif ($tracker == 'casstudio.tv')
-                $name = substr($array[1], 48);
-            elseif ($tracker == 'kinozal.tv')
-                $name = substr($array[1], 0, -22);
-            elseif ($tracker == 'nnmclub.to')
-                $name = substr($array[1], 0, -20);
-            elseif ($tracker == 'rutracker.org')
-                $name = substr($array[1], 0, -17);
-            elseif ($tracker == 'tfile.co')
-                $name = substr($array[1], 15, -25);
-            elseif ($tracker == 'tracker.0day.kiev.ua')
-                $name = substr($array[1], 6, -67);
-            elseif ($tracker == 'torrents.net.ua')
-                $name = substr($array[1], 0, -96);
-            elseif ($tracker == 'pornolab.net')
-                $name = substr($array[1], 0, -16);
-            elseif ($tracker == 'rustorka.com')
-                $name = substr($array[1], 0, -111);
-            elseif ($tracker == 'rutor.info')
-            {
-                preg_match('/<title>.*tor.info :: (.*)<\/title>/', $forumPage, $array);
-                if ( ! empty($array[1]))
-                    $name = $array[1];
-            }
-            else
-                $name = $array[1];
-        }
-        else
+        $name = Sys::parseHeader($tracker, $forumPage);
+        if (empty($name))
             $name = 'Неизвестный';
         
         return $name;
@@ -377,6 +389,12 @@ class Sys
         else
             $message = $message.' И сохранён.';
 
+        if ($tracker == 'anidub.com')
+        {
+            $torrent = Database::getTorrent($id);
+            $t_id = $torrent[0]['torrent_id'];
+        }
+            
         //отправляем уведомлении об обновлении
         Notification::sendNotification('notification', $date_str, $tracker, $message, $name, $t_id);
     }

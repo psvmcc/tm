@@ -179,8 +179,6 @@ class nnmclub
 								{
 									//сохраняем торрент в файл
 									$download_id = $link[1];
-									preg_match('/userid(.*);/U', nnmclub::$sess_cookie, $arr);
-                                    $uid = $arr[1];
                                     preg_match('/phpbb2mysql_4_sid=(.*)/U', nnmclub::$sess_cookie, $arr);
                                     $sid = $arr[1];
 
@@ -188,10 +186,10 @@ class nnmclub
 	                                	array(
 	                                		'type'           => 'GET',
 	                                		'returntransfer' => 1,
-	                                		'url'            => 'https://nnm-club.ws/download.php?csid='.$sid.'&uid='.$uid.'&id='.$download_id,
+	                                		'url'            => 'http://nnmclub.to/forum/download.php?id='.$download_id,
 	                                		'cookie'         => nnmclub::$sess_cookie,
-	                                		'sendHeader'     => array('Host' => 'nnm-club.ws', 'Content-length' => strlen(nnmclub::$sess_cookie)),
-	                                		'referer'        => 'http://nnmclub.to/forum/viewtopic.php?t='.$torrent_id,
+	                                		'sendHeader'     => array('Host' => 'nnmclub.to', 'Content-length' => strlen(nnmclub::$sess_cookie)),
+	                                		'referer'        => 'http://nnmclub.to/forum/viewtopic.php?t='.$torrent_id.'&sid='.$sid,
 	                                	)
 	                                );
 
@@ -199,7 +197,7 @@ class nnmclub
                                     {
     									if ($auto_update)
         								{
-        								    $name = Sys::getHeader('http://nnmclub.to/forum/viewtopic.php?t='.$torrent_id);
+        								    $name = Sys::parseHeader($tracker, $page);
         								    //обновляем заголовок торрента в базе
                                             Database::setNewName($id, $name);
         								}

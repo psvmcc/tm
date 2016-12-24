@@ -36,11 +36,19 @@ class nnmclubSearch extends nnmclub
 	        	//сбрасываем варнинг
 				Database::clearWarnings($tracker);
 
-	    		preg_match_all('/<a class=\"gen\" href=\"tracker\.php\?f=\d{3,9}\">(.*)<\/a>/', $page, $section);
+	    		preg_match_all('/<a class=\"gen\" href=\"tracker\.php\?f=\d{1,6}\">(.*)<\/a>/', $page, $section);
 	    		preg_match_all('/<a class=\"(genmed|leechmed|seedmed) (topicpremod|topictitle)\" href=\"viewtopic\.php\?t=(\d{3,9})\"><b>(.*)<\/b><\/a>/', $page, $threme);
-	
-	    		for ($i=0; $i<count($threme[1]); $i++)
-	    			Database::addThremeToBuffer($id, $section[1][$i], $threme[3][$i], $threme[4][$i], $tracker);
+	    		preg_match_all('/<td align=\"center\" nowrap=\"nowrap\" title=\"Добавлено\" class=\"gensmall\"><u>.*<\/u> (\d{2}-\d{2}-\d{4})<br>.*<\/td>/', $page, $dates);
+
+                if (count($section[1]) == count($threme[1]) && count($threme[1]) == count($dates[1]))
+                {
+	    		    for ($i=0; $i<count($threme[1]); $i++)
+	    		    {
+    	    		    $arr = preg_split('/-/', $dates[1][$i]);
+    	    		    $date = $arr[2].'-'.$arr[1].'-'.$arr[0];
+	    			    Database::addThremeToBuffer($id, $section[1][$i], $threme[3][$i], $threme[4][$i], $date, $tracker);
+	    			}
+                }
 	    	}
 
     		$toDownload = Database::takeToDownload($tracker);
@@ -70,18 +78,18 @@ class nnmclubSearch extends nnmclub
 							Database::clearWarnings($tracker);
                             //сохраняем торрент в файл
                             $download_id = $link[1];
-            				preg_match('/userid(.*);/U', nnmclub::$sess_cookie, $arr);
-                            $uid = $arr[1];
-							
-							$torrent = Sys::getUrlContent(
-                            	array(
-                            		'type'           => 'GET',
-                            		'returntransfer' => 1,
-                            		'url'            => 'http://nnm-club.ws/download.php?csid=&uid='.$uid.'&id='.$download_id,
-                            		'cookie'         => nnmclub::$sess_cookie,
-                            		'sendHeader'     => array('Host' => 'nnm-club.ws', 'Content-length' => strlen(nnmclub::$sess_cookie)),
-                            		'referer'        => 'http://nnmclub.to/forum/viewtopic.php?t='.$torrent_id,
-                            	)
+                            preg_match('/phpbb2mysql_4_sid=(.*)/U', nnmclub::$sess_cookie, $arr);
+                            $sid = $arr[1];
+
+                            $torrent = Sys::getUrlContent(
+                                array(
+                                    'type'           => 'GET',
+                                    'returntransfer' => 1,
+                                    'url'            => 'http://nnmclub.to/forum/download.php?id='.$download_id,
+                                    'cookie'         => nnmclub::$sess_cookie,
+                                    'sendHeader'     => array('Host' => 'nnmclub.to', 'Content-length' => strlen(nnmclub::$sess_cookie)),
+                                    'referer'        => 'http://nnmclub.to/forum/viewtopic.php?t='.$torrent_id.'&sid='.$sid,
+                                )
                             );
                             
                             if (Sys::checkTorrentFile($torrent))

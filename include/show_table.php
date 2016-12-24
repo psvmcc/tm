@@ -63,7 +63,7 @@ else
 				<a href='http://<?php echo $tracker ?>/forum/viewtopic.php?t=<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>
     		<?php
     		}
-    		elseif ($tracker == 'kinozal.tv'  || $tracker == 'tracker.0day.kiev.ua' || $tracker == 'tv.mekc.info')
+    		elseif ($tracker == 'kinozal.me'  || $tracker == 'tracker.0day.kiev.ua' || $tracker == 'tv.mekc.info')
     		{
             ?>
         	    <a href='http://<?php echo $tracker ?>/details.php?id=<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>
@@ -80,10 +80,10 @@ else
     		elseif ($tracker == 'anidub.com')
     		{
 	    	?>        		
-	    		<a href='http://tr.anidub.com/<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>	    	
+	    		<a href='http://tr.anidub.com<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>	    	
 	    	<?php        		
     		}
-    		elseif ($tracker == 'casstudio.tv')
+    		elseif ($tracker == 'casstudio.tv' || $tracker == 'booktracker.org')
     		{
 	    	?>        		
 	    		<a href='http://<?php echo $tracker ?>/viewtopic.php?t=<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>

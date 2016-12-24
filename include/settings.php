@@ -6,11 +6,12 @@ include_once $dir."class/Database.class.php";
 if ( ! Sys::checkAuth())
     die(header('Location: ../'));
 
+$services = Database::getServiceList();
 function generateList($type, $sendUpdateService)
 {
+    global $services;
     echo '<label class="label-name">Сервис уведомлений</label>';
     echo "<select onchange=\"changeDiv('{$type}')\" id=\"{$type}\" name=\"send{$type}Service\">";
-    $services = Database::getServiceList($type);
     for ($i=0; $i<count($services); $i++)
     {
         echo '<option value="'.$services[$i]['id'].'"';
@@ -23,7 +24,7 @@ function generateList($type, $sendUpdateService)
     <br />';
     for ($i=0; $i<count($services); $i++)
     {
-        echo '<div id="'.$services[$i]['service'].'_'.$type.'_label" class="result">';
+        echo '<div id="'.$services[$i]['service'].'_'.$type.'_hidden" class="result">';
         echo '<input type="hidden" name="id" value="'.$services[$i]['id'].'">';
         echo '<p>
             <label class="label-name">Адрес</label>
@@ -40,10 +41,6 @@ foreach ($settings as $row)
 	extract($row);
 }
 ?>
-<script type="text/javascript">
-    changeDiv('notification');
-    changeDiv('warning');
-</script>
 <h2 class="settings-title">Настройки монитора</h2>
 
 <form id="setting">
@@ -164,3 +161,31 @@ foreach ($settings as $row)
     <button class="form-button">Сменить</button>
 </form>
 <script src="js/user-func.js"></script>
+<?php
+$str = '';
+for ($i=0; $i<count($services); $i++)
+{
+    $str .= "'".$services[$i]['service']."', ";
+}
+$str = substr($str, 0, -2);
+?>
+<script language="javascript">
+changeDiv('notification');
+changeDiv('warning');
+function changeDiv(type)
+{
+    var select = document.getElementById(type);
+    var selectedText = select.options[select.selectedIndex].text;
+    var a = [<?php echo $str?>];
+    for (var i=0; i < a.length; i++)
+    {
+        var e = a[i];
+        var d;
+        if (selectedText == e)
+            d = "block";
+        else
+            d = "none";
+        document.getElementById(e + '_' + type + '_hidden').style.display = d;
+    }
+}
+</script>
