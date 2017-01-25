@@ -47,10 +47,16 @@ class animelayer
 		$monthes_num = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
 		$month = preg_replace($monthes, $monthes_num, $pieces[1]);
 
+        $pieces2 = explode(':', $pieces[3]);      
+        if (strlen($pieces2[0]) == 1)
+            $hour = '0'.$pieces2[0];
+        else
+            $hour = $pieces2[0];
+            
         if (count($pieces) == 4)
-		    return date('Y').'-'.$month.'-'.$pieces[0].' '.$pieces[3].':00'; 
+		    return date('Y').'-'.$month.'-'.$pieces[0].' '.$hour.':'.$pieces2[1].':00'; 
         else if (count($pieces) == 5)
-		    return $pieces[2].'-'.$month.'-'.$pieces[0].' '.$pieces[4].':00';
+		    return $pieces[2].'-'.$month.'-'.$pieces[0].' '.$hour.':'.$pieces2[1].':00';
 	}
 	
 	//функция преобразования даты в строку
@@ -179,16 +185,16 @@ class animelayer
 			if ( ! empty($page))
 			{
 				// Ищем на странице дату регистрации торрента
-				if (preg_match('/<span class=\"date-updated\">(.*)<\/span>/U', $page, $array))
+				if (preg_match('/<span class=\"(date-updated|date-created)\">(.*)<\/span>/U', $page, $array))
                 {
             		// Проверяем удалось ли получить дату со страницы
-            		if (isset($array[1]))
+            		if (isset($array[2]))
             		{
-            			if ( ! empty($array[1]))
+            			if ( ! empty($array[2]))
             			{
             				// Сбрасываем варнинг
             				Database::clearWarnings($tracker);
-            				$date = animelayer::dateStringToNum($array[1]);
+            				$date = animelayer::dateStringToNum($array[2]);
             				$date_str = animelayer::dateNumToString($date);
             				// Если даты не совпадают, перекачиваем торрент
             				if ($date != $timestamp)

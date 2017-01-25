@@ -71,10 +71,10 @@ class rutrackerSearch extends rutracker
                     	array(
                     		'type'           => 'POST',
                     		'returntransfer' => 1,
-                    		'url'            => 'http://dl.rutracker.org/forum/dl.php?t='.$torrent_id,
+                    		'url'            => 'http://rutracker.org/forum/dl.php?t='.$torrent_id,
                     		'cookie'         => rutracker::$sess_cookie.'; bb_dl='.$torrent_id,
                     		'sendHeader'     => array('Host' => 'rutracker.org', 'Content-length' => strlen(rutracker::$sess_cookie)),
-                    		'referer'        => 'http://dl.rutracker.org/forum/dl.php?t='.$torrent_id,
+                    		'referer'        => 'http://rutracker.org/forum/dl.php?t='.$torrent_id,
                     	)
                     );
                     

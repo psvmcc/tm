@@ -6,10 +6,9 @@ include_once $dir."class/Database.class.php";
 if ( ! Sys::checkAuth())
     die(header('Location: ../'));
 
-$services = Database::getServiceList();
 function generateList($type, $sendUpdateService)
 {
-    global $services;
+    $services = Database::getServiceList($type);
     echo '<label class="label-name">Сервис уведомлений</label>';
     echo "<select onchange=\"changeDiv('{$type}')\" id=\"{$type}\" name=\"send{$type}Service\">";
     for ($i=0; $i<count($services); $i++)
@@ -162,6 +161,7 @@ foreach ($settings as $row)
 </form>
 <script src="js/user-func.js"></script>
 <?php
+$services = Database::getServiceList('notification');
 $str = '';
 for ($i=0; $i<count($services); $i++)
 {

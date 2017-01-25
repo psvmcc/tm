@@ -72,11 +72,12 @@ class rutracker
             		'type'           => 'POST',
             		'header'         => 1,
             		'returntransfer' => 1,
-            		'url'            => 'http://login.rutracker.org/forum/login.php',
+            		'url'            => 'http://rutracker.org/forum/login.php',
             		'postfields'     => 'login_username='.$login.'&login_password='.$password.'&login=%C2%F5%EE%E4',
             		'convert'        => array('windows-1251', 'utf-8//IGNORE'),
             	)
             );
+
 			if ( ! empty($page))
 			{
 				//проверяем подходят ли учётные данные
@@ -88,7 +89,7 @@ class rutracker
 					rutracker::$exucution = FALSE;
 				}
 				//если подходят - получаем куки
-				elseif (preg_match('/bb_data=.+;/U', $page, $array))
+				elseif (preg_match('/bb_session=.+;/U', $page, $array))
 				{
 					rutracker::$sess_cookie = $array[0];
 					Database::setCookie($tracker, rutracker::$sess_cookie);
@@ -194,9 +195,9 @@ class rutracker
                                     	array(
                                     		'type'           => 'POST',
                                     		'returntransfer' => 1,
-                                    		'url'            => 'http://dl.rutracker.org/forum/dl.php?t='.$torrent_id,
+                                    		'url'            => 'http://rutracker.org/forum/dl.php?t='.$torrent_id,
                                     		'cookie'         => rutracker::$sess_cookie.'; bb_dl='.$torrent_id,
-                                    		'sendHeader'     => array('Host' => 'dl.rutracker.org', 'Content-length' => strlen(rutracker::$sess_cookie.'; bb_dl='.$torrent_id)),
+                                    		'sendHeader'     => array('Host' => 'rutracker.org', 'Content-length' => strlen(rutracker::$sess_cookie.'; bb_dl='.$torrent_id)),
                                     		'referer'        => 'http://rutracker.org/forum/viewtopic.php?t='.$torrent_id,
                                     	)
                                     );

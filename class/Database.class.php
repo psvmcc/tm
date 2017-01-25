@@ -158,8 +158,10 @@ class Database
     
     public static function updateAddress($type, $service, $address)
     {
-        $stmt = self::newStatement("UPDATE `notifications` SET `address` = :address WHERE `id` = '{$service}' AND `type` = '{$type}'");
+        $stmt = self::newStatement("UPDATE `notifications` SET `address` = :address WHERE `id` = :service AND `type` = :type");
         $stmt->bindParam(':address', $address);
+        $stmt->bindParam(':service', $service);
+        $stmt->bindParam(':type', $type);
         if ($stmt->execute())
             return TRUE;
         else
@@ -1137,10 +1139,11 @@ class Database
         $stmt = NULL;
         $resultArray = NULL;
     }
-    
-    public static function getServiceList()
+
+    public static function getServiceList($type)
     {
-        $stmt = self::newStatement("SELECT `id`, `service`, `address` FROM `notifications` GROUP BY `service`");
+        $stmt = self::newStatement("SELECT `id`, `service`, `address` FROM `notifications` WHERE `type` = :type");
+        $stmt->bindParam(':type', $type);
         if ($stmt->execute())
         {
             $i = 0;

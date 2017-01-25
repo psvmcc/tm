@@ -84,6 +84,7 @@ class nnmclubSearch extends nnmclub
                             $torrent = Sys::getUrlContent(
                                 array(
                                     'type'           => 'GET',
+                                    'follow'         => 1,
                                     'returntransfer' => 1,
                                     'url'            => 'http://nnmclub.to/forum/download.php?id='.$download_id,
                                     'cookie'         => nnmclub::$sess_cookie,

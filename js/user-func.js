@@ -332,7 +332,7 @@ $( document ).ready(function()
             deleteOldFiles = $form.find('input[name="deleteOldFiles"]').prop('checked');
             rss = $form.find('input[name="rss"]').prop('checked');
             debug = $form.find('input[name="debug"]').prop('checked');
-            
+
         if (serverAddress == '')
             formError += "Вы не указали адрес сервера TM.\n";
         
