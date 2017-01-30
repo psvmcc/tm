@@ -165,6 +165,7 @@ class tfile
 				tfile::$exucution = FALSE;
 			}
 		}
+		tfile::$warning = NULL;
 	}
 }
 ?>

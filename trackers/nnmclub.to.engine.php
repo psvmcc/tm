@@ -277,6 +277,7 @@ class nnmclub
 				nnmclub::$exucution = FALSE;
 			}
 		}
+		nnmclub::$warning = NULL;
 	}
 }
 ?>

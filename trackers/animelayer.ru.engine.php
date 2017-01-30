@@ -38,8 +38,8 @@ class animelayer
 	//функция преобразования даты из строки в формат БД
 	private static function dateStringToNum($data)
 	{
-    	$data = str_replace('&nbsp;', ' ', $data);
-        $pieces = explode(' ', $data);
+		$date = str_replace('&nbsp;', ' ', $data);
+		$pieces = explode(' ', $date);
 		if (strlen($pieces[0]) == 1)
 			$pieces[0] = '0'.$pieces[0];
 		
@@ -47,15 +47,16 @@ class animelayer
 		$monthes_num = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
 		$month = preg_replace($monthes, $monthes_num, $pieces[1]);
 
-        $pieces2 = explode(':', $pieces[3]);      
-        if (strlen($pieces2[0]) == 1)
-            $hour = '0'.$pieces2[0];
-        else
-            $hour = $pieces2[0];
-            
-        if (count($pieces) == 4)
+		preg_match('/\d{1,2}:\d{2}/', $date, $matchs);
+		$pieces2 = explode(':', $matchs[0]);      
+		if (strlen($pieces2[0]) == 1)
+			$hour = '0'.$pieces2[0];
+		else
+			$hour = $pieces2[0];
+			
+		if (count($pieces) == 4)
 		    return date('Y').'-'.$month.'-'.$pieces[0].' '.$hour.':'.$pieces2[1].':00'; 
-        else if (count($pieces) == 5)
+		else if (count($pieces) == 5)
 		    return $pieces[2].'-'.$month.'-'.$pieces[0].' '.$hour.':'.$pieces2[1].':00';
 	}
 	
@@ -281,5 +282,6 @@ class animelayer
 				animelayer::$exucution = FALSE;
 			}
 		}
+		animelayer::$warning = NULL;
 	}
 }

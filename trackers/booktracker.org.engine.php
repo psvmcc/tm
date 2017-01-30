@@ -270,6 +270,7 @@ class booktracker
 				booktracker::$exucution = FALSE;
 			}
 		}
+		booktracker::$warning = NULL;
 	}
 }
 ?>

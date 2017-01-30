@@ -255,6 +255,7 @@ class kiev
 				kiev::$exucution = FALSE;
 			}
 		}
+		kiev::$warning = NULL;
 	}
 }
 ?>

@@ -296,6 +296,7 @@ class casstudio
 				casstudio::$exucution = FALSE;
 			}
 		}
+		casstudio::$warning = NULL;
 	}
 }
 ?>

@@ -329,6 +329,7 @@ class kinozal
 				kinozal::$exucution = FALSE;
 			}
 		}
+		kinozal::$warning = NULL;
 	}
 }
 ?>

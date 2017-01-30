@@ -282,6 +282,7 @@ class anidub
 				anidub::$exucution = FALSE;
 			}
 		}
+		anidub::$warning = NULL;
 	}
 }
 ?>

@@ -263,6 +263,7 @@ class rustorka
 				rustorka::$exucution = FALSE;
 			}
 		}
+		rustorka::$warning = NULL;
 	}
 }
 ?>

@@ -174,7 +174,7 @@ class rutracker
     			else
     			{
     				//ищем на странице дату регистрации торрента
-    				if (preg_match('/<span title=\"Когда зарегистрирован\">\[ (.+) \]<\/span>/', $page, $array))
+    				if (preg_match('/<td style=\"width: 70%; padding: 5px;\">(.*)<\/td>/', $page, $array))
     				{
     					//проверяем удалось ли получить дату со страницы
     					if (isset($array[1]))
@@ -272,6 +272,7 @@ class rutracker
 				rutracker::$exucution = FALSE;
 			}
 		}
+		rutracker::$warning = NULL;
 	}
 }
 ?>

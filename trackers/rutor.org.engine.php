@@ -147,6 +147,7 @@ class rutor
 				rutor::$exucution = FALSE;
 			}
 		}
+		rutor::$warning = NULL;
 	}
 }
 ?>

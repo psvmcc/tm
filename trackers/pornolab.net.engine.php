@@ -261,6 +261,7 @@ class pornolab
 				pornolab::$exucution = FALSE;
 			}
 		}
+		pornolab::$warning = NULL;
 	}
 }
 ?>
