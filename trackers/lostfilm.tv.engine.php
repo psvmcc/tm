@@ -35,15 +35,16 @@ class lostfilm
 	        		'type'           => 'GET',
 	        		'header'         => 0,
 	        		'returntransfer' => 1,
-	        		'url'            => 'http://www.lostfilm.tv/my.php',
+	        		'url'            => 'http://old.lostfilm.tv/my.php',
 	        		'cookie'         => lostfilm::$sess_cookie,
-	        		'sendHeader'     => array('Host' => 'www.lostfilm.tv'),
+	        		'sendHeader'     => array('Host' => 'old.lostfilm.tv'),
 	        		'convert'        => array('windows-1251', 'utf-8//IGNORE'),
 	        	)
 	        );
 			preg_match('/<td align=\"left\">(.*)<br >/', $page, $out);
 			if (isset($out[1]))
 			{
+    			
     			lostfilm::$sess_cookie .= ' usess='.$out[1];
     			Database::setCookie($tracker, lostfilm::$sess_cookie);
     			Database::clearWarnings('lostfilm.tv');
@@ -81,9 +82,9 @@ class lostfilm
         		'type'           => 'POST',
         		'header'         => 0,
         		'returntransfer' => 1,
-        		'url'            => 'http://www.lostfilm.tv/',
+        		'url'            => 'http://old.lostfilm.tv/',
         		'cookie'         => $sess_cookie,
-        		'sendHeader'     => array('Host' => 'www.lostfilm.tv'),
+        		'sendHeader'     => array('Host' => 'old.lostfilm.tv'),
         		'convert'        => array('windows-1251', 'utf-8//IGNORE'),
         	)
         );
@@ -129,7 +130,7 @@ class lostfilm
 		$data = preg_split('/\-/', $data);
 
 		$month = Sys::dateNumToString($data[1]);
-		$date = $data[2].' '.$month.' '.$data[0].' '.$time;
+		$date = $data[2].' '.$month.' '.$data[0].' в '.$time;
 		
 		return $date;
 	}
@@ -202,7 +203,7 @@ class lostfilm
 					$post .= $array_names[1][$i+1].'='.$array_values[1][$i].'&';
 				
 				$url = $url_array[1];
-
+                $url = str_replace('www', 'old', $url);
     			$post = substr($post, 0, -1);
     			
     			$page = Sys::getUrlContent(
@@ -281,7 +282,7 @@ class lostfilm
 			        	array(
 			        		'type'           => 'GET',
 			        		'returntransfer' => 1,
-			        		'url'            => 'http://www.lostfilm.tv/rssdd.xml',
+			        		'url'            => 'http://old.lostfilm.tv/rssdd.xml',
 			        		'convert'        => array('windows-1251', 'utf-8//IGNORE'),
 			        	)
 			        );
@@ -364,14 +365,16 @@ class lostfilm
 									$amp = 'MP4';
 								else
 									$amp = 'SD';
+								$url = str_replace('https', 'http', $serial['link']);
+								$url = str_replace('www', 'old', $url);
 								//сохраняем торрент в файл
                                 $torrent = Sys::getUrlContent(
 						        	array(
 						        		'type'           => 'POST',
 						        		'returntransfer' => 1,
-						        		'url'            => str_replace('https', 'http', $serial['link']),
+						        		'url'            => $url,
 						        		'cookie'         => lostfilm::$sess_cookie,
-						        		'sendHeader'     => array('Host' => 'www.lostfilm.tv', 'Content-length' => strlen(lostfilm::$sess_cookie)),
+						        		'sendHeader'     => array('Host' => 'old.lostfilm.tv', 'Content-length' => strlen(lostfilm::$sess_cookie)),
 						        	)
                                 );
 
