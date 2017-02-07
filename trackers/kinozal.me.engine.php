@@ -184,7 +184,7 @@ class kinozal
 		}
 	}
 	
-    public static function work($array, $id, $tracker, $name, $torrent_id, $timestamp, $hash, $auto_update)
+    public static function work($titlearray, $array, $id, $tracker, $name, $torrent_id, $timestamp, $hash, $auto_update)
     {
 		//проверяем удалось ли получить дату со страницы
 		if (isset($array[1]))
@@ -228,7 +228,7 @@ class kinozal
                         {
         					if ($auto_update)
     						{
-    						    $name = Sys::parseHeader($tracker, $page);
+    						    $name = Sys::parseHeader($tracker, $titlearray[1]);
     						    //обновляем заголовок торрента в базе
                                 Database::setNewName($id, $name);
     						}
@@ -300,11 +300,12 @@ class kinozal
 
 			if ( ! empty($page))
 			{
+    			preg_match('/(<title>.*<\/title>)/', $page, $titlearray);
 				//ищем на странице дату регистрации торрента
 				if (preg_match('/<li>Обновлен<span class=\"floatright green n\">(.*)<\/span><\/li>/', $page, $array))
-    				kinozal::work($array, $id, $tracker, $name, $torrent_id, $timestamp, $hash, $auto_update);
+    				kinozal::work($titlearray, $array, $id, $tracker, $name, $torrent_id, $timestamp, $hash, $auto_update);
 				elseif (preg_match('/<li>Залит<span class=\"floatright green n\">(.*)<\/span><\/li>/', $page, $array))
-				    kinozal::work($array, $id, $tracker, $name, $torrent_id, $timestamp, $hash, $auto_update);
+				    kinozal::work($titlearray, $array, $id, $tracker, $name, $torrent_id, $timestamp, $hash, $auto_update);
 				else
 				{
 					//устанавливаем варнинг
