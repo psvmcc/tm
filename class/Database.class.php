@@ -77,6 +77,11 @@ class Database
                 return $row['val'];
             }
         }
+        else
+        {
+            $error = $stmt->errorInfo();
+            return 'Ошибка при выполнении запроса: '.$request.'<br>'.$error[2];
+        }
         $stmt = NULL;        
     }
 
@@ -167,7 +172,35 @@ class Database
         else
             return $stmt->errorInfo();
         $stmt = NULL;
-    }    
+    }
+
+    public static function setUpdateNotification($param)
+    {
+        $stmt = self::newStatement("UPDATE `settings` SET `val` = :val WHERE `key` = 'sentUpdateNotification'");
+        $stmt->bindParam(':val', $param);
+        if ($stmt->execute())
+            return TRUE;
+        else
+            return $stmt->errorInfo();
+        $stmt = NULL;
+    }
+
+    public static function getUpdateNotification()
+    {
+        $stmt = self::newStatement("SELECT `val` FROM `settings` WHERE `key` = 'sentUpdateNotification'");
+        if ($stmt->execute())
+        {
+            foreach ($stmt as $row)
+            {
+                if ($row['val'] == 1)
+                    return TRUE;
+                else
+                    return FALSE;
+            }
+        }
+        $stmt = NULL;
+        $resultArray = NULL;
+    }
     
     public static function getCredentials($tracker)
     {

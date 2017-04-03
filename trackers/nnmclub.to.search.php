@@ -86,7 +86,7 @@ class nnmclubSearch extends nnmclub
                                     'type'           => 'GET',
                                     'follow'         => 1,
                                     'returntransfer' => 1,
-                                    'url'            => 'http://nnmclub.to/forum/download.php?id='.$download_id,
+                                    'url'            => 'http://nnm-club.ws/download.php?id='.$download_id,
                                     'cookie'         => nnmclub::$sess_cookie,
                                     'sendHeader'     => array('Host' => 'nnmclub.to', 'Content-length' => strlen(nnmclub::$sess_cookie)),
                                     'referer'        => 'http://nnmclub.to/forum/viewtopic.php?t='.$torrent_id.'&sid='.$sid,

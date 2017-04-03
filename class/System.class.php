@@ -69,7 +69,10 @@ class Sys
     //версия системы
     public static function version()
     {
-        return '1.5.8';
+        $version = json_decode(file_get_contents($ROOTPATH.'version.txt'));
+        $ver['system'] = $version->system;
+        $ver['database'] = $version->database;
+        return $ver;
     }
 
     //проверка обновлений системы
@@ -86,10 +89,15 @@ class Sys
 
         //читаем xml
         $xml = @simplexml_load_string($page);
+        $dir = dirname(__FILE__);
+        $dir = str_replace('class', '', $dir);
+        $version = json_decode(file_get_contents($dir.'version.txt'));
         
         if (false !== $xml)
         {
-            if (Sys::version() < $xml->current_version)
+            if ($version->system < $xml->current_version)
+                return TRUE;
+            elseif ($version->database < $xml->current_version)
                 return TRUE;
             else
                 return FALSE;
@@ -108,7 +116,7 @@ class Sys
             if ($param['type'] == 'GET')
                 curl_setopt($ch, CURLOPT_HTTPGET, 1);
 
-            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0');
+            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:51.0) Gecko/20100101 Firefox/51.0');
             if (isset($param['follow']))
                 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
             

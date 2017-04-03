@@ -141,6 +141,10 @@ foreach ($settings as $row)
     </p>
     <p>
         <label class="label-name"></label>
+        <label><input type="checkbox" name="autoUpdate" <?php if ($autoUpdate) echo "checked" ?>> Автоматическое обновление</label>
+    </p>
+    <p>
+        <label class="label-name"></label>
         <label><input type="checkbox" name="debug" <?php if ($debug) echo "checked" ?>> Режим отладки</label>
     </p>
     <button class="form-button">Сохранить</button>

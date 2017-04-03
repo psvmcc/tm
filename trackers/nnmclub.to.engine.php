@@ -179,7 +179,7 @@ class nnmclub
 								{
 									//сохраняем торрент в файл
 									$download_id = $link[1];
-                                    preg_match('/phpbb2mysql_4_sid=(.*)/U', nnmclub::$sess_cookie, $arr);
+                                    preg_match('/phpbb2mysql_4_sid=(.*)/', nnmclub::$sess_cookie, $arr);
                                     $sid = $arr[1];
 
 									$torrent = Sys::getUrlContent(
@@ -187,7 +187,7 @@ class nnmclub
 	                                		'type'           => 'GET',
 	                                		'follow'         => 1,
 	                                		'returntransfer' => 1,
-	                                		'url'            => 'http://nnmclub.to/forum/download.php?id='.$download_id,
+	                                		'url'            => 'http://nnm-club.ws/download.php?id='.$download_id,
 	                                		'cookie'         => nnmclub::$sess_cookie,
 	                                		'sendHeader'     => array('Host' => 'nnmclub.to', 'Content-length' => strlen(nnmclub::$sess_cookie)),
 	                                		'referer'        => 'http://nnmclub.to/forum/viewtopic.php?t='.$torrent_id.'&sid='.$sid,

@@ -24,9 +24,8 @@ class Errors
 		Errors::write('save_file_fail', 'Не удалось сохранить torrent-файл в директорию.');
 		Errors::write('limit', 'Превышен лимит попыток входа в профиль. Необходимо остановить ТМ на 2-3 часа.');
 
-		
-
 		Errors::write('update', 'Невозможно проверить обновление системы.');
+        Errors::write('update_fail', 'Невозможно обновить систему.');
     	Errors::write('update_news', 'Невозможно проверить новости.');
 
     	Errors::write('404', 'Не удалось добавить в torrent-клиент, неверная ссылка на torrent-файл.');

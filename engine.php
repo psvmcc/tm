@@ -12,6 +12,7 @@ include_once $dir.'class/Notification.class.php';
 header('Content-Type: text/html; charset=utf-8');
 
 $debug = Database::getSetting('debug');
+$autoUpdate = Database::getSetting('autoUpdate');
 $time_start_full = microtime(true);
 if (Sys::checkCurl())
 {
@@ -123,7 +124,6 @@ if (Sys::checkCurl())
 	echo 'Добавляем темы из Temp.'."\r\n".'<br />';
 	$time_start = microtime(true);
 	$tempList = Database::getAllFromTemp();
-	var_dump($tempList);
 	if (count($tempList) > 0)
 	    Sys::AddFromTemp($tempList);
 	$time_end = microtime(true);
@@ -139,6 +139,24 @@ if (Sys::checkCurl())
         echo 'Время выполнения: '.$time."\r\n".'<br />';
 	echo 'Удаление старых torrent-файлов.'."\r\n".'<br />';
 	Sys::deleteOldTorrents();
+    if ($autoUpdate)
+    {
+        echo 'Установка обновлений.'."\r\n".'<br />';
+        include_once $dir.'class/Update.class.php';
+        Update::main();
+    }
+    else
+    {
+        if (Sys::checkUpdate())
+        {
+            if ( ! Database::getUpdateNotification())
+            {
+                $msg = 'Выпущена новая версия ТМ, автоматическое обновление отключено, обновите систему самостоятельно.';
+                Notification::sendNotification('news', date('r'), 0, $msg, 0);
+                Database::setUpdateNotification(1);
+            }
+        }
+    }
 	echo 'Запись времени последнего запуска ТМ.'."\r\n".'<br />';
 	Sys::lastStart();
 }	

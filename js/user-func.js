@@ -331,6 +331,7 @@ $( document ).ready(function()
             deleteDistribution = $form.find('input[name="deleteDistribution"]').prop('checked');
             deleteOldFiles = $form.find('input[name="deleteOldFiles"]').prop('checked');
             rss = $form.find('input[name="rss"]').prop('checked');
+            autoUpdate = $form.find('input[name="autoUpdate"]').prop('checked');
             debug = $form.find('input[name="debug"]').prop('checked');
 
         if (serverAddress == '')
@@ -349,7 +350,7 @@ $( document ).ready(function()
         }
 
         ohSnap('Обрабатывается запрос...', 'yellow');
-        $.post("action.php",{action: 'update_settings', serverAddress: serverAddress, send: send, sendUpdate: sendUpdate, sendWarning: sendWarning, sendUpdateService: sendUpdateService, sendUpdateAddress: sendUpdateAddress, sendWarningService: sendWarningService, sendWarningAddress: sendWarningAddress, auth: auth, proxy: proxy, proxyType: proxyType, proxyAddress: proxyAddress, torrent: torrent, torrentClient: torrentClient, torrentAddress: torrentAddress, torrentLogin: torrentLogin, torrentPassword: torrentPassword, pathToDownload: pathToDownload, deleteDistribution: deleteDistribution, deleteOldFiles: deleteOldFiles, rss: rss, debug: debug},
+        $.post("action.php",{action: 'update_settings', serverAddress: serverAddress, send: send, sendUpdate: sendUpdate, sendWarning: sendWarning, sendUpdateService: sendUpdateService, sendUpdateAddress: sendUpdateAddress, sendWarningService: sendWarningService, sendWarningAddress: sendWarningAddress, auth: auth, proxy: proxy, proxyType: proxyType, proxyAddress: proxyAddress, torrent: torrent, torrentClient: torrentClient, torrentAddress: torrentAddress, torrentLogin: torrentLogin, torrentPassword: torrentPassword, pathToDownload: pathToDownload, deleteDistribution: deleteDistribution, deleteOldFiles: deleteOldFiles, rss: rss, autoUpdate: autoUpdate, debug: debug},
             function(data) {
                 if (data.error)
                 {

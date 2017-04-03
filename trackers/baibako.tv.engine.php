@@ -44,12 +44,22 @@ class baibako
 	//функция анализа эпизода
 	private static function analysisEpisode($item)
 	{
-		preg_match('/s\d{2}\.?e\d{2}/i', $item->link, $matches);
-		if (isset($matches[0]))
+		if (preg_match('/s\d{2}\.?e\d{2}/i', $item->link, $matches))
 		{
-			$episode = $matches[0];
-			$date = $item->pubDate;
-			return array('episode'=>$episode, 'date'=>$date, 'link'=>(string)$item->link);
+			if (isset($matches[0]))
+			{
+				$episode = $matches[0];
+				return array('episode'=>$episode, 'date'=>$item->pubDate, 'link'=>(string)$item->link);
+			}
+		}
+		elseif (preg_match('/s\d{2}\.?e\d{2}-\d{2}/i', $item->title, $matches))
+		{
+			$str = 's01e01-11';
+			$new = explode('e', $str);
+			$new_ep = explode('-', $new[1]);
+			$episode = $new_ep[1];
+			
+			return array('episode'=>$episode, 'date'=>$item->pubDate, 'link'=>(string)$item->link);
 		}
 	}
 	
@@ -60,17 +70,17 @@ class baibako
 		{
 			if ($hd == 1)
 			{
-				if (preg_match_all('/HD(TV)?720/', $item->title, $matches))
+				if (preg_match_all('/HD(TV)?720/', (string)$item->title, $matches))
 					return baibako::analysisEpisode($item);
 			}
 			elseif ($hd == 2)
 			{
-				if (preg_match_all('/HD(TV)?1080/', $item->title, $matches))
+				if (preg_match_all('/HD(TV)?1080/', (string)$item->title, $matches))
 					return baibako::analysisEpisode($item);
 			}
 			else
 			{
-				if (preg_match_all('/x264/', $item->link, $matches))
+				if (preg_match_all('/x264/', (string)$item->title, $matches))
 					return baibako::analysisEpisode($item);
 			}
 		}

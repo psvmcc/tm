@@ -26,7 +26,13 @@ if ($update)
     ?>
         <h1 class="h-title">TorrentMonitor v.
         <?php
-            echo Sys::version();
+        $version = Sys::version();
+        if ($version['system'] == $version['database'])
+            echo $version['system'];
+        elseif ($version['system'] < $version['database'])
+            echo $version['system'];
+        elseif ($version['system'] > $version['database'])
+            echo $version['database'];
         ?>
         </h1>
         
