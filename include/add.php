@@ -81,7 +81,7 @@ if ( ! Sys::checkAuth())
             <option>nnmclub.to</option>
             <option>pornolab.net</option>
             <option>rutracker.org</option>
-            <option>tfile.co</option>
+            <option>tfile.cc</option>
         </select>
     </p>
     <p>

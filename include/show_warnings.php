@@ -11,6 +11,7 @@ if ( ! Sys::checkAuth())
 $count = Database::getWarningsCount();
 if ( ! empty($count))
 {
+$countErrorsByTracker = $count[0]['count'];
 ?>
 <table class="warning_table" border="0" cellpadding="0" cellspacing="1">
 	<thead> 
@@ -69,7 +70,7 @@ if ( ! empty($count))
     				$name = $torrent[0]['name'];
     				$torrent_id = $torrent[0]['torrent_id'];
     				echo '<br />Раздача: ';
-            		if ($tracker == 'rutracker.org' || $tracker == 'nnmclub.to' || $tracker == 'tfile.co' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
+            		if ($tracker == 'rutracker.org' || $tracker == 'nnmclub.to' || $tracker == 'tfile.cc' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
             		{
             		?>
         				<a href='http://<?php echo $tracker ?>/forum/viewtopic.php?t=<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>
@@ -136,7 +137,7 @@ if ( ! empty($count))
     				$name = $torrent[0]['name'];
                     $torrent_id = $torrent[0]['torrent_id'];
     				echo '<br />Раздача: ';
-            		if ($tracker == 'rutracker.org' || $tracker == 'nnmclub.to' || $tracker == 'tfile.co' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
+            		if ($tracker == 'rutracker.org' || $tracker == 'nnmclub.to' || $tracker == 'tfile.cc' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
             		{
             		?>
         				<a href='http://<?php echo $tracker ?>/forum/viewtopic.php?t=<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>

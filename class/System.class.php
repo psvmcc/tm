@@ -69,6 +69,7 @@ class Sys
     //версия системы
     public static function version()
     {
+        $ROOTPATH = dirname(__FILE__)."/../";
         $version = json_decode(file_get_contents($ROOTPATH.'version.txt'));
         $ver['system'] = $version->system;
         $ver['database'] = $version->database;
@@ -227,7 +228,7 @@ class Sys
                 $name = substr($array[1], 0, -20);
             elseif ($tracker == 'rutracker.org')
                 $name = substr($array[1], 0, -17);
-            elseif ($tracker == 'tfile.co')
+            elseif ($tracker == 'tfile.cc')
                 $name = substr($array[1], 15, -25);
             elseif ($tracker == 'tracker.0day.kiev.ua')
                 $name = substr($array[1], 6, -67);

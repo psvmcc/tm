@@ -27,7 +27,7 @@ if (isset($torrent[0]['torrent_id']) && $torrent[0]['torrent_id'] != NULL)
     <p>
         <label class="label-name">Ссылка на тему</label>
 <?php
-if ($tracker == 'rutracker.org' || $tracker == 'nnmclub.to' || $tracker == 'tfile.co' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
+if ($tracker == 'rutracker.org' || $tracker == 'nnmclub.to' || $tracker == 'tfile.cc' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
     $tracker = 'http://'.$tracker.'/forum/viewtopic.php?t=';
 elseif ($tracker == 'booktracker.org')
     $tracker = 'http://'.$tracker.'/viewtopic.php?t=';    

@@ -300,7 +300,7 @@ class lostfilm
                                 if ($hd == 1)
                                 {
                                     $str = '1080';
-                                    $quality = '1080p (WEB-DLRip|WEBRip|WEB-DLRip|HDTVRip)';
+                                    $quality = '1080p (WEBRip|WEB-DLRip|HDTVRip)';
                                     $amp = 'HD';
                                 }
                                 if ($hd == 2)
