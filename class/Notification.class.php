@@ -134,17 +134,20 @@ class Notification
      
         $pieces = explode(';', $telegram);
         $url = "https://api.telegram.org/bot" . $pieces[0] . "/sendMessage";
-        $postfields = array('chat_id' => $pieces[1], 'text' => $msg, 'disable_web_page_preview' => 1, 'parse_mode' => 'HTML');
-        $forumPage = Sys::getUrlContent(
-            array(
-                'type'           => 'POST',
-                'header'         => 1,
-                'returntransfer' => 1,
-                'url'            => $url,
-                'ssl_false'      => 1,
-                'postfields'     => $postfields,
-            )
-        );
+        for ($i = 1; array_key_exists($i, $pieces); $i++)
+        {
+            $postfields = array('chat_id' => $pieces[$i], 'text' => $msg, 'disable_web_page_preview' => 1, 'parse_mode' => 'HTML');
+            $forumPage = Sys::getUrlContent(
+                array(
+                    'type'           => 'POST',
+                    'header'         => 1,
+                    'returntransfer' => 1,
+                    'url'            => $url,
+                    'ssl_false'      => 1,
+                    'postfields'     => $postfields,
+                )
+            );
+        }
     }
 
 	public static function sendNotification($type, $date, $tracker, $message, $name=0, $id=0)

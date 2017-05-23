@@ -24,7 +24,7 @@ class booktrackerSearch extends booktracker
             		'type'           => 'POST',
             		'header'         => 1,
             		'returntransfer' => 1,
-            		'url'            => 'http://booktracker.org/search.php',
+            		'url'            => 'https://booktracker.org/search.php',
             		'cookie'         => booktracker::$sess_cookie,
             		'postfields'     => 'nm=&to=1&allw=1&pn='.$name.'&f%5B%5D=0&tm=0&dm=0&s=0&o=1&submit=%C2%A0%C2%A0%D0%9F%D0%BE%D0%B8%D1%81%D0%BA%C2%A0%C2%A0',
             	)
@@ -63,7 +63,7 @@ class booktrackerSearch extends booktracker
                     		'header'         => 0,
                     		'returntransfer' => 1,
                     		'encoding'       => 1,
-                    		'url'            => 'http://booktracker.org/viewtopic.php?t='.$torrent_id,
+                    		'url'            => 'https://booktracker.org/viewtopic.php?t='.$torrent_id,
                     		'cookie'         => booktracker::$sess_cookie,
                     		'sendHeader'     => array('Host' => 'booktracker.org', 'Content-length' => strlen(booktracker::$sess_cookie)),
                     	)
@@ -83,10 +83,10 @@ class booktrackerSearch extends booktracker
                             	array(
                             		'type'           => 'GET',
                             		'returntransfer' => 1,
-                            		'url'            => 'http://booktracker.org/download.php?id='.$download_id,
+                            		'url'            => 'https://booktracker.org/download.php?id='.$download_id,
                             		'cookie'         => booktracker::$sess_cookie,
                             		'sendHeader'     => array('Host' => 'booktracker.org', 'Content-length' => strlen(booktracker::$sess_cookie)),
-                            		'referer'        => 'http://booktracker.org/viewtopic.php?t='.$torrent_id,
+                            		'referer'        => 'https://booktracker.org/viewtopic.php?t='.$torrent_id,
                             	)
                             );
                             

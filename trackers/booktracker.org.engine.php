@@ -13,7 +13,7 @@ class booktracker
         		'type'           => 'POST',
         		'returntransfer' => 1,
         		'encoding'       => 1,
-        		'url'            => 'http://booktracker.org/index.php',
+        		'url'            => 'https://booktracker.org/index.php',
         		'cookie'         => $sess_cookie,
         		'sendHeader'     => array('Host' => 'booktracker.org', 'Content-length' => strlen($sess_cookie)),
         	)
@@ -69,7 +69,7 @@ class booktracker
             		'header'         => 1,
             		'returntransfer' => 1,
             		'encoding'       => 1,
-            		'url'            => 'http://booktracker.org/login.php',
+            		'url'            => 'https://booktracker.org/login.php',
             		'postfields'     => 'login_username=' . $login . '&login_password=' . $password . '&login=%D0%92%D1%85%D0%BE%D0%B4',
             	)
             );
@@ -148,7 +148,7 @@ class booktracker
             		'header'         => 0,
             		'returntransfer' => 1,
             		'encoding'       => 1,
-            		'url'            => 'http://booktracker.org/viewtopic.php?t='.$torrent_id,
+            		'url'            => 'https://booktracker.org/viewtopic.php?t='.$torrent_id,
             		'cookie'         => booktracker::$sess_cookie,
             		'sendHeader'     => array('Host' => 'booktracker.org', 'Content-length' => strlen(booktracker::$sess_cookie)),
             	)
@@ -181,10 +181,10 @@ class booktracker
 	                                	array(
 	                                		'type'           => 'GET',
 	                                		'returntransfer' => 1,
-	                                		'url'            => 'http://booktracker.org/download.php?id='.$download_id,
+	                                		'url'            => 'https://booktracker.org/download.php?id='.$download_id,
 	                                		'cookie'         => booktracker::$sess_cookie,
 	                                		'sendHeader'     => array('Host' => 'booktracker.org', 'Content-length' => strlen(booktracker::$sess_cookie)),
-	                                		'referer'        => 'http://booktracker.org/viewtopic.php?t='.$torrent_id,
+	                                		'referer'        => 'https://booktracker.org/viewtopic.php?t='.$torrent_id,
 	                                	)
 	                                );
 	                                if (Sys::checkTorrentFile($torrent))
