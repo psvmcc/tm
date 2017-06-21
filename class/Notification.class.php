@@ -30,7 +30,7 @@ class Notification
 		if ($name != '' || $name != 0)
 		{
     		$msg .= '<br />Ссылка на тему: ';
-    		if ($tracker == 'rutracker.org' || $tracker == 'nnmclub.to' || $tracker == 'tfile.cc' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
+    		if ($tracker == 'rutracker.org' || $tracker == 'nnm-club.name' || $tracker == 'tfile.cc' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
     			$msg .= "http://{$tracker}/forum/viewtopic.php?t={$name}";
     		elseif ($tracker == 'kinozal.tv'  || $tracker == 'animelayer.ru' || $tracker == 'tracker.0day.kiev.ua')
         	    $msg .= "http://{$tracker}/details.php?id={$name}";

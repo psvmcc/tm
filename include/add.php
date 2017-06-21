@@ -78,7 +78,7 @@ if ( ! Sys::checkAuth())
         <select name="tracker">
             <option></option>
             <option>booktracker.org</option>
-            <option>nnmclub.to</option>
+            <option>nnm-club.name</option>
             <option>pornolab.net</option>
             <option>rutracker.org</option>
             <option>tfile.cc</option>

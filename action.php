@@ -50,8 +50,8 @@ if (isset($_POST['action']))
             {			
     			if ($tracker == 'tr.anidub.com')
     				$tracker = 'anidub.com';
-                elseif ($tracker == 'nnm-club.me')
-    				$tracker = 'nnmclub.to';
+                elseif ($tracker == 'nnm-club.name')
+    				$tracker = 'nnm-club.name';
     				
                 if (preg_match('/.*tor\.org|rutor\.info/', $tracker))
                 {

@@ -70,7 +70,7 @@ $countErrorsByTracker = $count[0]['count'];
     				$name = $torrent[0]['name'];
     				$torrent_id = $torrent[0]['torrent_id'];
     				echo '<br />Раздача: ';
-            		if ($tracker == 'rutracker.org' || $tracker == 'nnmclub.to' || $tracker == 'tfile.cc' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
+            		if ($tracker == 'rutracker.org' || $tracker == 'nnm-club.name' || $tracker == 'tfile.cc' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
             		{
             		?>
         				<a href='http://<?php echo $tracker ?>/forum/viewtopic.php?t=<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>
@@ -102,7 +102,7 @@ $countErrorsByTracker = $count[0]['count'];
         	    		<a href='http://tr.anidub.com/<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>	    	
         	    	<?php        		
             		}
-            		elseif ($tracker == 'casstudio.tv')
+            		elseif ($tracker == 'casstudio.tv' || $tracker == 'booktracker.org')
             		{
         	    	?>        		
         	    		<a href='http://<?php echo $tracker ?>/viewtopic.php?t=<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>
@@ -137,7 +137,7 @@ $countErrorsByTracker = $count[0]['count'];
     				$name = $torrent[0]['name'];
                     $torrent_id = $torrent[0]['torrent_id'];
     				echo '<br />Раздача: ';
-            		if ($tracker == 'rutracker.org' || $tracker == 'nnmclub.to' || $tracker == 'tfile.cc' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
+            		if ($tracker == 'rutracker.org' || $tracker == 'nnm-club.name' || $tracker == 'tfile.cc' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
             		{
             		?>
         				<a href='http://<?php echo $tracker ?>/forum/viewtopic.php?t=<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>
@@ -163,7 +163,7 @@ $countErrorsByTracker = $count[0]['count'];
         	    		<a href='http://tr.anidub.com/<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>	    	
         	    	<?php        		
             		}
-            		elseif ($tracker == 'casstudio.tv')
+            		elseif ($tracker == 'casstudio.tv' || $tracker == 'booktracker.org')
             		{
         	    	?>        		
         	    		<a href='http://<?php echo $tracker ?>/viewtopic.php?t=<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>

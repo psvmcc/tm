@@ -91,7 +91,7 @@ if (Sys::checkInternet())
 		</tr>
 				<?php	
 				}
-				if ($tracker == 'nnm-club.me' || $tracker == 'pornolab.net' || $tracker == 'rutracker.org' || $tracker == 'tapochek.net' || $tracker == 'tfile.cc')
+				if ($tracker == 'nnm-club.name' || $tracker == 'pornolab.net' || $tracker == 'rutracker.org' || $tracker == 'tapochek.net' || $tracker == 'tfile.cc')
 				{
 					if (file_exists($dir.'trackers/'.$tracker.'.search.php'))
 					{
@@ -143,8 +143,8 @@ if (Sys::checkInternet())
 				    $page = 'http://rutor.info/';
 				elseif ($tracker == 'lostfilm-mirror')
 				    $page = 'http://korphome.ru/lostfilm.tv/rss.xml';
-				elseif ($tracker == 'nnm-club.me')
-				    $page = 'http://nnmclub.to/forum/index.php';
+				elseif ($tracker == 'nnm-club.name')
+				    $page = 'http://nnm-club.name/forum/index.php';
 				else
 					$page = 'http://'.$tracker;
 				if (Sys::checkavAilability($page))

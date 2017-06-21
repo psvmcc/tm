@@ -224,8 +224,8 @@ class Sys
                 $name = substr($array[1], 48);
             elseif ($tracker == 'kinozal.me')
                 $name = substr($array[1], 0, -22);
-            elseif ($tracker == 'nnmclub.to')
-                $name = substr($array[1], 0, -20);
+            elseif ($tracker == 'nnm-club.name')
+                $name = substr($array[1], 0, -12);
             elseif ($tracker == 'rutracker.org')
                 $name = substr($array[1], 0, -17);
             elseif ($tracker == 'tfile.cc')
