@@ -48,7 +48,14 @@ else
 			$class = '#ffffff';
 	?>
         <tr>
-            <td class='text-align-left' nowrap><span class='icon-torrent' style='background-image: url(img/<?php echo $tracker ?>.ico);'></span><?php echo $tracker ?></td>
+            <td class='text-align-left' nowrap><span class='icon-torrent' style='background-image: url(img/<?php echo $tracker ?>.ico);'></span>
+            <?php 
+            if ($tracker == 'baibako.tv_forum')
+                echo 'baibako.tv';
+            else
+                echo $tracker;
+            ?>
+            </td>
             <td class='text-align-left'>
     	  	<?php
             if ($pause)
@@ -81,6 +88,12 @@ else
     		{
 	    	?>        		
 	    		<a href='http://tr.anidub.com<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>	    	
+	    	<?php        		
+    		}
+    		elseif ($tracker == 'baibako.tv_forum')
+    		{
+	    	?>        		
+	    		<a href='http://baibako.tv/details.php?id=<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>	    	
 	    	<?php        		
     		}
     		elseif ($tracker == 'casstudio.tv' || $tracker == 'booktracker.org')

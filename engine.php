@@ -40,6 +40,9 @@ if (Sys::checkCurl())
 				    
                 if ($tracker == 'tv.mekc.info')
 				    $functionClass = 'mekc';
+				    
+				if ($tracker == 'baibako.tv_forum')
+				    $functionClass = 'baibako_f';
 
 				echo $torrentsList[$i]['name'].' на трекере '.$tracker."\r\n".'<br />';
 				if ($torrentsList[$i]['pause'])

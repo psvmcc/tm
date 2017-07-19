@@ -20,7 +20,7 @@ if (isset($_POST['action']))
 			$_SESSION['TM'] = $password;
 			$return['error'] = FALSE;
 			if ($_POST['remember'] == 'true')
-			    setcookie('TM', $password, time()+3600*24*31);
+			    setcookie('TM', $password, time()+3600*24*31, '/');
 		}
 		else
 		{
@@ -41,7 +41,7 @@ if (isset($_POST['action']))
 			$tracker = $url['host'];
 			$tracker = preg_replace('/www\./', '', $tracker);
 			
-			if ($tracker == 'lostfilm.tv' || $tracker == 'lostfilm-mirror' || $tracker == 'novafilm.tv' || $tracker == 'baibako.tv' || $tracker == 'newstudio.tv')
+			if ($tracker == 'lostfilm.tv' || $tracker == 'lostfilm-mirror' || $tracker == 'novafilm.tv' || $tracker == 'newstudio.tv')
 			{
                 $return['error'] = TRUE;
                 $return['msg'] = 'Это не форумный трекер. Добавьте как Сериал по его названию.';
@@ -50,8 +50,8 @@ if (isset($_POST['action']))
             {			
     			if ($tracker == 'tr.anidub.com')
     				$tracker = 'anidub.com';
-                elseif ($tracker == 'nnm-club.name')
-    				$tracker = 'nnm-club.name';
+                elseif ($tracker == 'baibako.tv')
+    				$tracker = 'baibako.tv_forum';
     				
                 if (preg_match('/.*tor\.org|rutor\.info/', $tracker))
                 {
@@ -97,6 +97,9 @@ if (isset($_POST['action']))
     					    
                         if ($tracker == 'tv.mekc.info')
     					    $functionClass = 'mekc';
+    					    
+						if ($tracker == 'baibako.tv_forum')
+    					    $functionClass = 'baibako_f';
 
                         if ( ! empty($threme))
                         {
@@ -195,7 +198,7 @@ if (isset($_POST['action']))
 	if ($_POST['action'] == 'update')
 	{
 	    $tracker = $_POST['tracker'];
-	    if ($tracker == 'lostfilm.tv' || $tracker == 'lostfilm-mirror' || $tracker == 'novafilm.tv' || $tracker == 'baibako.tv' || $tracker == 'newstudio.tv')
+	    if ($tracker == 'lostfilm.tv' || $tracker == 'lostfilm-mirror' || $tracker == 'novafilm.tv' || $tracker == 'newstudio.tv')
         {
             $engineFile = $dir.'/trackers/'.$tracker.'.engine.php';
             $functionEngine = include_once $engineFile;
@@ -216,6 +219,8 @@ if (isset($_POST['action']))
     				$tracker = 'anidub.com';
                 if ($tracker == 'zerkalo-rutor.org')
 				    $tracker = 'rutor.org';
+				elseif ($tracker == 'baibako.tv')
+    				$tracker = 'baibako.tv_forum';
     				
     			if ($tracker == 'anidub.com')
     			    $threme = $url['path'];
@@ -256,6 +261,9 @@ if (isset($_POST['action']))
     					    
                         if ($tracker == 'tv.mekc.info')
     					    $functionClass = 'mekc';
+    					    
+						if ($tracker == 'baibako.tv_forum')
+    					    $functionClass = 'baibako_f';
 
                         if ( ! empty($threme))
                         {

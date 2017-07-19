@@ -39,6 +39,8 @@ elseif ($tracker == 'anidub.com')
     $tracker = 'http://tr.anidub.com';
 elseif ($tracker == 'animelayer.ru')
     $tracker = 'http://animelayer.ru/torrent/';
+elseif ($tracker == 'baibako.tv_forum')
+    $tracker = 'http://baibako.tv/details.php?id=';
 ?>
         <input type="text" name="url" value="<?php echo $tracker.$torrent[0]['torrent_id']?>">
         <span class="subinput-text">Пример: http://rutracker.org/forum/viewtopic.php?t=4201572</span>

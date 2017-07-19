@@ -102,6 +102,12 @@ $countErrorsByTracker = $count[0]['count'];
         	    		<a href='http://tr.anidub.com/<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>	    	
         	    	<?php        		
             		}
+            		elseif ($tracker == 'baibako.tv_forum')
+		    		{
+			    	?>        		
+			    		<a href='http://baibako.tv/details.php?id=<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>	    	
+			    	<?php        		
+		    		}
             		elseif ($tracker == 'casstudio.tv' || $tracker == 'booktracker.org')
             		{
         	    	?>        		
