@@ -198,7 +198,7 @@ if (isset($_POST['action']))
 	if ($_POST['action'] == 'update')
 	{
 	    $tracker = $_POST['tracker'];
-	    if ($tracker == 'lostfilm.tv' || $tracker == 'lostfilm-mirror' || $tracker == 'novafilm.tv' || $tracker == 'newstudio.tv')
+	    if ($tracker == 'lostfilm.tv' || $tracker == 'lostfilm-mirror' || $tracker == 'novafilm.tv' || $tracker == 'newstudio.tv' || $tracker == 'baibako.tv')
         {
             $engineFile = $dir.'/trackers/'.$tracker.'.engine.php';
             $functionEngine = include_once $engineFile;

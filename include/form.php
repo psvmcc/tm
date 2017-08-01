@@ -100,9 +100,11 @@ else
 <div class="clear-both"></div>
 <script src="js/user-func.js"></script>
 <script>
-//$(function() {
+$( function() {
     var availableTags = [
     <?php
+	$mainPath = Database::getSetting('pathToDownload');
+	echo '"'.$mainPath.'",';
     $paths = Database::getPaths();
     if ( ! empty($paths))
     {
@@ -111,9 +113,9 @@ else
     }
     ?>
     ];
-    console.log('work')
     $( "#path" ).autocomplete({
-      source: availableTags
+		appendTo: "#torrent_update",
+		source: availableTags
     });
-//});
+});
 </script>

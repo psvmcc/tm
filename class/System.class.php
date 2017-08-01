@@ -10,10 +10,10 @@ class Sys
                 'header'         => 1,
                 'follow'         => 1,
                 'returntransfer' => 1,
-                'url'            => 'http://ya.ru',
+                'url'            => 'https://www.google.ru/',
             )
         );
-        if (preg_match('/<title>Яндекс<\/title>/', $page))
+        if (preg_match('/<title>Google<\/title>/', $page))
             return TRUE;
         else
             return FALSE;
