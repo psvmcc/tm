@@ -320,9 +320,9 @@ class lostfilm
     						        		'sendHeader'     => array('Host' => 'tracktor.in'),
     						        	)
                                     );
-    
+
                                     if (Sys::checkTorrentFile($torrent))
-                                    {							
+                                    {	
         								$file = str_replace(' ', '.', $name).'.S'.$season.'E'.$episode.'.'.$amp;
         								$episode = (substr($episode, 0, 1) == 0) ? substr($episode, 1, 1) : $episode;
         								$season = (substr($season, 0, 1) == 0) ? substr($season, 1, 1) : $season;
@@ -335,7 +335,11 @@ class lostfilm
         								Database::setNewEpisode($id, $serial['episode']);
                                     }
                                     else
+                                    {
+                                        var_dump('dsfsdfsdf');
                                         Errors::setWarnings($tracker, 'torrent_file_fail');
+                                        
+                                    }
                                 }
 							}
 						}

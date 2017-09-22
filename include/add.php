@@ -108,7 +108,6 @@ $(function() {
     $( "#path" ).autocomplete({
       source: availableTags
     });
-    console.log('work')
     $( "#path2" ).autocomplete({
       source: availableTags
     });

@@ -73,3 +73,16 @@ if ($update)
     <div id="content"></div>
 </div>
 <?php include_once "footer.php"; ?>
+<?php
+/*
+$ext_menu_type = Config::read('ext_menu');
+if ($ext_menu_type == 'fixed')
+{
+?>
+<script>
+$(".h-menu li").addClass("active");
+</script>
+<?php
+}
+*/
+?>

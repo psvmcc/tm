@@ -151,6 +151,20 @@ foreach ($settings as $row)
 </form>
 <br/>
 <br/>
+<div onclick='expand("div_extended_settings")' class='cut' style='cursor: pointer;font-weight:normal'>
+    <h2 class="settings-title">Расширенные настройки</h2>
+</div>
+<div id='div_extended_settings' class='result'>
+    <form id="extended_settings">
+        <p>
+            <textarea name="settings" cols="30" rows="20"><?php echo file_get_contents($dir.'config.yml')?></textarea>
+            <span class="subinput-text"><a href="#" onclick="show('help')">Помощь</a></span>
+        </p>
+        <button class="form-button">Сохранить</button>
+    </form>
+</div>
+<br/>
+<br/>
 <h2 class="settings-title">Смена пароля</h2>
 <form id="change_pass">
     <p>
@@ -163,6 +177,7 @@ foreach ($settings as $row)
     </p>
     <button class="form-button">Сменить</button>
 </form>
+
 <script src="js/user-func.js"></script>
 <?php
 $services = Database::getServiceList('notification');

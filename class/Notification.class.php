@@ -52,7 +52,8 @@ class Notification
         else
             $msg = $message;
 
-        $postfields = 'token=a9784KuYUoUdT4z47BassBLxWQGqFV&user='.$pushover.'&message='.$msg;
+        $pieces = explode(';', $pushover);
+        $postfields = 'token='.$pieces[1].'&user='.$pieces[0].'&message='.$msg;
         $forumPage = Sys::getUrlContent(
         	array(
         		'type'           => 'POST',

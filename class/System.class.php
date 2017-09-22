@@ -154,7 +154,7 @@ class Sys
                     curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
                 }
             }
-
+            
             if (isset($param['referer']))
                 curl_setopt($ch, CURLOPT_REFERER, $param['referer']);
                 
@@ -168,6 +168,33 @@ class Sys
                 $proxyAddress = $settingProxy[1]['val'];
                 $proxyType = $settingProxy[2]['val'];
             }
+            
+            $ext_proxy = Config::read('ext_proxy');
+            if (isset($ext_proxy))
+            {
+                $url = parse_url($param['url']);
+                foreach ($ext_proxy as $key => $val)
+                {
+                    if ($key == $url['host'])
+                    {
+                        if ($val['use'] == 'yes')
+                        {
+                            $proxy = TRUE;
+                            if (count($val) == 3)
+                            {
+                                $proxyAddress = $val['address'];
+                                $proxyType = $val['type'];
+                            }
+                            else
+                            {
+                                $proxyAddress = $settingProxy[1]['val'];
+                                $proxyType = $settingProxy[2]['val'];                                
+                            }
+                        }
+                    }
+                }
+            }
+            
             if ($proxy)
             {
                 curl_setopt($ch, CURLOPT_PROXY, $proxyAddress); 

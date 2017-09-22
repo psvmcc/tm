@@ -10,12 +10,11 @@ if ( ! Sys::checkAuth())
 <table class="test">
     <thead>
         <tr>
-            <th>Основные настройки</th>
+            <th>Тестирование системы</th>
         </tr>
     </thead>
     <tbody>
 <?php
-    
 if (Sys::checkInternet())
 {  
 ?>
@@ -135,16 +134,18 @@ if (Sys::checkInternet())
 		</tr>
 				<?php	
 				}
-				if ($tracker == 'lostfilm.tv')
+				if ($tracker == 'baibako.tv_forum')
+				    $page = 'http://baibako.tv/';
+				elseif ($tracker == 'lostfilm.tv')
 					$page = 'https://www.lostfilm.tv/';
-				elseif ($tracker == 'rutracker.org')
-				    $page = 'http://rutracker.org/forum/index.php';
-				elseif ($tracker == 'rutor.org')
-				    $page = 'http://rutor.info/';
 				elseif ($tracker == 'lostfilm-mirror')
 				    $page = 'http://korphome.ru/lostfilm.tv/rss.xml';
 				elseif ($tracker == 'nnm-club.name')
 				    $page = 'http://nnm-club.name/forum/index.php';
+				elseif ($tracker == 'rutor.org')
+				    $page = 'http://rutor.info/';
+				elseif ($tracker == 'rutracker.org')
+				    $page = 'http://rutracker.org/forum/index.php';
 				else
 					$page = 'http://'.$tracker;
 				if (Sys::checkavAilability($page))

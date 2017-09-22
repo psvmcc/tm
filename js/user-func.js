@@ -400,6 +400,29 @@ $( document ).ready(function()
         return false;
     });
     
+    //Передаём расширенные настройки
+    $("#extended_settings").submit(function()
+    {
+        //console.log('extended_settings');
+        var $form = $(this),
+            s = $form.find('input[type=submit]'),
+            extended_settings = $form.find('textarea[name="settings"]').val();
+        ohSnap('Обрабатывается запрос...', 'yellow');
+        $.post("action.php",{action: 'update_extended_settings', settings: extended_settings},
+            function(data) {
+                if (data.error)
+                {
+                    ohSnap(data.msg, 'red');
+                }
+                else
+                {
+                    ohSnap(data.msg, 'green');
+                }
+            }, "json"
+        );
+        return false;
+    });    
+    
     //Вызов процедуры обновления
     $("#system_update").submit(function()
     {
