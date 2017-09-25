@@ -424,6 +424,22 @@ if (isset($_POST['action']))
         echo json_encode($return);
 	}
 	
+	//Обновляем расширенные настройки
+	if ($_POST['action'] == 'update_extended_settings')
+	{
+		if (file_put_contents($dir.'config.xml', $_POST['settings']))
+		{
+			$return['error'] = FALSE;
+			$return['msg'] = 'Расширенные настройки монитора обновлены.';
+		}
+		else
+		{
+			$return['error'] = TRUE;
+			$return['msg'] = 'Не удалось сохранить расширенные настройки.';
+		}
+		echo json_encode($return);
+	}
+	
 	//Меняем пароль
 	if ($_POST['action'] == 'change_pass')
 	{

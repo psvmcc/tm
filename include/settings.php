@@ -157,7 +157,10 @@ foreach ($settings as $row)
 <div id='div_extended_settings' class='result'>
     <form id="extended_settings">
         <p>
-            <textarea name="settings" cols="30" rows="20"><?php echo file_get_contents($dir.'config.yml')?></textarea>
+            <textarea name="settings" cols="30" rows="20"><?php 
+                if (file_exists($dir.'config.xml'))
+                    echo file_get_contents($dir.'config.xml');?>
+            </textarea>
             <span class="subinput-text"><a href="#" onclick="show('help')">Помощь</a></span>
         </p>
         <button class="form-button">Сохранить</button>
