@@ -170,28 +170,28 @@ class Sys
             }
             
             $ext_proxy = Config::read('ext_proxy');
-            if (isset($ext_proxy))
+            if ( ! empty($ext_proxy))
             {
                 $url = parse_url($param['url']);
-                foreach ($ext_proxy as $key => $val)
+                $tracker = preg_replace('/www\./', '', $url['host']);
+                if (isset($ext_proxy[$tracker]))
                 {
-                    if ($key == $url['host'])
+                    if ($ext_proxy[$tracker]['use'] == 'yes')
                     {
-                        if ($val['use'] == 'yes')
+                        $proxy = TRUE;
+                        if (count($ext_proxy[$tracker]) == 3)
                         {
-                            $proxy = TRUE;
-                            if (count($val) == 3)
-                            {
-                                $proxyAddress = $val['address'];
-                                $proxyType = $val['type'];
-                            }
-                            else
-                            {
-                                $proxyAddress = $settingProxy[1]['val'];
-                                $proxyType = $settingProxy[2]['val'];                                
-                            }
+                            $proxyAddress = $ext_proxy[$tracker]['address'];
+                            $proxyType = $ext_proxy[$tracker]['type'];
+                        }
+                        else
+                        {
+                            $proxyAddress = $settingProxy[1]['val'];
+                            $proxyType = $settingProxy[2]['val'];                                
                         }
                     }
+                    else
+                        $proxy = FALSE;
                 }
             }
             
@@ -285,11 +285,11 @@ class Sys
         $Purl = parse_url($url);
         $tracker = $Purl['host'];
         $tracker = preg_replace('/www\./', '', $tracker);
-        
+
         if (preg_match('/.*tor\.org|rutor\.info/', $tracker))
             $tracker = 'rutor.info';
      
-        if ($tracker == 'rustorka.com'  || $tracker == 'booktracker.org')
+        if ($tracker == 'rustorka.com'  || $tracker == 'booktracker.org' || $tracker == 'tracker.0day.kiev.ua')
         {
             $dir = str_replace('class', '', dirname(__FILE__));
             $engineFile = $dir.'trackers/'.$tracker.'.engine.php';
@@ -303,6 +303,9 @@ class Sys
                 $functionClass = str_replace('-', '', $class);
             }
 
+            if ($tracker == 'tracker.0day.kiev.ua')
+				$functionClass = 'kiev';
+				
             $cookie = Database::getCookie($tracker);
             $exucution = FALSE;
             if (call_user_func($functionClass.'::checkCookie', $cookie))

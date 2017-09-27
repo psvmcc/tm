@@ -12,7 +12,7 @@ class kiev
         	array(
         		'type'           => 'POST',
         		'returntransfer' => 1,
-        		'url'            => 'http://tracker.0day.kiev.ua/',
+        		'url'            => 'https://tracker.0day.kiev.ua/',
         		'cookie'         => $sess_cookie,
         		'sendHeader'     => array('Host' => 'tracker.0day.kiev.ua', 'Content-length' => strlen($sess_cookie)),
         		'convert'        => array('windows-1251', 'utf-8//IGNORE'),
@@ -35,7 +35,7 @@ class kiev
 	}
 
 	//функция получения кук
-	protected static function getCookie($tracker)
+	public static function getCookie($tracker)
 	{
 		//проверяем заполнены ли учётные данные
 		if (Database::checkTrackersCredentialsExist($tracker))
@@ -51,7 +51,7 @@ class kiev
             		'type'           => 'POST',
             		'header'         => 1,
             		'returntransfer' => 1,
-            		'url'            => 'http://tracker.0day.kiev.ua/takelogin.php',
+            		'url'            => 'https://tracker.0day.kiev.ua/takelogin.php',
             		'postfields'     => 'username='.$login.'&password='.$password,
             		'convert'        => array('windows-1251', 'utf-8//IGNORE'),
             	)
@@ -111,6 +111,8 @@ class kiev
 			//останавливаем процесс выполнения, т.к. не может работать без кук
 			kiev::$exucution = FALSE;
 		}
+
+		return kiev::$sess_cookie;
 	}
 
 	//основная функция
@@ -135,7 +137,7 @@ class kiev
             		'type'           => 'POST',
             		'header'         => 0,
             		'returntransfer' => 1,
-            		'url'            => 'http://tracker.0day.kiev.ua/details.php?id='.$torrent_id,
+            		'url'            => 'https://tracker.0day.kiev.ua/details.php?id='.$torrent_id,
             		'cookie'         => kiev::$sess_cookie,
             		'sendHeader'     => array('Host' => 'tracker.0day.kiev.ua', 'Content-length' => strlen(kiev::$sess_cookie)),
             		'convert'        => array('windows-1251', 'utf-8//IGNORE'),
@@ -164,7 +166,7 @@ class kiev
 							    //ищем ссылку на скачивание torrent-файла
                                 if (preg_match('/download\.php\?id='.$torrent_id.'\&amp\;name=.*\.torrent/', $page, $array))
                                 {
-                                    $link = str_replace('&amp;', '&', 'http://tracker.0day.kiev.ua/'.$array[0]);
+                                    $link = str_replace('&amp;', '&', 'https://tracker.0day.kiev.ua/'.$array[0]);
     								//сохраняем торрент в файл
                                     $torrent = Sys::getUrlContent(
                                     	array(
