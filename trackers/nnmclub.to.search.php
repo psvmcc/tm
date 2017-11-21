@@ -1,5 +1,5 @@
 <?php
-include_once('nnmclub.to.engine.php');
+include_once('nnm-club.name.engine.php');
 
 class nnmclubSearch extends nnmclub
 {
@@ -64,7 +64,7 @@ class nnmclubSearch extends nnmclub
 		            		'returntransfer' => 1,
 		            		'url'            => 'http://nnmclub.to/forum/viewtopic.php?t='.$toDownload[$i]['threme_id'],
 		            		'cookie'         => nnmclub::$sess_cookie,
-		            		'sendHeader'     => array('Host' => 'nnm-club.me', 'Content-length' => strlen(nnmclub::$sess_cookie)),
+		            		'sendHeader'     => array('Host' => 'nnmclub.to', 'Content-length' => strlen(nnmclub::$sess_cookie)),
 		            		'convert'        => array('windows-1251', 'utf-8//IGNORE'),
 		            	)
 		            );
@@ -78,19 +78,16 @@ class nnmclubSearch extends nnmclub
 							Database::clearWarnings($tracker);
                             //сохраняем торрент в файл
                             $download_id = $link[1];
-                            preg_match('/phpbb2mysql_4_sid=(.*)/U', nnmclub::$sess_cookie, $arr);
-                            $sid = $arr[1];
-
                             $torrent = Sys::getUrlContent(
-                                array(
-                                    'type'           => 'GET',
-                                    'follow'         => 1,
-                                    'returntransfer' => 1,
-                                    'url'            => 'http://nnm-club.ws/download.php?id='.$download_id,
-                                    'cookie'         => nnmclub::$sess_cookie,
-                                    'sendHeader'     => array('Host' => 'nnmclub.to', 'Content-length' => strlen(nnmclub::$sess_cookie)),
-                                    'referer'        => 'http://nnmclub.to/forum/viewtopic.php?t='.$torrent_id.'&sid='.$sid,
-                                )
+                            	array(
+                            		'type'           => 'GET',
+                            		'follow'         => 1,
+                            		'returntransfer' => 1,
+                            		'url'            => 'https://nnmclub.to/forum/download.php?id='.$download_id,
+                            		'cookie'         => nnmclub::$sess_cookie,
+                            		'sendHeader'     => array('Host' => 'nnmclub.to', 'Content-length' => strlen(nnmclub::$sess_cookie)),
+                            		'referer'        => 'http://nnmclub.to/forum/viewtopic.php?t='.$torrent_id,
+                            	)
                             );
                             
                             if (Sys::checkTorrentFile($torrent))

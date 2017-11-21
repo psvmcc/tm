@@ -64,10 +64,16 @@ else
                 echo '<img src="img/error.png" alt="Есть ошибки">&nbsp;';
             if ($closed)
                 echo '[Тема закрыта]&nbsp;';
-    		if ($tracker == 'rutracker.org' || $tracker == 'nnm-club.name' || $tracker == 'tfile.cc' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
+    		if ($tracker == 'rutracker.org' || $tracker == 'nnmclub.to' || $tracker == 'tfile.cc' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
     		{
     		?>
-				<a href='http://<?php echo $tracker ?>/forum/viewtopic.php?t=<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>
+				<a href='
+                <?php 
+                if ($tracker == 'nnmclub.to')
+                    echo 'https://';
+                else
+                    echo 'http://';
+                echo $tracker ?>/forum/viewtopic.php?t=<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>
     		<?php
     		}
     		elseif ($tracker == 'kinozal.me'  || $tracker == 'tracker.0day.kiev.ua' || $tracker == 'tv.mekc.info')
