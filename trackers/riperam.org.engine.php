@@ -1,11 +1,11 @@
 <?php
-class nnmclub
+class riperam
 {
 	protected static $sess_cookie;
 	protected static $exucution;
 	protected static $warning;
 	
-	protected static $domain = 'https://nnmclub.to/';
+	protected static $domain = 'http://riperam.org/';
 
 	//проверяем cookie
 	public static function checkCookie($sess_cookie)
@@ -15,14 +15,13 @@ class nnmclub
         		'type'           => 'POST',
         		'returntransfer' => 1,
         		'encoding'       => 1,
-        		'url'            => nnmclub::$domain.'forum/index.php',
+        		'url'            => riperam::$domain,
         		'cookie'         => $sess_cookie,
-        		'sendHeader'     => array('Host' => 'nnmclub.to', 'Content-length' => strlen($sess_cookie)),
-        		'convert'        => array('windows-1251', 'utf-8//IGNORE'),
+        		'sendHeader'     => array('Host' => 'riperam.org', 'Content-length' => strlen($sess_cookie)),
         	)
         );
 
-		if (preg_match('/login\.php\?logout=true/U', $result))
+		if (preg_match('/ucp\.php\?mode=logout/', $result))
 			return TRUE;
 		else
 			return FALSE;
@@ -31,7 +30,7 @@ class nnmclub
 
 	public static function checkRule($data)
 	{
-		if (preg_match('/\D+/', $data))
+		if (preg_match('/\D\d\/+/', $data))
 			return FALSE;
 		else
 			return TRUE;
@@ -39,18 +38,20 @@ class nnmclub
 
 	private static function dateStringToNum($data)
 	{
-		$monthes = array('Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек');
-		$month = substr($data, 3, 6);
-		$date = preg_replace('/(\d\d)\s(\d\d)\s(\d\d\d\d)/', '$3-$2-$1',str_replace($month, str_pad(array_search($month, $monthes)+1, 2, 0, STR_PAD_LEFT), $data));
-		$date = date('Y-m-d H:i:s', strtotime($date));
-
-		return $date;
+		$date = explode(', ', $data);
+    	$date1 = explode(' ', $date[0]);
+        $date2 = $date1[2].'-'.Sys::dateStringToNum($date1[1]).'-'.$date1[0];
+        $date = $date2.' '.$date[1].':00';
+        
+        return $date;
 	}
 
 	//функция преобразования даты
 	private static function dateNumToString($data)
 	{
-		$date = substr($data, 0, -3);
+    	$date1 = explode(', ', $data);
+    	$date = $date1[0].' в '.$date1[1];
+    	
 		return $date;
 	}
 
@@ -72,9 +73,8 @@ class nnmclub
             		'header'         => 1,
             		'returntransfer' => 1,
             		'encoding'       => 1,
-            		'url'            => nnmclub::$domain.'forum/login.php',
+            		'url'            => riperam::$domain.'ucp.php?mode=login',
             		'postfields'     => 'username='.$login.'&password='.$password.'&login=%C2%F5%EE%E4',
-            		'convert'        => array('windows-1251', 'utf-8//IGNORE'),
             	)
             );
 
@@ -84,23 +84,23 @@ class nnmclub
 				if (preg_match('/login\.php\?redirect=/', $page, $array))
 				{
 					//устанавливаем варнинг
-					if (nnmclub::$warning == NULL)
+					if (riperam::$warning == NULL)
 					{
-						nnmclub::$warning = TRUE;
+						riperam::$warning = TRUE;
 						Errors::setWarnings($tracker, 'credential_wrong');
 					}
 					//останавливаем процесс выполнения, т.к. не может работать без кук
-					nnmclub::$exucution = FALSE;
+					riperam::$exucution = FALSE;
 				}
 				else
 				{
 					//если подходят - получаем куки
 					if (preg_match_all('/Set-Cookie: (.*);/iU', $page, $array))
 					{
-						nnmclub::$sess_cookie = implode('; ', $array[1]);
-						Database::setCookie($tracker, nnmclub::$sess_cookie);
+						riperam::$sess_cookie = implode('; ', $array[1]);
+						Database::setCookie($tracker, riperam::$sess_cookie);
 						//запускам процесс выполнения, т.к. не может работать без кук
-						nnmclub::$exucution = TRUE;
+						riperam::$exucution = TRUE;
 					}
 				}
 			}
@@ -108,25 +108,25 @@ class nnmclub
 			else
 			{
 				//устанавливаем варнинг
-				if (nnmclub::$warning == NULL)
+				if (riperam::$warning == NULL)
 				{
-					nnmclub::$warning = TRUE;
+					riperam::$warning = TRUE;
 					Errors::setWarnings($tracker, 'cant_get_auth_page');
 				}
 				//останавливаем процесс выполнения, т.к. не может работать без кук
-				nnmclub::$exucution = FALSE;
+				riperam::$exucution = FALSE;
 			}
 		}
 		else
 		{
 			//устанавливаем варнинг
-			if (nnmclub::$warning == NULL)
+			if (riperam::$warning == NULL)
 			{
-				nnmclub::$warning = TRUE;
+				riperam::$warning = TRUE;
 				Errors::setWarnings($tracker, 'credential_miss');
 			}
 			//останавливаем процесс выполнения, т.к. не может работать без кук
-			nnmclub::$exucution = FALSE;
+			riperam::$exucution = FALSE;
 		}
 	}
 
@@ -134,16 +134,16 @@ class nnmclub
 	{
     	extract($params);
 		$cookie = Database::getCookie($tracker);
-		if (nnmclub::checkCookie($cookie))
+		if (riperam::checkCookie($cookie))
 		{
-			nnmclub::$sess_cookie = $cookie;
+			riperam::$sess_cookie = $cookie;
 			//запускам процесс выполнения
-			nnmclub::$exucution = TRUE;
+			riperam::$exucution = TRUE;
 		}
 		else
-    		nnmclub::getCookie($tracker);
+    		riperam::getCookie($tracker);
 
-		if (nnmclub::$exucution)
+		if (riperam::$exucution)
 		{
 			//получаем страницу для парсинга
             $page = Sys::getUrlContent(
@@ -152,17 +152,16 @@ class nnmclub
             		'header'         => 0,
             		'returntransfer' => 1,
             		'encoding'       => 1,
-            		'url'            => nnmclub::$domain.'forum/viewtopic.php?t='.$torrent_id,
-            		'cookie'         => nnmclub::$sess_cookie,
-            		'sendHeader'     => array('Host' => 'nnmclub.to', 'Content-length' => strlen(nnmclub::$sess_cookie)),
-            		'convert'        => array('windows-1251', 'utf-8//IGNORE'),
+            		'url'            => riperam::$domain.$torrent_id,
+            		'cookie'         => riperam::$sess_cookie,
+            		'sendHeader'     => array('Host' => 'riperam.org', 'Content-length' => strlen(riperam::$sess_cookie)),
             	)
             );
 
 			if ( ! empty($page))
 			{
 				//ищем на странице дату регистрации торрента
-				if (preg_match('/<td class=\"genmed\">&nbsp;(\d{2}\s\D{6}\s\d{4}\s\d{2}:\d{2}:\d{2})<\/td>/', $page, $array))
+				if (preg_match('/\[ (\d{2} \D{6} \d{4}\, \d{2}\:\d{2}) \]/', $page, $array))
 				{
 					//проверяем удалось ли получить дату со страницы
 					if (isset($array[1]))
@@ -171,11 +170,11 @@ class nnmclub
 						if ( ! empty($array[1]))
 						{
 							//находим имя торрента для скачивания
-							if (preg_match('/download\.php\?id=(\d{6,8})/', $page, $link))
+							if (preg_match('/download\/file\.php\?id=(\d{6,8})/', $page, $link))
 							{
 								//приводим дату к общему виду
-								$date = nnmclub::dateStringToNum($array[1]);
-								$date_str = $array[1];
+								$date = riperam::dateStringToNum($array[1]);
+								$date_str = riperam::dateNumToString($array[1]);
 								//если даты не совпадают, перекачиваем торрент
 								if ($date != $timestamp)
 								{
@@ -186,10 +185,10 @@ class nnmclub
 	                                		'type'           => 'GET',
 	                                		'follow'         => 1,
 	                                		'returntransfer' => 1,
-	                                		'url'            => nnmclub::$domain.'forum/download.php?id='.$download_id,
-	                                		'cookie'         => nnmclub::$sess_cookie,
-	                                		'sendHeader'     => array('Host' => 'nnmclub.to', 'Content-length' => strlen(nnmclub::$sess_cookie)),
-	                                		'referer'        => nnmclub::$domain.'forum/viewtopic.php?t='.$torrent_id,
+	                                		'url'            => riperam::$domain.'download/file.php?id='.$download_id,
+	                                		'cookie'         => riperam::$sess_cookie,
+	                                		'sendHeader'     => array('Host' => 'riperam.org', 'Content-length' => strlen(riperam::$sess_cookie)),
+	                                		'referer'        => riperam::$domain.$torrent_id.'.html',
 	                                	)
 	                                );
 
@@ -203,7 +202,7 @@ class nnmclub
         								}
 
     									$message = $name.' обновлён.';
-    									$status = Sys::saveTorrent($tracker, $torrent_id, $torrent, $id, $hash, $message, $date_str, $name);
+    									$status = Sys::saveTorrent($tracker, $download_id, $torrent, $id, $hash, $message, $date_str, $name);
 
         								//обновляем время регистрации торрента в базе
     									Database::setNewDate($id, $date);
@@ -219,64 +218,63 @@ class nnmclub
 							else
 							{
 								//устанавливаем варнинг
-								if (nnmclub::$warning == NULL)
+								if (riperam::$warning == NULL)
                     			{
-                    				nnmclub::$warning = TRUE;
+                    				riperam::$warning = TRUE;
                     				Errors::setWarnings($tracker, 'cant_find_dowload_link', $id);
                     			}
                     			//останавливаем процесс выполнения, т.к. не может работать без кук
-								nnmclub::$exucution = FALSE;
+								riperam::$exucution = FALSE;
 							}
 						}
 						else
 						{
 							//устанавливаем варнинг
-							if (nnmclub::$warning == NULL)
+							if (riperam::$warning == NULL)
                 			{
-                				nnmclub::$warning = TRUE;
+                				riperam::$warning = TRUE;
                 				Errors::setWarnings($tracker, 'cant_find_date', $id);
                 			}
                 			//останавливаем процесс выполнения, т.к. не может работать без кук
-							nnmclub::$exucution = FALSE;
+							riperam::$exucution = FALSE;
 						}
 					}
 					else
 					{
 						//устанавливаем варнинг
-						if (nnmclub::$warning == NULL)
+						if (riperam::$warning == NULL)
             			{
-            				nnmclub::$warning = TRUE;
+            				riperam::$warning = TRUE;
             				Errors::setWarnings($tracker, 'cant_find_date', $id);
             			}
             			//останавливаем процесс выполнения, т.к. не может работать без кук
-						nnmclub::$exucution = FALSE;
+						riperam::$exucution = FALSE;
 					}
 				}
 				else
 				{
 					//устанавливаем варнинг
-					if (nnmclub::$warning == NULL)
+					if (riperam::$warning == NULL)
         			{
-        				nnmclub::$warning = TRUE;
+        				riperam::$warning = TRUE;
         				Errors::setWarnings($tracker, 'cant_find_date', $id);
         			}
         			//останавливаем процесс выполнения, т.к. не может работать без кук
-					nnmclub::$exucution = FALSE;
+					riperam::$exucution = FALSE;
 				}
 			}
 			else
 			{
 				//устанавливаем варнинг
-				if (nnmclub::$warning == NULL)
+				if (riperam::$warning == NULL)
     			{
-    				nnmclub::$warning = TRUE;
+    				riperam::$warning = TRUE;
     				Errors::setWarnings($tracker, 'cant_get_forum_page', $id);
     			}
     			//останавливаем процесс выполнения, т.к. не может работать без кук
-				nnmclub::$exucution = FALSE;
+				riperam::$exucution = FALSE;
 			}
 		}
-		nnmclub::$warning = NULL;
+		riperam::$warning = NULL;
 	}
 }
-?>

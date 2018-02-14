@@ -57,37 +57,40 @@ class pornolabSearch extends pornolab
 	    	}
 
     		$toDownload = Database::takeToDownload($tracker);
-    		if (count($toDownload) > 0)
+    		if ($toDownload != NULL)
     		{
-                for ($i=0; $i<count($toDownload); $i++)
-                {
-                	//сбрасываем варнинг
-					Database::clearWarnings($tracker);
-                    //сохраняем торрент в файл
-                    $id = $toDownload[$i]['id'];
-                    $torrent_id = $toDownload[$i]['threme_id'];
-                    $name = $toDownload[$i]['threme'];
-                    $torrent = Sys::getUrlContent(
-                    	array(
-                    		'type'           => 'POST',
-                    		'returntransfer' => 1,
-                    		'url'            => 'http://pornolab.net/forum/dl.php?t='.$torrent_id,
-                    		'cookie'         => pornolab::$sess_cookie.'; bb_dl='.$torrent_id,
-                    		'sendHeader'     => array('Host' => 'pornolab.net', 'Content-length' => strlen(pornolab::$sess_cookie.'; bb_dl='.$torrent_id)),
-                    		'referer'        => 'http://pornolab.net/forum/viewtopic.php?t='.$torrent_id,
-                    	)
-                    );
-                    
-                    if (Sys::checkTorrentFile($torrent))
+        		if (count($toDownload) > 0)
+        		{
+                    for ($i=0; $i<count($toDownload); $i++)
                     {
-        				$message = $toDownload[$i]['threme'].' добавлена для скачивания.';
-        				$status = Sys::saveTorrent($tracker, $toDownload[$i]['threme_id'], $torrent, $toDownload[$i]['threme_id'], 0, $message, date('d M Y H:i'), $name);
-    								
-        				//обновляем время регистрации торрента в базе
-        				Database::setDownloaded($toDownload[$i]['id']);
+                    	//сбрасываем варнинг
+    					Database::clearWarnings($tracker);
+                        //сохраняем торрент в файл
+                        $id = $toDownload[$i]['id'];
+                        $torrent_id = $toDownload[$i]['threme_id'];
+                        $name = $toDownload[$i]['threme'];
+                        $torrent = Sys::getUrlContent(
+                        	array(
+                        		'type'           => 'POST',
+                        		'returntransfer' => 1,
+                        		'url'            => 'http://pornolab.net/forum/dl.php?t='.$torrent_id,
+                        		'cookie'         => pornolab::$sess_cookie.'; bb_dl='.$torrent_id,
+                        		'sendHeader'     => array('Host' => 'pornolab.net', 'Content-length' => strlen(pornolab::$sess_cookie.'; bb_dl='.$torrent_id)),
+                        		'referer'        => 'http://pornolab.net/forum/viewtopic.php?t='.$torrent_id,
+                        	)
+                        );
+                        
+                        if (Sys::checkTorrentFile($torrent))
+                        {
+            				$message = $toDownload[$i]['threme'].' добавлена для скачивания.';
+            				$status = Sys::saveTorrent($tracker, $toDownload[$i]['threme_id'], $torrent, $toDownload[$i]['threme_id'], 0, $message, date('d M Y H:i'), $name);
+        								
+            				//обновляем время регистрации торрента в базе
+            				Database::setDownloaded($toDownload[$i]['id']);
+                        }
+                        else
+                            Errors::setWarnings($tracker, 'torrent_file_fail');
                     }
-                    else
-                        Errors::setWarnings($tracker, 'torrent_file_fail');
                 }
             }
         }

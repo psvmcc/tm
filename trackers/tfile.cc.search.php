@@ -48,61 +48,64 @@ class tfileSearch extends tfile
 		}
 
 		$toDownload = Database::takeToDownload($tracker);
-		if (count($toDownload) > 0)
+		if ($toDownload != NULL)
 		{
-            for ($i=0; $i<count($toDownload); $i++)
-            {
-            	//получаем страницу для парсинга
-            	$page = Sys::getUrlContent(
-	            	array(
-	            		'type'           => 'GET',
-	            		'header'         => 0,
-	            		'returntransfer' => 1,
-	            		'url'            => 'http://tfile.cc/forum/viewtopic.php?t='.$toDownload[$i]['threme_id']
-	            	)
-	            );
-                
-				//находим имя торрента для скачивания		
-				if (preg_match('/download\.php\?id=(\d+)&uk=(\d+)/', $page, $link))
-				{
-					//сбрасываем варнинг
-					Database::clearWarnings($tracker);
-					//ищем на странице id торрента
-					$download_id = $link[1];
-					$ak_id = $link[2];
-					//сохраняем торрент в файл
-					$torrent = Sys::getUrlContent(
-                    	array(
-                    		'type'           => 'GET',
-                    		'returntransfer' => 1,
-                    		'url'            => 'http://tfile.cc/forum/download.php?id='.$download_id.'&ak='.$ak_id,
-                    		'sendHeader'     => array('Host' => 'tfile.cc'),
-                    		'referer'        => 'http://tfile.cc/forum/viewtopic.php?t='.$torrent_id,
-                    	)
-                    );
+    		if (count($toDownload) > 0)
+    		{
+                for ($i=0; $i<count($toDownload); $i++)
+                {
+                	//получаем страницу для парсинга
+                	$page = Sys::getUrlContent(
+    	            	array(
+    	            		'type'           => 'GET',
+    	            		'header'         => 0,
+    	            		'returntransfer' => 1,
+    	            		'url'            => 'http://tfile.cc/forum/viewtopic.php?t='.$toDownload[$i]['threme_id']
+    	            	)
+    	            );
                     
-                    if (Sys::checkTorrentFile($torrent))
-                    {
-    					$message = $toDownload[$i]['threme'].' добавлена для скачивания.';
-    					$status = Sys::saveTorrent($toDownload[$i]['tracker'], $toDownload[$i]['threme_id'], $torrent, $toDownload[$i]['threme_id'], 0, $message, date('d M Y H:i'), $name);
-    								
-    					//обновляем время регистрации торрента в базе
-    					Database::setDownloaded($toDownload[$i]['id']);
+    				//находим имя торрента для скачивания		
+    				if (preg_match('/download\.php\?id=(\d+)&uk=(\d+)/', $page, $link))
+    				{
+    					//сбрасываем варнинг
+    					Database::clearWarnings($tracker);
+    					//ищем на странице id торрента
+    					$download_id = $link[1];
+    					$ak_id = $link[2];
+    					//сохраняем торрент в файл
+    					$torrent = Sys::getUrlContent(
+                        	array(
+                        		'type'           => 'GET',
+                        		'returntransfer' => 1,
+                        		'url'            => 'http://tfile.cc/forum/download.php?id='.$download_id.'&ak='.$ak_id,
+                        		'sendHeader'     => array('Host' => 'tfile.cc'),
+                        		'referer'        => 'http://tfile.cc/forum/viewtopic.php?t='.$torrent_id,
+                        	)
+                        );
+                        
+                        if (Sys::checkTorrentFile($torrent))
+                        {
+        					$message = $toDownload[$i]['threme'].' добавлена для скачивания.';
+        					$status = Sys::saveTorrent($toDownload[$i]['tracker'], $toDownload[$i]['threme_id'], $torrent, $toDownload[$i]['threme_id'], 0, $message, date('d M Y H:i'), $name);
+        								
+        					//обновляем время регистрации торрента в базе
+        					Database::setDownloaded($toDownload[$i]['id']);
+        				}
+        				else
+                            Errors::setWarnings($tracker, 'torrent_file_fail');
     				}
     				else
-                        Errors::setWarnings($tracker, 'torrent_file_fail');
-				}
-				else
-				{
-					//устанавливаем варнинг
-					if (tfile::$warning == NULL)
-					{
-						tfile::$warning = TRUE;
-						Errors::setWarnings($tracker, 'cant_find_dowload_link');
-					}
-					//останавливаем процесс выполнения, т.к. не может работать без кук
-					tfile::$exucution = FALSE;
-				}
+    				{
+    					//устанавливаем варнинг
+    					if (tfile::$warning == NULL)
+    					{
+    						tfile::$warning = TRUE;
+    						Errors::setWarnings($tracker, 'cant_find_dowload_link');
+    					}
+    					//останавливаем процесс выполнения, т.к. не может работать без кук
+    					tfile::$exucution = FALSE;
+    				}
+                }
             }
         }
 	}

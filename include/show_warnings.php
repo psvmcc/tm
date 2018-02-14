@@ -9,7 +9,7 @@ if ( ! Sys::checkAuth())
     die(header('Location: ../'));
 
 $count = Database::getWarningsCount();
-if ( ! empty($count))
+if ( $count != NULL)
 {
 $countErrorsByTracker = $count[0]['count'];
 ?>
@@ -70,7 +70,7 @@ $countErrorsByTracker = $count[0]['count'];
     				$name = $torrent[0]['name'];
     				$torrent_id = $torrent[0]['torrent_id'];
     				echo '<br />Раздача: ';
-            		if ($tracker == 'rutracker.org' || $tracker == 'nnm-club.name' || $tracker == 'tfile.cc' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
+            		if ($tracker == 'rutracker.org' || $tracker == 'nnmclub.to' || $tracker == 'tfile.cc' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
             		{
             		?>
         				<a href='http://<?php echo $tracker ?>/forum/viewtopic.php?t=<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>
@@ -100,6 +100,12 @@ $countErrorsByTracker = $count[0]['count'];
             		{
         	    	?>        		
         	    		<a href='http://tr.anidub.com/<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>	    	
+        	    	<?php        		
+            		}
+            		elseif ($tracker == 'riperam.org')
+            		{
+        	    	?>        		
+        	    		<a href='http://riperam.org<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>	    	
         	    	<?php        		
             		}
             		elseif ($tracker == 'baibako.tv_forum')
@@ -143,7 +149,7 @@ $countErrorsByTracker = $count[0]['count'];
     				$name = $torrent[0]['name'];
                     $torrent_id = $torrent[0]['torrent_id'];
     				echo '<br />Раздача: ';
-            		if ($tracker == 'rutracker.org' || $tracker == 'nnm-club.name' || $tracker == 'tfile.cc' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
+            		if ($tracker == 'rutracker.org' || $tracker == 'nnmclub.to' || $tracker == 'tfile.cc' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
             		{
             		?>
         				<a href='http://<?php echo $tracker ?>/forum/viewtopic.php?t=<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>

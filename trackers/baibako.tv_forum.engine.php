@@ -13,8 +13,8 @@ class baibako_f
 				'type'           => 'POST',
 				'returntransfer' => 1,
 				'url'            => 'http://baibako.tv/',
-				'cookie'         => baibako_f::$sess_cookie,
-				'sendHeader'     => array('Host' => 'baibako.tv', 'Content-length' => strlen(baibako_f::$sess_cookie)),
+				'cookie'         => $sess_cookie,
+				'sendHeader'     => array('Host' => 'baibako.tv', 'Content-length' => strlen($sess_cookie)),
 				'convert'        => array('windows-1251', 'utf-8//IGNORE'),
 			)
 		);
@@ -38,6 +38,8 @@ class baibako_f
 	private static function dateStringToNum($data)
 	{
     	$data1 = explode(' ', $data);
+    	if (strlen($data1[0]) == 1)
+			$data1[0] = '0'.$data1[0];
     	$data3 = $data1[2].'-'.Sys::dateStringToNum($data1[1]).'-'.$data1[0];
     	$date = $data3.' '.$data1[4];		
     	
@@ -48,11 +50,10 @@ class baibako_f
 	private static function dateNumToString($data)
 	{
 		$data = substr($data, 0, -3);
-		$data = str_replace('-', ' ', $data);
 		$arr = preg_split('/\s/', $data);
 		
 		$month = Sys::dateNumToString($arr[1]);
-		$date = $arr[2].' '.$month.' '.$arr[0].' '.$arr[3];
+		$date = $arr[0].' '.$month.' '.$arr[2].' '.$arr[4];
 		return $date;
 	}
 
@@ -190,7 +191,6 @@ class baibako_f
 							Database::clearWarnings($tracker);
 							//приводим дату к общему виду
 							$date = baibako_f::dateStringToNum($array[1]);
-							var_dump($date);
 							$date_str = baibako_f::dateNumToString($array[1]);
 							//если даты не совпадают, перекачиваем торрент
 							if ($date != $timestamp)

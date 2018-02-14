@@ -17,8 +17,8 @@ class hamsterstudio
 				'type'           => 'POST',
 				'returntransfer' => 1,
 				'url'            => 'http://hamsterstudio.org',
-				'cookie'         => hamsterstudio::$sess_cookie,
-				'sendHeader'     => array('Host' => 'hamsterstudio.org', 'Content-length' => strlen(hamsterstudio::$sess_cookie)),
+				'cookie'         => $sess_cookie,
+				'sendHeader'     => array('Host' => 'hamsterstudio.org', 'Content-length' => strlen($sess_cookie)),
 				'convert'        => array('windows-1251', 'utf-8//IGNORE'),
 			)
 		);

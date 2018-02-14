@@ -41,7 +41,7 @@ if (isset($_POST['action']))
 			$tracker = $url['host'];
 			$tracker = preg_replace('/www\./', '', $tracker);
 			
-			if ($tracker == 'lostfilm.tv' || $tracker == 'lostfilm-mirror' || $tracker == 'novafilm.tv' || $tracker == 'newstudio.tv')
+			if ($tracker == 'lostfilm.tv' || $tracker == 'lostfilm-mirror' || $tracker == 'newstudio.tv')
 			{
                 $return['error'] = TRUE;
                 $return['msg'] = 'Это не форумный трекер. Добавьте как Сериал по его названию.';
@@ -58,7 +58,7 @@ if (isset($_POST['action']))
                     $tracker = 'rutor.org';
                     $_POST['url'] = 'http://rutor.info'.$url['path'];
     			}
-    			if ($tracker == 'anidub.com')
+    			if ($tracker == 'anidub.com' || $tracker == 'riperam.org')
     			    $threme = $url['path'];
                 elseif ($tracker == 'animelayer.ru')
                 {
@@ -112,9 +112,17 @@ if (isset($_POST['action']))
         							else
         								$name = Sys::getHeader($_POST['url']);
         
-        							Database::setThreme($tracker, $name, $_POST['path'], $threme, Sys::strBoolToInt($_POST['update_header']));
-        							$return['error'] = FALSE;
-                                    $return['msg'] = 'Тема добавлена для мониторинга.';
+        							$query = Database::setThreme($tracker, $name, $_POST['path'], $threme, Sys::strBoolToInt($_POST['update_header']));
+        							if ($query === TRUE)
+                                    {
+            							$return['error'] = FALSE;
+                                        $return['msg'] = 'Тема добавлена для мониторинга.';
+                                    }
+                                    else
+                                    {
+                                        $return['error'] = TRUE;
+                                        $return['msg'] = 'Произошла ошибка при сохранении в БД.'.var_dump($query);
+                                    }
         						}
         						else
         						{
@@ -170,9 +178,17 @@ if (isset($_POST['action']))
 				$class = str_replace('-', '', $class);
 				if (Database::checkSerialExist($tracker, $_POST['name'], $_POST['hd']))	
 				{
-					Database::setSerial($tracker, $_POST['name'], $_POST['path'], $_POST['hd']);
-					$return['error'] = FALSE;
-                    $return['msg'] = 'Сериал добавлен для мониторинга.';
+					$query = Database::setSerial($tracker, $_POST['name'], $_POST['path'], $_POST['hd']);
+					if ($query === TRUE)
+					{
+					    $return['error'] = FALSE;
+                        $return['msg'] = 'Сериал добавлен для мониторинга.';
+                    }
+                    else
+                    {
+                        $return['error'] = TRUE;
+                        $return['msg'] = 'Произошла ошибка при сохранении в БД.'.var_dump($query);
+                    }
 				}
 				else
 				{
@@ -198,7 +214,7 @@ if (isset($_POST['action']))
 	if ($_POST['action'] == 'update')
 	{
 	    $tracker = $_POST['tracker'];
-	    if ($tracker == 'lostfilm.tv' || $tracker == 'lostfilm-mirror' || $tracker == 'novafilm.tv' || $tracker == 'newstudio.tv' || $tracker == 'baibako.tv')
+	    if ($tracker == 'lostfilm.tv' || $tracker == 'lostfilm-mirror'  || $tracker == 'newstudio.tv' || $tracker == 'baibako.tv')
         {
             $engineFile = $dir.'/trackers/'.$tracker.'.engine.php';
             $functionEngine = include_once $engineFile;
@@ -217,12 +233,12 @@ if (isset($_POST['action']))
     			$tracker = preg_replace('/www\./', '', $tracker);
     			if ($tracker == 'tr.anidub.com')
     				$tracker = 'anidub.com';
-                if ($tracker == 'zerkalo-rutor.org')
+                if ($tracker == 'cool-tor.org')
 				    $tracker = 'rutor.org';
 				elseif ($tracker == 'baibako.tv')
     				$tracker = 'baibako.tv_forum';
     				
-    			if ($tracker == 'anidub.com')
+    			if ($tracker == 'anidub.com' || $tracker == 'riperam.org')
     			    $threme = $url['path'];
                 elseif ($tracker == 'animelayer.ru')
                 {

@@ -64,7 +64,7 @@ class lostfilm
 	}
 	
 	//функция анализа xml ленты
-	private static function analysis($name, $hd, $item)
+	private static function analysis($name, $item)
 	{
 		if (preg_match('/'.$name.'/i', $item->title))
 		{
@@ -100,10 +100,21 @@ class lostfilm
             		'postfields'     => 'act=users&type=login&mail='.$login.'&pass='.$password.'&rem=1',
             	)
             );
-
+            
 			if ( ! empty($page))
 			{
-    			if (preg_match_all('/\"error\"/', $page, $array))
+				if (preg_match_all('/\"need_captcha\":true/', $page, $array))
+    			{
+					//устанавливаем варнинг
+					if (lostfilm::$warning == NULL)
+        			{
+        				lostfilm::$warning = TRUE;
+        				Errors::setWarnings($tracker, 'captcha');
+        			}
+					//останавливаем выполнение цепочки
+					lostfilm::$exucution = FALSE;        			
+                }
+				elseif (preg_match_all('/\"error\"/', $page, $array))
     			{
 					//устанавливаем варнинг
 					if (lostfilm::$warning == NULL)
@@ -245,7 +256,7 @@ class lostfilm
 				
 				foreach ($nodes as $item)
 				{
-					$serial = lostfilm::analysis($name, $hd, $item);
+					$serial = lostfilm::analysis($name, $item);
 					if ( ! empty($serial))
 					{
 						$episode = substr($serial['episode'], 4, 2);
@@ -285,7 +296,6 @@ class lostfilm
                                     array(
                                         'type'           => 'GET',
                                         'returntransfer' => 1,
-                                        #'follow'         => 1,
                                         'url'            => $matches[1],
                                         'sendHeader'     => array('Host' => 'retre.org'),
                                     )
@@ -300,13 +310,13 @@ class lostfilm
                                 if ($hd == 1)
                                 {
                                     $str = '1080';
-                                    $quality = '1080p (WEBRip|WEB-DLRip|HDTVRip)';
+                                    $quality = '1080p? (WEBRip|WEB-DLRip|HDTVRip)';
                                     $amp = 'HD';
                                 }
                                 if ($hd == 2)
                                 {
                                     $str = 'MP4';
-                                    $quality = '720p (WEB-DLRip|WEBRip|WEB-DL|HDTVRip)';
+                                    $quality = '720p? (WEB-DLRip|WEBRip|WEB-DL|HDTVRip)';
                                     $amp = 'MP4';
                                 }
 
@@ -336,9 +346,7 @@ class lostfilm
                                     }
                                     else
                                     {
-                                        var_dump('dsfsdfsdf');
                                         Errors::setWarnings($tracker, 'torrent_file_fail');
-                                        
                                     }
                                 }
 							}

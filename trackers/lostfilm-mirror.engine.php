@@ -8,22 +8,6 @@ class lostfilmmirror
 	protected static $log_page;
 	protected static $xml_page;
 	
-	//функция преобразования даты из строки
-	private static function dateStringToNum($data)
-	{
-		$data = substr($data, 5);
-		$data = substr($data, 0, -6);
-		
-		$monthes = array('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
-		$month = substr($data, 3, 3);
-		$data = preg_replace('/(\d\d)-(\d\d)-(\d\d)/', '$3-$2-$1', str_replace($month, str_pad(array_search($month, $monthes)+1, 2, 0, STR_PAD_LEFT), $data));
-		
-		$data = preg_split('/\s/', $data);
-		$date = $data[2].'-'.$data[1].'-'.$data[0].' '.$data[3];
-		
-		return $date;
-	}
-	
 	//функция преобразования даты в строку
 	private static function dateNumToString($data)
 	{

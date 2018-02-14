@@ -13,7 +13,7 @@ class Sys
                 'url'            => 'https://www.google.ru/',
             )
         );
-        if (preg_match('/<title>Google<\/title>/', $page))
+        if (preg_match('/<title>.*<\/title>/', $page))
             return TRUE;
         else
             return FALSE;
@@ -194,7 +194,6 @@ class Sys
                         $proxy = FALSE;
                 }
             }
-            
             if ($proxy)
             {
                 curl_setopt($ch, CURLOPT_PROXY, $proxyAddress); 
@@ -242,7 +241,7 @@ class Sys
         if ( ! empty($array[1]))
         {
             if ($tracker == 'anidub.com')
-                $name = substr($array[1], 0, -23);
+                $name = substr($array[1], 0, -114);
             elseif ($tracker == 'animelayer.ru')
                 $name = substr($array[1], 0, -15);
             elseif ($tracker == 'baibako.tv')
@@ -253,7 +252,7 @@ class Sys
                 $name = substr($array[1], 48);
             elseif ($tracker == 'kinozal.me')
                 $name = substr($array[1], 0, -22);
-            elseif ($tracker == 'nnm-club.name')
+            elseif ($tracker == 'nnmclub.to')
                 $name = substr($array[1], 0, -12);
             elseif ($tracker == 'rutracker.org')
                 $name = substr($array[1], 0, -17);
@@ -265,13 +264,19 @@ class Sys
                 $name = substr($array[1], 0, -96);
             elseif ($tracker == 'pornolab.net')
                 $name = substr($array[1], 0, -16);
+            elseif ($tracker == 'riperam.org')
+            {
+                preg_match('/(.*) \&bull\; Riper\.AM/', $array[1], $array2);
+                if ( ! empty($array2[1]))
+                    $name = $array2[1];
+            }
             elseif ($tracker == 'rustorka.com')
                 $name = substr($array[1], 0, -111);
-            elseif ($tracker == 'rutor.info')
+            elseif (preg_match('/.*tor\.org|rutor\.info/', $array[1]))
             {
-                preg_match('/<title>.*tor.info :: (.*)<\/title>/', $forumPage, $array);
-                if ( ! empty($array[1]))
-                    $name = $array[1];
+                preg_match('/.*tor.info :: (.*)/', $array[1], $array2);
+                if ( ! empty($array2[1]))
+                    $name = $array2[1];
             }
             else
                 $name = $array[1];
@@ -287,7 +292,7 @@ class Sys
         $tracker = preg_replace('/www\./', '', $tracker);
 
         if (preg_match('/.*tor\.org|rutor\.info/', $tracker))
-            $tracker = 'rutor.info';
+            $tracker = 'rutor.org';
      
         if ($tracker == 'rustorka.com'  || $tracker == 'booktracker.org' || $tracker == 'tracker.0day.kiev.ua')
         {
@@ -355,7 +360,7 @@ class Sys
             );            
         }
 
-        if ($tracker != 'animelayer.ru' && $tracker != 'booktracker.org' && $tracker != 'casstudio.tv' && $tracker != 'torrents.net.ua' && $tracker != 'rustorka.com' && $tracker != 'rutor.info' && $tracker != 'tr.anidub.com')
+        if ($tracker != 'animelayer.ru' && $tracker != 'booktracker.org' && $tracker != 'casstudio.tv' && $tracker != 'torrents.net.ua' && $tracker != 'riperam.org' && $tracker != 'rustorka.com' && $tracker != 'rutor.org' && $tracker != 'tr.anidub.com')
             $forumPage = iconv('windows-1251', 'utf-8//IGNORE', $forumPage);
 
         if ($tracker == 'tr.anidub.com')
@@ -396,7 +401,7 @@ class Sys
         }
         else
         {
-            Database::saveToTemp($id, $name, $path, $hash, $tracker, $date_str);
+            Database::saveToTemp($id, $name, $path, $tracker, $date_str);
             Errors::setWarnings($torrentClient, $status['msg']);
             $return['status'] = FALSE;
         }

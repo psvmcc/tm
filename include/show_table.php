@@ -96,6 +96,12 @@ else
 	    		<a href='http://tr.anidub.com<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>	    	
 	    	<?php        		
     		}
+    		elseif ($tracker == 'riperam.org')
+    		{
+	    	?>        		
+	    		<a href='http://riperam.org<?php echo $torrent_id ?>' target='_blank'><?php echo $name ?></a>	    	
+	    	<?php        		
+    		}
     		elseif ($tracker == 'baibako.tv_forum')
     		{
 	    	?>        		
@@ -112,11 +118,11 @@ else
     		{
                 if ($hd == 1 && $tracker == 'lostfilm.tv' || $hd == 1 && $tracker == 'lostfilm-mirror')
                 	echo '<img src="img/1080.png">';
-                elseif ($hd == 1 && $tracker == 'baibako.tv' || $hd == 1 && $tracker == 'hamsterstudio.org' || $hd == 1 && $tracker == 'newstudio.tv' || $hd == 1 && $tracker == 'novafilm.tv')
+                elseif ($hd == 1 && $tracker == 'baibako.tv' || $hd == 1 && $tracker == 'hamsterstudio.org' || $hd == 1 && $tracker == 'newstudio.tv')
                 	echo '<img src="img/720.png">';
                 elseif ($hd == 2 && $tracker == 'lostfilm.tv' || $hd == 2 && $tracker == 'lostfilm-mirror')
                 	echo '<img src="img/720mp4.png">';
-                elseif ($hd == 2 && $tracker == 'baibako.tv' || $hd == 2 && $tracker == 'hamsterstudio.org' || $hd == 2 && $tracker == 'newstudio.tv' || $hd == 2 && $tracker == 'novafilm.tv')
+                elseif ($hd == 2 && $tracker == 'baibako.tv' || $hd == 2 && $tracker == 'hamsterstudio.org' || $hd == 2 && $tracker == 'newstudio.tv')
                     echo '<img src="img/1080.png">';
                 else
                     echo '<img src="img/sd.png">';

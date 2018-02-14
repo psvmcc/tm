@@ -9,7 +9,7 @@ if ( ! Sys::checkAuth())
 <h2 class="settings-title">Новости</h2>
 <?php
 $news = Database::getNews();
-if ( ! empty($news))
+if ($news != NULL)
 {
     for ($i=0; $i<count($news); $i++)
     {

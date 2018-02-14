@@ -434,11 +434,11 @@ class Database
         }
         $stmt = NULL;
         $resultArray = NULL;
-    }    
-    
+    }
+/*
     public static function getTorrentsListByTracker($tracker)
     {
-        if ($tracker == 'lostfilm.tv' || $tracker == 'novafilm.tv')
+        if ($tracker == 'lostfilm.tv')
             $fields = 'hd, ep';
         if ($tracker == 'rutracker.org' || $tracker == 'nnm-club.ru' || $tracker == 'rutor.org' || $tracker == 'booktracker.org')
             $fields = 'torrent_id';
@@ -452,7 +452,7 @@ class Database
             {
                 $resultArray[$i]['name'] = $row['name'];
                 $resultArray[$i]['timestamp'] = $row['timestamp'];
-                if ($tracker == 'lostfilm.tv' || $tracker == 'novafilm.tv')
+                if ($tracker == 'lostfilm.tv')
                 {
                     $resultArray[$i]['hd'] = $row['hd'];
                     $resultArray[$i]['ep'] = $row['ep'];
@@ -467,7 +467,7 @@ class Database
         $stmt = NULL;
         $resultArray = NULL;
     }
-    
+*/
     public static function getUserToWatch()
     {
         $stmt = self::newStatement("SELECT `id`, `tracker`, `name` FROM `watch` ORDER BY `tracker`");	        
@@ -798,7 +798,7 @@ class Database
     public static function updateSerial($id, $name, $path, $hd, $reset, $script, $pause)
     {
         if ($reset)
-            $stmt = self::newStatement("UPDATE `torrent` SET `name` = :name, `path` = :path, `hd` = :hd, `ep` = '', `timestamp` = '1970-01-01 00:00:00', `hash` = '', `script` = :script, `pause` = :pause WHERE `id` = :id");
+            $stmt = self::newStatement("UPDATE `torrent` SET `name` = :name, `path` = :path, `hd` = :hd, `ep` = '', `timestamp` = '2000-01-01 00:00:00', `hash` = '', `script` = :script, `pause` = :pause WHERE `id` = :id");
         else
             $stmt = self::newStatement("UPDATE `torrent` SET `name` = :name, `path` = :path, `hd` = :hd, `script` = :script, `pause` = :pause WHERE `id` = :id");
         $stmt->bindParam(':name', $name);
@@ -828,7 +828,7 @@ class Database
 
         if ($reset)
         {
-            $stmt = self::newStatement("UPDATE `torrent` SET `timestamp` = '1970-01-01 00:00:00', `hash` = '' WHERE `id` = :id");
+            $stmt = self::newStatement("UPDATE `torrent` SET `timestamp` = '2000-01-01 00:00:00', `hash` = '' WHERE `id` = :id");
             $stmt->bindParam(':id', $id);
         }
         if ($stmt->execute())
@@ -997,10 +997,11 @@ class Database
         $stmt = NULL;
     }    
 
-    public static function setClosedThreme($id)
+    public static function setClosedThreme($id, $closed)
     {
-        $stmt = self::newStatement("UPDATE `torrent` SET `closed` = 1 WHERE `id` = :id");        
+        $stmt = self::newStatement("UPDATE `torrent` SET `closed` = :closed WHERE `id` = :id");        
         $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':closed', $closed);
         if ($stmt->execute())
             return TRUE;
         else
@@ -1047,7 +1048,7 @@ class Database
         $stmt = NULL;
     }
 
-    public static function saveToTemp($id, $name, $path, $hash, $tracker, $date)
+    public static function saveToTemp($id, $name, $path, $tracker, $date)
     {
         $stmt = self::newStatement("INSERT INTO `temp` (`id`, `name`, `path`, `tracker`, `date`) VALUES (:id, :name, :path, :tracker, :date)");
         $stmt->bindParam(':id', $id);

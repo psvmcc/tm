@@ -37,7 +37,12 @@ class rustorka
 	//функция преобразования даты
 	private static function dateStringToNum($data)
 	{
-		return $data.':00';
+		$monthes = array('Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек');
+		$month = substr($data, 3, 6);
+		$date = preg_replace('/(\d\d)-(\d\d)-(\d\d)/', '$3-$2-$1', str_replace($month, str_pad(array_search($month, $monthes)+1, 2, 0, STR_PAD_LEFT), $data));
+		$date = date('Y-m-d H:i:s', strtotime($date));
+
+		return $date;
 	}
 
 	//функция преобразования даты
@@ -45,7 +50,7 @@ class rustorka
 	{
 		$data = str_replace('-', ' ', $data);
 		$arr = preg_split('/\s/', $data);
-		$date = $arr[2].' '.Sys::dateNumToString($arr[1]).' '.$arr[0].' '.$arr[3];
+		$date = $arr[0].' '.$arr[1].' 20'.$arr[2].' '.$arr[3];
 
 		return $date;
 	}
@@ -69,6 +74,7 @@ class rustorka
             		'returntransfer' => 1,
             		'url'            => 'http://rustorka.com/forum/login.php',
             		'postfields'     => 'login_username='.$login.'&login_password='.$password.'&login=%C2%F5%EE%E4',
+					'referer'        => 'http://rustorka.com/forum/index.php',
             		'convert'        => array('windows-1251', 'utf-8//IGNORE'),
             	)
             );
@@ -156,6 +162,7 @@ class rustorka
             		'url'            => 'http://rustorka.com/forum/viewtopic.php?t='.$torrent_id,
             		'cookie'         => rustorka::$sess_cookie,
             		'sendHeader'     => array('Host' => 'rustorka.com', 'Content-length' => strlen(rustorka::$sess_cookie)),
+					'referer'        => 'http://rustorka.com/forum/index.php',
             		'convert'        => array('windows-1251', 'utf-8//IGNORE'),
             	)
             );
@@ -163,7 +170,7 @@ class rustorka
 			if ( ! empty($page))
 			{
 				//ищем на странице дату регистрации торрента
-				if (preg_match('/<td>Зарегистрирован:<\/td>\r\n\s{4}<td>(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2})<\/td>/', $page, $array))
+				if (preg_match('/<td>Зарегистрирован:<\/td>\r\n{1,2}\s{4}<td>(.*)<\/td>/', $page, $array))
 				{
 					//проверяем удалось ли получить дату со страницы
 					if (isset($array[1]))

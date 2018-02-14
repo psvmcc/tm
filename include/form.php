@@ -27,7 +27,7 @@ if (isset($torrent[0]['torrent_id']) && $torrent[0]['torrent_id'] != NULL)
     <p>
         <label class="label-name">Ссылка на тему</label>
 <?php
-if ($tracker == 'rutracker.org' || $tracker == 'nnm-club.name' || $tracker == 'tfile.cc' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
+if ($tracker == 'rutracker.org' || $tracker == 'nnmclub.to' || $tracker == 'tfile.cc' || $tracker == 'torrents.net.ua' || $tracker == 'pornolab.net' || $tracker == 'rustorka.com')
     $tracker = 'http://'.$tracker.'/forum/viewtopic.php?t=';
 elseif ($tracker == 'booktracker.org')
     $tracker = 'http://'.$tracker.'/viewtopic.php?t=';    
@@ -37,6 +37,8 @@ elseif ($tracker == 'rutor.org')
     $tracker = 'http://rutor.org/torrent/';
 elseif ($tracker == 'anidub.com')
     $tracker = 'http://tr.anidub.com';
+elseif ($tracker == 'riperam.org')
+    $tracker = 'http://riperam.org';
 elseif ($tracker == 'animelayer.ru')
     $tracker = 'http://animelayer.ru/torrent/';
 elseif ($tracker == 'baibako.tv_forum')
@@ -52,7 +54,7 @@ elseif ($tracker == 'baibako.tv_forum')
 <?php
 }
 
-if (isset($hd) && $tracker == 'lostfilm.tv' || isset($hd) && $tracker == 'lostfilm-mirror' || isset($hd) && $tracker == 'novafilm.tv' || isset($hd) && $tracker == 'baibako.tv' || isset($hd) && $tracker == 'newstudio.tv')
+if (isset($hd) && $tracker == 'lostfilm.tv' || isset($hd) && $tracker == 'lostfilm-mirror' || isset($hd) && $tracker == 'baibako.tv' || isset($hd) && $tracker == 'newstudio.tv')
 {
 ?>
     <p>
@@ -60,11 +62,11 @@ if (isset($hd) && $tracker == 'lostfilm.tv' || isset($hd) && $tracker == 'lostfi
 <?php
 if ($hd == 1 && $tracker == 'lostfilm.tv' || $hd == 1 && $tracker == 'lostfilm-mirror')
 	$input = '<input type="radio" name="hd" value="0"> SD<br /><input type="radio" name="hd" value="2"> HD 720<br /><input type="radio" name="hd" value="1" checked> HD 1080';
-elseif ($hd == 1 && $tracker == 'baibako.tv' || $hd == 1 && $tracker == 'newstudio.tv' || $hd == 1 && $tracker == 'novafilm.tv')
+elseif ($hd == 1 && $tracker == 'baibako.tv' || $hd == 1 && $tracker == 'newstudio.tv' || $hd == 1)
     $input = '<input type="radio" name="hd" value="0"> SD<br /><input type="radio" name="hd" value="1" checked> HD 720<br /><input type="radio" name="hd" value="2"> HD 1080</span>';
 elseif ($hd == 2 && $tracker == 'lostfilm.tv' || $hd == 2 && $tracker == 'lostfilm-mirror')
     $input = '<input type="radio" name="hd" value="0"> SD<br /><input type="radio" name="hd" value="2" checked> HD 720<br /><input type="radio" name="hd" value="1"> HD 1080</span>';
-elseif ($hd == 2 && $tracker == 'baibako.tv' || $hd == 2 && $tracker == 'newstudio.tv' || $hd == 2 && $tracker == 'novafilm.tv')
+elseif ($hd == 2 && $tracker == 'baibako.tv' || $hd == 2 && $tracker == 'newstudio.tv' || $hd == 2)
     $input = '<input type="radio" name="hd" value="0"> SD<br /><input type="radio" name="hd" value="1"> HD 720<br /><input type="radio" name="hd" value="2" checked> HD 1080</span>';
 elseif ($hd == 0 && $tracker == 'lostfilm.tv' || $hd == 0 && $tracker == 'lostfilm-mirror')
 	$input = '<input type="radio" name="hd" value="0" checked> SD<br /><input type="radio" name="hd" value="2"> HD 720<br /><input type="radio" name="hd" value="1"> HD 1080';    

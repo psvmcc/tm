@@ -46,7 +46,6 @@ if ( ! Sys::checkAuth())
             <option value="lostfilm.tv">lostfilm.tv</option>
             <option value="lostfilm-mirror">lostfilm-mirror</option>
             <option value="newstudio.tv">newstudio.tv</option>
-            <option value="novafilm.tv">novafilm.tv</option>
         </select>
     </p>
     <p>
@@ -78,7 +77,7 @@ if ( ! Sys::checkAuth())
         <select name="tracker">
             <option></option>
             <option>booktracker.org</option>
-            <option>nnm-club.name</option>
+            <option>nnmclub.to</option>
             <option>pornolab.net</option>
             <option>rutracker.org</option>
             <option>tfile.cc</option>

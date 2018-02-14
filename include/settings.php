@@ -132,7 +132,7 @@ foreach ($settings as $row)
         <p>
             <label class="label-name"></label>
             <label><input type="checkbox" name="deleteOldFiles" <?php if ($deleteOldFiles) echo "checked" ?>> Удалять файлы старых раздач</label>
-            <span class="subinput-text">Только для lostfilm.tv, novafilm.tv, baibako.tv и newstudio.tv</span>
+            <span class="subinput-text">Только для lostfilm.tv, baibako.tv и newstudio.tv</span>
         </p>
     </div>
     <p>

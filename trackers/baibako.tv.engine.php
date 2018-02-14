@@ -17,8 +17,8 @@ class baibako
 				'type'           => 'POST',
 				'returntransfer' => 1,
 				'url'            => 'http://baibako.tv/',
-				'cookie'         => baibako::$sess_cookie,
-				'sendHeader'     => array('Host' => 'baibako.tv', 'Content-length' => strlen(baibako::$sess_cookie)),
+				'cookie'         => $sess_cookie,
+				'sendHeader'     => array('Host' => 'baibako.tv', 'Content-length' => strlen($sess_cookie)),
 				'convert'        => array('windows-1251', 'utf-8//IGNORE'),
 			)
 		);

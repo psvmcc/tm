@@ -28,7 +28,7 @@ class Transmission
         	if ( ! empty($hash))
         	{
             	$delOpt = 'false';
-            	if ($tracker == 'lostfilm.tv' || $tracker == 'novafilm.tv' || $tracker == 'baibako.tv' || $tracker == 'newstudio.tv')
+            	if ($tracker == 'lostfilm.tv' || $tracker == 'lostfilm-mirror' || $tracker == 'baibako.tv' || $tracker == 'newstudio.tv')
             	{
                     if ($deleteOldFiles)
                         $delOpt = 'true';
@@ -73,6 +73,11 @@ class Transmission
             {
                 $return['status'] = FALSE;
                 $return['msg'] = 'torrent_file_fail';
+            }
+            elseif (preg_match('/http error 0: No Response/i', $result->result))
+            {
+                $return['status'] = FALSE;
+                $return['msg'] = 'no_response';
             }
             else
             {

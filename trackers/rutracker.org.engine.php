@@ -12,7 +12,7 @@ class rutracker
         	array(
         		'type'           => 'POST',
         		'returntransfer' => 1,
-        		'url'            => 'http://rutracker.org/forum/index.php',
+        		'url'            => 'https://rutracker.org/forum/index.php',
         		'cookie'         => $sess_cookie,
         		'sendHeader'     => array('Host' => 'rutracker.org', 'Content-length' => strlen($sess_cookie)),
         		'convert'        => array('windows-1251', 'utf-8//IGNORE'),
@@ -72,7 +72,7 @@ class rutracker
             		'type'           => 'POST',
             		'header'         => 1,
             		'returntransfer' => 1,
-            		'url'            => 'http://rutracker.org/forum/login.php',
+            		'url'            => 'https://rutracker.org/forum/login.php',
             		'postfields'     => 'login_username='.$login.'&login_password='.$password.'&login=%C2%F5%EE%E4',
             		'convert'        => array('windows-1251', 'utf-8//IGNORE'),
             	)
@@ -156,7 +156,7 @@ class rutracker
             		'type'           => 'POST',
             		'header'         => 0,
             		'returntransfer' => 1,
-            		'url'            => 'http://rutracker.org/forum/viewtopic.php?t='.$torrent_id,
+            		'url'            => 'https://rutracker.org/forum/viewtopic.php?t='.$torrent_id,
             		'cookie'         => rutracker::$sess_cookie,
             		'sendHeader'     => array('Host' => 'rutracker.org', 'Content-length' => strlen(rutracker::$sess_cookie)),
             		'convert'        => array('windows-1251', 'utf-8//IGNORE'),
@@ -169,7 +169,7 @@ class rutracker
     			if (preg_match('/alt=\"Тема закрыта\"/', $page, $array))
     			{
         			//ставим галочку что тема закрыта
-                    Database::setClosedThreme($id);
+                    Database::setClosedThreme($id, 1);
     			}
     			else
     			{
@@ -195,10 +195,10 @@ class rutracker
                                     	array(
                                     		'type'           => 'POST',
                                     		'returntransfer' => 1,
-                                    		'url'            => 'http://rutracker.org/forum/dl.php?t='.$torrent_id,
+                                    		'url'            => 'https://rutracker.org/forum/dl.php?t='.$torrent_id,
                                     		'cookie'         => rutracker::$sess_cookie.'; bb_dl='.$torrent_id,
                                     		'sendHeader'     => array('Host' => 'rutracker.org', 'Content-length' => strlen(rutracker::$sess_cookie.'; bb_dl='.$torrent_id)),
-                                    		'referer'        => 'http://rutracker.org/forum/viewtopic.php?t='.$torrent_id,
+                                    		'referer'        => 'https://rutracker.org/forum/viewtopic.php?t='.$torrent_id,
                                     	)
                                     );
                                     
@@ -217,6 +217,7 @@ class rutracker
         								//обновляем время регистрации торрента в базе
         								Database::setNewDate($id, $date);
         								Database::setErrorToThreme($id, 0);
+        								Database::setClosedThreme($id, 0);
                                     }
                                     else
                                         Errors::setWarnings($tracker, 'torrent_file_fail', $id);

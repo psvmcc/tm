@@ -17,7 +17,7 @@ class Deluge
         if ( ! empty($hash))
         {
             $delOpt = '';
-            if ($tracker == 'lostfilm.tv' || $tracker == 'novafilm.tv' ||  $tracker == 'baibako.tv' || $tracker == 'newstudio.tv')
+            if ($tracker == 'lostfilm.tv' || $tracker == 'lostfilm-mirror' ||  $tracker == 'baibako.tv' || $tracker == 'newstudio.tv')
             {
                 if ($deleteOldFiles)
                     $delOpt = '--remove_data';
@@ -34,6 +34,7 @@ class Deluge
 
         #добавляем торрент в torrent-клиента
         $command = `deluge-console 'connect $torrentAddress $torrentLogin $torrentPassword; add -p "$pathToDownload" $file'`;
+        
         if ( ! preg_match('/Torrent added!/', $command))
         {
             $return['status'] = FALSE;

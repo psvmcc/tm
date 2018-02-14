@@ -52,54 +52,57 @@ class booktrackerSearch extends booktracker
 	    	}
 
     		$toDownload = Database::takeToDownload($tracker);
-    		if (count($toDownload) > 0)
+    		if ($toDownload != NULL)
     		{
-                for ($i=0; $i<count($toDownload); $i++)
-                {
-                	//получаем страницу для парсинга
-                    $page = Sys::getUrlContent(
-                    	array(
-                    		'type'           => 'POST',
-                    		'header'         => 0,
-                    		'returntransfer' => 1,
-                    		'encoding'       => 1,
-                    		'url'            => 'https://booktracker.org/viewtopic.php?t='.$torrent_id,
-                    		'cookie'         => booktracker::$sess_cookie,
-                    		'sendHeader'     => array('Host' => 'booktracker.org', 'Content-length' => strlen(booktracker::$sess_cookie)),
-                    	)
-                    );
-
-        			if ( ! empty($page))
-        			{
-                        //находим имя торрента для скачивания
-                        if (preg_match('/href=\"download.php\?id=(\d+)\"/', $page, $link))
-                        {
-                        	//сбрасываем варнинг
-							Database::clearWarnings($tracker);
-                            //сохраняем торрент в файл
-                            $download_id = $link[1];
-
-                            $torrent = Sys::getUrlContent(
-                            	array(
-                            		'type'           => 'GET',
-                            		'returntransfer' => 1,
-                            		'url'            => 'https://booktracker.org/download.php?id='.$download_id,
-                            		'cookie'         => booktracker::$sess_cookie,
-                            		'sendHeader'     => array('Host' => 'booktracker.org', 'Content-length' => strlen(booktracker::$sess_cookie)),
-                            		'referer'        => 'https://booktracker.org/viewtopic.php?t='.$torrent_id,
-                            	)
-                            );
-                            
-                            if (Sys::checkTorrentFile($torrent))
+        		if (count($toDownload) > 0)
+        		{
+                    for ($i=0; $i<count($toDownload); $i++)
+                    {
+                    	//получаем страницу для парсинга
+                        $page = Sys::getUrlContent(
+                        	array(
+                        		'type'           => 'POST',
+                        		'header'         => 0,
+                        		'returntransfer' => 1,
+                        		'encoding'       => 1,
+                        		'url'            => 'https://booktracker.org/viewtopic.php?t='.$torrent_id,
+                        		'cookie'         => booktracker::$sess_cookie,
+                        		'sendHeader'     => array('Host' => 'booktracker.org', 'Content-length' => strlen(booktracker::$sess_cookie)),
+                        	)
+                        );
+    
+            			if ( ! empty($page))
+            			{
+                            //находим имя торрента для скачивания
+                            if (preg_match('/href=\"download.php\?id=(\d+)\"/', $page, $link))
                             {
-                                $message = $toDownload[$i]['threme'].' добавлена для скачивания.';
-                                $status = Sys::saveTorrent($tracker, $toDownload[$i]['threme_id'], $torrent, $toDownload[$i]['threme_id'], 0, $message, date('d M Y H:i'), $name);
-    								
-                				//обновляем время регистрации торрента в базе
-                				Database::setDownloaded($toDownload[$i]['id']);
+                            	//сбрасываем варнинг
+    							Database::clearWarnings($tracker);
+                                //сохраняем торрент в файл
+                                $download_id = $link[1];
+    
+                                $torrent = Sys::getUrlContent(
+                                	array(
+                                		'type'           => 'GET',
+                                		'returntransfer' => 1,
+                                		'url'            => 'https://booktracker.org/download.php?id='.$download_id,
+                                		'cookie'         => booktracker::$sess_cookie,
+                                		'sendHeader'     => array('Host' => 'booktracker.org', 'Content-length' => strlen(booktracker::$sess_cookie)),
+                                		'referer'        => 'https://booktracker.org/viewtopic.php?t='.$torrent_id,
+                                	)
+                                );
+                                
+                                if (Sys::checkTorrentFile($torrent))
+                                {
+                                    $message = $toDownload[$i]['threme'].' добавлена для скачивания.';
+                                    $status = Sys::saveTorrent($tracker, $toDownload[$i]['threme_id'], $torrent, $toDownload[$i]['threme_id'], 0, $message, date('d M Y H:i'), $name);
+        								
+                    				//обновляем время регистрации торрента в базе
+                    				Database::setDownloaded($toDownload[$i]['id']);
+                                }
+                                else
+                                    Errors::setWarnings($tracker, 'torrent_file_fail');
                             }
-                            else
-                                Errors::setWarnings($tracker, 'torrent_file_fail');
                         }
                     }
                 }

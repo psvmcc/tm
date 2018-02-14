@@ -12,7 +12,7 @@ class anidub
         	array(
         		'type'           => 'POST',
         		'returntransfer' => 1,
-        		'url'            => 'http://tr.anidub.com',
+        		'url'            => 'https://tr.anidub.com',
         		'cookie'         => $sess_cookie,
         		'sendHeader'     => array('Host' => 'tr.anidub.com', 'Content-length' => strlen($sess_cookie)),
         	)
@@ -91,7 +91,7 @@ class anidub
             		'type'           => 'POST',
             		'header'         => 1,
             		'returntransfer' => 1,
-            		'url'            => 'http://tr.anidub.com',
+            		'url'            => 'https://tr.anidub.com',
             		'postfields'     => 'login_name='.$login.'&login_password='.$password.'&login=submit',
             	)
             );
@@ -99,7 +99,7 @@ class anidub
 			if ( ! empty($page))
 			{
 				//проверяем подходят ли учётные данные
-				if (preg_match('/<a href=\"http:\/\/tr\.anidub\.com\/index\.php\?do=register\">Регистрация<\/a>/', $page, $array))
+				if (preg_match('/<a href=\"https:\/\/tr\.anidub\.com\/index\.php\?do=register\">Регистрация<\/a>/', $page, $array))
 				{
 					//устанавливаем варнинг
 					Errors::setWarnings($tracker, 'credential_wrong');
@@ -174,7 +174,7 @@ class anidub
             		'type'           => 'POST',
             		'header'         => 0,
             		'returntransfer' => 1,
-            		'url'            => 'http://tr.anidub.com'.$torrent_id,
+            		'url'            => 'https://tr.anidub.com'.$torrent_id,
             		'cookie'         => anidub::$sess_cookie,
             		'sendHeader'     => array('Host' => 'tr.anidub.com', 'Content-length' => strlen(anidub::$sess_cookie)),
             	)
@@ -207,10 +207,10 @@ class anidub
                                     	array(
                                     		'type'           => 'GET',
                                     		'returntransfer' => 1,
-                                    		'url'            => 'http://tr.anidub.com/engine/download.php?id='.$download_id,
+                                    		'url'            => 'https://tr.anidub.com/engine/download.php?id='.$download_id,
                                     		'cookie'         => anidub::$sess_cookie,
                                     		'sendHeader'     => array('Host' => 'tr.anidub.com', 'Content-length' => strlen(anidub::$sess_cookie)),
-                                    		'referer'        => 'http://tr.anidub.com'.$torrent_id,
+                                    		'referer'        => 'https://tr.anidub.com'.$torrent_id,
                                     	)
                                     );
                                     
